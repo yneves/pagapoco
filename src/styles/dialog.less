@@ -1,0 +1,74 @@
+
+/* Personal preference for BS modal.  The LESS below makes the backdrop white and
+   causes the modal to fade in rather than slide in. */
+//@modal-backdrop-bg: white;
+//.modal {
+//	&.fade {
+//		.transition(opacity .3s);
+//	}
+//	&.fade .modal-dialog {
+//		.translate(0,0);
+//	}
+//}
+
+
+.animated, .example-enter {
+  -webkit-animation-duration: 1s;
+          animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+          animation-fill-mode: both;
+}
+
+@-webkit-keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+@keyframes fadeIn {
+  0% {opacity: 0;}
+  100% {opacity: 1;}
+}
+
+.fadeIn, .example-enter {
+  -webkit-animation-name: fadeIn;
+          animation-name: fadeIn;
+}
+
+.dialog{
+    position: relative;
+    width: 100%;
+    z-index: 2000;
+}
+
+.dialog-overlay{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    // background: rgba(255, 255, 255, 0.75)!important;
+    // opacity: 0.75!important;
+    // filter: alpha(opacity=75);
+}
+
+.dialog-backdrop{
+  background:#fff!important;
+}
+
+.dialog-content{
+  margin: 0 auto;
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+.dialog.dialog-theme-default .dialog-content{
+  z-index: 2;
+  box-shadow: 0px 8px 17px rgba(0, 0, 0, 0.2);
+  min-width: 80%;
+  background: white!important;
+}
+
+.dialog.dialog-theme-default{
+  padding-top: 5%!important;
+}
