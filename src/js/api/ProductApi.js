@@ -1,29 +1,43 @@
+/*
+
+    In this file should be everything that is product related iteration with the
+    server, to get data and to sync data back.
+
+*/
 
 var request = require('../utils/Request'),
     async = require('async'),
     productServerActionCreator = require('../actions/ProductServerActionCreators'),
-    _ = require('lodash-node'),
+    _ = require('lodash-node'), // TODO better naming needed here
     Product = require('../data/Product'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
     productCollection;
 
+// get all products from an API endpoint
 function getAllProducts(callback) {
 
     productServerActionCreator.setAllProducts();
 
+    // parallel request..
     async.parallel([
 
+        // TODO those two methods won't be needed in the future since firebase
+        // can group the product information like it's taxonomies (or send all the information)
+        // already joined from the server
         function getProducts(callback) {
+            // TODO future firebase api endpoint
             request.get('/resources/products.json', {}, callback);
         },
 
         function getTaxonomies(callback) {
+            // TODO future firebase api endpoint
             request.get('/resources/products_relationships.json', {}, callback);
         }
 
-    ], function (err, results) {
+    ], function (err, results) { // callback from the requests above
 
+        // TODO set the variables on the else statement?
         var products,
             productsRaw,
             taxonomiesRaw,
@@ -31,6 +45,7 @@ function getAllProducts(callback) {
             finalHistory,
             priceData;
 
+        // if there is an error let's dispatch an event and end here
         if (err instanceof Error) {
             productServerActionCreator.setAllProducts(err);
         } else {
@@ -72,7 +87,7 @@ function getAllProducts(callback) {
             productsRaw.forEach(function (value, key) {
                 value.taxonomy = [];
 
-                // associate category
+                // associate category with the product
                 taxonomiesRaw.category_product.forEach(function (categoryValue) {
                     if (value.id === categoryValue.product_id) {
                         categoryValue.category_id.forEach(function (categoryId) {
@@ -81,6 +96,8 @@ function getAllProducts(callback) {
                     }
                 });
 
+                // associate the tags with the product (should be the product review)
+                // by the users (which will be gathered from buscape api)
                 taxonomiesRaw.tag_product.forEach(function (tagValue) {
                     if (value.id === tagValue.product_id) {
                         tagValue.tag_id.forEach(function (tagId) {
@@ -91,6 +108,7 @@ function getAllProducts(callback) {
 
                 // calculate the initial_discount based on the price
                 value.initial_discount = (1 - value.price / value.original_price);
+
                 // kind hackish, we are assuming that they are in the correct index order...
                 value.price_history = finalHistory.data[key];
                 value.added = Transmuter.toBoolean(value.added);
@@ -102,6 +120,9 @@ function getAllProducts(callback) {
     });
 }
 
+// used to sync anything product related to the server like
+// product was added, removed, increased, clicked, etc
+// TODO still not developed yet since there is no endpoint to sync with (will be firebase)
 function syncProduct(productId) {
     var model;
     model = Product.collection.get(productId);
@@ -110,6 +131,7 @@ function syncProduct(productId) {
         productServerActionCreator.productUpdate();
         async.series([
             function syncProduct(callback) {
+                // TODO some firebase endpoint should go here
                 request.post('/api/some-end-point', model.toJSON(), callback);
             }
         ], function (err, results) {
@@ -122,6 +144,7 @@ function syncProduct(productId) {
     }
 }
 
+// TODO export the functions as methods of an object
 module.exports = {
     getAllProducts: getAllProducts,
     syncProduct : syncProduct

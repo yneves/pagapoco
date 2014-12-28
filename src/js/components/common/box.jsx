@@ -6,9 +6,9 @@ var React = require('react'),
     Box;
 
 Box =
-
     React.createClass({
 
+        // yeah, we are using tether in those boxes
         mixins: [Tether],
 
         propTypes: {
@@ -36,12 +36,16 @@ Box =
             // do something unmount
         },
 
+        // we don't need anything fancy here, just a reference to pass to tether
+        // so it tells react which place it should start a new tree
         render: function() {
             return (
                 <div ref="box"></div>
             );
         },
 
+        // the callback that tether will use to tell the new react tree
+        // what it should use as it's render() method
         tetheredContent: function () {
             return  (
                 <div>
@@ -52,6 +56,7 @@ Box =
             );
         },
 
+        // close the box en esc is pressed!
         _checkEscapeKeyUp: function (e) {
             if (e.keyCode == KeyCode.ESC) {
                 this.props.onDismiss();

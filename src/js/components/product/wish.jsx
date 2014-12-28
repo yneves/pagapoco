@@ -9,7 +9,7 @@ wishButton =
 
     React.createClass({
 
-        propTypes : { // @todo a validation by instanceOf 'product' would be better, but it was buggy
+        propTypes : { // TODO a validation by instanceOf 'product' would be better, but.. buggy
             product : React.PropTypes.object.isRequired
         },
 

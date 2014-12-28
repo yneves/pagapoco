@@ -8,17 +8,14 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 
 ProductActionCreator = {
 
-    /**
-     * FROM VIEW
-     *
-     * @param data
-     */
+    // called when the player wishes to know the product reached a certain price
     toggleWishProduct: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.TOGGLE_WISHLIST,
             data : { id : id }
         });
     },
+    // called when the player clicks on a product that he wants to buy
     addItem: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.ADD_ITEM,
@@ -26,18 +23,21 @@ ProductActionCreator = {
         });
         api.product.syncProduct(id);
     },
+    // for future use only - when we develop our own selling system
     removeItem: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.REMOVE_ITEM,
             data : { id : id }
         });
     },
+    // for future use only - when we develop our own selling system
     decreaseItem: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.DECREASE_ITEM,
             data : { id : id }
         });
     },
+    // for future use only - when we develop our own selling system
     increaseItem: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.INCREASE_ITEM,

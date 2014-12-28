@@ -1,8 +1,6 @@
 
 var React = require('react'),
     AddProduct = require('./add.jsx'),
-    IncreaseProduct = require('./increase.jsx'),
-    DecreaseProduct = require('./decrease.jsx'),
     debug = require('debug')('singleView.jsx');
 
 module.exports =
@@ -45,10 +43,6 @@ module.exports =
                             <div layout="horizontal" layout-align="start" >
                                 <div flex className="productQty">
                                     <span cart-item-quantity className="productQtyNumber">{product.get('quantity')}</span>
-                                    <div className="productControls">
-                                        <IncreaseProduct id={product.get('id')} />
-                                        <DecreaseProduct id={product.get('id')} />
-                                    </div>
                                 </div>
                                 <AddProduct product={product} />
                             </div>

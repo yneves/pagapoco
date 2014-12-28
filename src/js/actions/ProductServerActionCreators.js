@@ -13,18 +13,21 @@ ProductServerActionCreator = {
 
         id = id || null;
 
+        // the server receive the product update event but hasn't returned anything yet
         if(!id) {
             Dispatcher.handleServerAction({
                 type: productAction.PRODUCT_UPDATE_START,
                 data: null
             });
         } else {
+            // if there was an error while trying to update the product in the server
             if (id instanceof Error) {
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_UPDATE_ERROR,
                     data: { id : id }
                 });
             } else {
+                // product was successfully updated in the serve
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_UPDATE_SUCCESS,
                     data: { id : id }
@@ -32,25 +35,25 @@ ProductServerActionCreator = {
             }
         }
     },
+    // action that should be called by the API (server) when retrieving product data
     setAllProducts: function (products) {
 
         products = products || null;
 
-        // TODO transformar em async com callback seguindo o exemplo do Fluxxor
-        // e ver se isso dará problema caso eu faça uma outra chamada de outro
-        // local em paralelo (erro de multiplos requests)
+        // if there is no product set yet (nothing returned from the server yet)
         if (!products) {
             Dispatcher.handleServerAction({
                 type: productAction.RECEIVE_RAW_PRODUCTS_START,
                 data: null
             });
         } else {
+            // if there was an error while trying to retrive the products
             if (products instanceof Error) {
                 Dispatcher.handleServerAction({
                     type: productAction.RECEIVE_RAW_PRODUCTS_ERROR,
                     data: products
                 });
-            } else {
+            } else { // everything went fine, dispatch the event with the product data
                 Dispatcher.handleServerAction({
                     type: productAction.RECEIVE_RAW_PRODUCTS_SUCCESS,
                     data: products

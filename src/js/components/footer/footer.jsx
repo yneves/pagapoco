@@ -1,8 +1,9 @@
 
-var React = require('react');
+var React = require('react'),
+    Footer;
 
-
-var Footer =
+// TODO angular shit still here.. :( ng-click OMG NO!
+Footer =
     React.createClass({
         render: function () {
             return (

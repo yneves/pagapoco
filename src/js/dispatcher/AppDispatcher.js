@@ -10,6 +10,18 @@ var AppConstants = require('../constants/AppConstants'),
 
 dispatcher = new Dispatcher();
 
+/*
+
+    The best way so far to solve the problem of concurrency on the dispatcher.
+
+    The thing is, since we have two possible sources of actions (Server and user),
+    inevitably we can (and will) end up with problems of more than one action
+    trying to be dispatched at the same time...
+
+    More information about the issue can be found here
+    https://github.com/facebook/flux/issues/106
+
+*/
 queue = async.queue( function (task, callback) {
     var payload = {
         source: PayloadSources[task.source], // origin from the SERVER

@@ -1,4 +1,10 @@
 
+/*
+
+    EVERYTHING IS SHIT HERE, IT NEED'S TO BE UPDATED TO LOOK LIKE THE SIBBLING
+    PRODUCT.JS file
+
+*/
 var request = require('superagent'),
     Helper = require('../utils/Helpers'),
     Collection = require('collection'),

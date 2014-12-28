@@ -7,7 +7,6 @@ var React = require('react'),
 
 
 Link =
-
     React.createClass({
 
         propTypes: {
@@ -58,12 +57,14 @@ Link =
             event.preventDefault();
             event.stopPropagation();
 
-            // poderia setar também de repente como um state dele, não sei...
+            // TODO poderia setar também como um state dele, não sei...
             // ou talvez seja melhor o mais puro e deixar state/props para informações
             // abstraidas relacionadas a lógica e não necessariamente ao DOM
             routeAction.setRoute(this.state.href);
         },
 
+        // that's the real deal. This is where the path are created based
+        // on the current maped routes in the site (../utils/Router)
         _getRoute: function () {
 
             var link;

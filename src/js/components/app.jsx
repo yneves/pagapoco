@@ -8,10 +8,10 @@ var React = require('react'),
     Order = require('../components/pages/order.jsx'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
+    Application,
     debug = require('debug')('app.jsx');
 
-var Application =
-
+Application =
     React.createClass({
 
         propTypes: {

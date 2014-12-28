@@ -1,11 +1,11 @@
 
 var EventEmitter = require('events').EventEmitter,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
-    _isFunction = require('lodash-node/modern/objects/isFunction'),
-    _isObject = require('lodash-node/modern/objects/isObject'),
-    _forEach = require('lodash-node/modern/collections/forEach'),
-    _assign = require('lodash-node/modern/objects/assign'),
-    _invert = require('lodash-node/modern/objects/invert'),
+    _isFunction = require('lodash-node/modern/objects/isFunction'), // TODO shitty name...
+    _isObject = require('lodash-node/modern/objects/isObject'), // TODO shitty name...
+    _forEach = require('lodash-node/modern/collections/forEach'), // TODO shitty name...
+    _assign = require('lodash-node/modern/objects/assign'), // TODO shitty name...
+    _invert = require('lodash-node/modern/objects/invert'), // TODO shitty name...
     extend = require('./Extend'),
     debug = require('debug')('Store.js'),
     Store;
@@ -59,6 +59,7 @@ Store = function () {
     }.bind(this));
 };
 
+ // TODO crap programming calling _assign twice...
 _assign(Store.prototype, EventEmitter.prototype);
 
 _assign(Store.prototype, {

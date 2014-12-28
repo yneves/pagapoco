@@ -1,9 +1,23 @@
+/*
+    This file is a simpe mixin that allow the react modules to work with
+    local browser cache, this mixin uses the Storage service created at the
+    utils folder and can and should be used in any component that use some
+    non-permanent data to set it's states. It will also automatically set
+    ALL of the component state to the browser local cache.
+
+    Some common uses of this mixin would be:
+    - Tabs/Panels
+    - Open/Closed boxes
+    - Modals (some cases)
+
+*/
 
 var React = require('react'),
     invariant = require('react/lib/invariant'),
-    storage = require('../../utils/Storage');
+    storage = require('../../utils/Storage'),
+    localStorageMixin;
 
-var localStorageMixin = {
+localStorageMixin = {
 
     propTypes: {
         localStorageKey: React.PropTypes.string.isRequired
@@ -11,6 +25,7 @@ var localStorageMixin = {
 
     getDefaultProps: function () {
         return {
+            // set some default storage name
             localStorageKey: this.displayName || 'react-localstorage'
         };
     },
@@ -21,9 +36,14 @@ var localStorageMixin = {
 
         if (!storage.exists) return;
 
+        // the previous stored state is the last data that was stored by this mixin
+        // and that there should still be the same at the browser local cache
         prevStoredState = storage.getData(this._storageKey);
 
         if (prevStoredState) {
+            // this invariant checks the current prevState with the prevStoredState
+            // if they don't match it means that some other component are using the same
+            // key
             invariant(
                 prevStoredState === prevState,
                 'While component ' + this.displayName + ' was saving state to localStorage, ' +
@@ -32,6 +52,7 @@ var localStorageMixin = {
                 'on ' + this.displayName + '.'
             );
         }
+        // everything went fine, let's update the current browser local cache with the current state
         storage.setData(key, this.state);
     },
 

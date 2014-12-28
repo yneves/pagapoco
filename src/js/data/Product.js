@@ -9,12 +9,6 @@ var assign = require('object-assign'),
 
 ProductModel = Model.extend({
 
-    // TODO estou namorando o https://www.npmjs.com/package/jsonschema para
-    // criar uma espécie de validação de schema aqui, ele poderia funcionar
-    // em paralelo com os beforeSet, beforeGet e validates
-    // talvez seja o caso de criar uma entrada privada chamda _schema e definir
-    // as informações relacionadas ao schema nele e deixar os _schema
-    // apenas para os extras do beforeSet, beforeGet e Validate
     _schema: {
         id: '/Product',
         properties: {
@@ -85,6 +79,7 @@ ProductModel = Model.extend({
     * Set the product price based on the original price, initial_discount and current_discount
     * once this method is finish it will be responsible for calling the setTotal method to define the current
     * amount of this product
+    * TODO STAGE 3 IMPLEMENTATION
     */
     setPrice: function () {
         // if there is both currentDiscount and initialDiscount (card applied)
@@ -114,6 +109,7 @@ ProductModel = Model.extend({
     },
 
     // update the quantity by adding to the current ammount
+    // TODO STAGE 3 IMPLEMENTATION
     updateQuantity: function (quantity) {
         quantity += this.attributes.quantity;
         this.set('quantity', quantity);
