@@ -1,12 +1,19 @@
 
 var EventEmitter = require('events').EventEmitter,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
-    _isFunction = require('lodash-node/modern/objects/isFunction'), // TODO shitty name...
-    _isObject = require('lodash-node/modern/objects/isObject'), // TODO shitty name...
-    _forEach = require('lodash-node/modern/collections/forEach'), // TODO shitty name...
-    _assign = require('lodash-node/modern/objects/assign'), // TODO shitty name...
-    _invert = require('lodash-node/modern/objects/invert'), // TODO shitty name...
-    extend = require('./Extend'),
+    lodash= {
+        objects: {
+            has: require('lodash-node/modern/objects/has'),
+            isObject: require('lodash-node/modern/objects/isObject'),
+            assign: require('lodash-node/modern/objects/assign'),
+            invert: require('lodash-node/modern/objects/invert')
+        },
+        collections: {
+            forEach: require('lodash-node/modern/collections/forEach')
+        }
+
+    },
+    extend = require('backbone-extend-standalone'),
     debug = require('debug')('Store.js'),
     Store;
 
@@ -21,7 +28,7 @@ Store = function () {
         throw new Error("bindActions must take an even number of arguments.");
     }
 
-    if (actions.length === 1 && _isObject(actions[0])) {
+    if (actions.length === 1 && lodash.objects.isObject(actions[0])) {
         actions = actions[0];
         for (var key in actions) {
             if (actions.hasOwnProperty(key)) {
@@ -46,7 +53,7 @@ Store = function () {
         // shortcut
         action = payload.action;
         shouldEmitChange = false;
-        _forEach(bindedActions, function (value, key) {
+        lodash.collections.forEach(bindedActions, function (value, key) {
             if (key === action.type) {
                 value(payload.action.data);
                 shouldEmitChange = true;
@@ -60,9 +67,9 @@ Store = function () {
 };
 
  // TODO crap programming calling _assign twice...
-_assign(Store.prototype, EventEmitter.prototype);
+lodash.objects.assign(Store.prototype, EventEmitter.prototype);
 
-_assign(Store.prototype, {
+lodash.objects.assign(Store.prototype, {
 
     CHANGE_EVENT: 'change',
 
@@ -80,6 +87,7 @@ _assign(Store.prototype, {
 
 });
 
+// same extend function used by backbone
 Store.extend = extend;
 
 module.exports = Store;

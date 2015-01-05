@@ -80,6 +80,7 @@ function getAllProducts(callback) {
                 finalHistory.data.push(priceData);
             });
 
+
             /**
              * This actions are wrappers to update the current store data once we go live the discounts will be already
              * calculated in the backend and will be sent ready in the $resource.$get().products.json
@@ -107,11 +108,11 @@ function getAllProducts(callback) {
                 });
 
                 // calculate the initial_discount based on the price
-                value.initial_discount = (1 - value.price / value.original_price);
+                // TODO STAGE 3
+                // value.initial_discount = (1 - value.price / value.original_price);
 
                 // kind hackish, we are assuming that they are in the correct index order...
                 value.price_history = finalHistory.data[key];
-                value.added = Transmuter.toBoolean(value.added);
                 value.wished = Transmuter.toBoolean(value.wished);
                 products.push(value);
             });

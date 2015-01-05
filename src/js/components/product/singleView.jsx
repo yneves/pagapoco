@@ -34,16 +34,11 @@ module.exports =
 
                         <div flex="67">
                             <div layout="horizontal" layout-align="start" >
-                                <p flex className="productDesconto">{product.get('discount')}%</p>
                                 <div flex className="productPrices">
-                                    <p className="productOldPrice">de R$ {product.get('original_price')} por</p>
-                                    <p className="productPrice">R$ {product.get('price')}</p>
+                                    <p className="productPrice">por R$ {product.get('price')}</p>
                                 </div>
                             </div>
                             <div layout="horizontal" layout-align="start" >
-                                <div flex className="productQty">
-                                    <span cart-item-quantity className="productQtyNumber">{product.get('quantity')}</span>
-                                </div>
                                 <AddProduct product={product} />
                             </div>
                         </div>

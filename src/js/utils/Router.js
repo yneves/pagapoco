@@ -41,9 +41,13 @@ function createPath(pathName, data) {
     _routes.forEach(function (value) {
 
         if (value.name === pathName) {
-            path = reverend(value.path, data);
+            try {
+                path = reverend(value.path, data);
+            } catch(err) {
+                debug('Error creating link for path: ' + value.path + ' name: ' + pathName);
+                debug(err);
+            }
         }
-
     });
 
     return path;

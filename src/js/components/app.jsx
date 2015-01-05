@@ -5,7 +5,6 @@
 var React = require('react'),
     Store = require('../components/pages/store.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
-    Order = require('../components/pages/order.jsx'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
     Application,

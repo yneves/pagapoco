@@ -34,9 +34,7 @@ var ProductGrid =
 
                     <div className="grid-content">
                         <h3 className="productTitle">{product.get('title')}</h3>
-                        <p className="percentualDesconto">{product.get('discount')} %</p>
                         <div className="prices">
-                            <p className="oldPrice">de R$ {product.get('original_price')}</p>
                             <p className="price">por R$ {product.get('price')}</p>
                         </div>
                     </div>

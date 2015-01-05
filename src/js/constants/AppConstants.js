@@ -6,7 +6,6 @@
  */
 var keyMirror = require('keymirror'),
     RouteConstants = require('./RouteConstants'),
-    PlayerConstants = require('./PlayerConstants'),
     ProductConstants = require('./ProductConstants');
 
 
@@ -14,7 +13,6 @@ module.exports = {
 
     ActionTypes: {
         Route: keyMirror(RouteConstants),
-        Player: keyMirror(PlayerConstants),
         Product: keyMirror(ProductConstants)
     },
 
