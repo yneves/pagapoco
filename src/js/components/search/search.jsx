@@ -9,13 +9,14 @@ var Search =
             return { query: '' };
         },
 
-        // Definir aqui o delay para filtragem da collection.
-        shouldComponentUpdate: function (){
-            return true;
-        },
-
         componentDidUpdate: function (){
-
+            if (this._delayTimeout) {
+              clearTimeout(this._delayTimeout);
+            }
+            this._delayTimeout = setTimeout(function() {
+              this._delayTimeout = undefined;
+              console.log(this.state.query);
+            }.bind(this),200);
         },
 
         onChange: function (event){
