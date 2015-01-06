@@ -11,11 +11,11 @@ var Search =
 
         componentDidUpdate: function (){
             if (this._delayTimeout) {
-              clearTimeout(this._delayTimeout);
+                clearTimeout(this._delayTimeout);
             }
             this._delayTimeout = setTimeout(function() {
-              this._delayTimeout = undefined;
-              console.log(this.state.query);
+                this._delayTimeout = undefined;
+                ProductStore.applyFilter(this.state.query);
             }.bind(this),200);
         },
 
