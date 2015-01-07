@@ -25,7 +25,7 @@ var Search =
 
         render: function (){
             return (
-                <div>
+                <div className="search">
                     <input
                         type="text"
                         value={this.state.query}

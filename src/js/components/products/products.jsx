@@ -66,7 +66,7 @@ module.exports =
             var modal = this.state.currentProduct ? <ProductSingleDialog openImmediately={true} product={this.state.currentProduct} /> : '';
 
             return (
-                <div>
+                <div className="products">
                     <Masonry options={masonryOptions}>
                         {productGrid}
                     </Masonry>

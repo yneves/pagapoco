@@ -8,9 +8,9 @@ var Store =
     React.createClass({
         render: function (){
             return (
-                <div>
+                <div className="page">
                     <Header />
-                    <div>
+                    <div className="page-body">
                         <div>
                             <h1>Lets Shop</h1>
                             <Search />
