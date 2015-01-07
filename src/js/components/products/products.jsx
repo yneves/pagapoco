@@ -36,12 +36,16 @@ module.exports =
             var productGrid,
                 masonryOptions;
 
-            if(this.state.products.length) {
-                productGrid = this.state.products.models.map(function (product, i) {
-                    return (
-                        <ProductGrid key={i} product={product} />
-                    );
-                }, this);
+            if (this.state.products.length > 0) {
+              productGrid = [];
+              var products = this.state.products.models;
+              var length = products.length;
+              for (var i = 0; i < length; i++) {
+                  var product = products[i];
+                  productGrid[i] = (
+                      <ProductGrid key={i} product={product} />
+                  );
+              }
             } else {
                 productGrid = null;
             }

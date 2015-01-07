@@ -121,10 +121,10 @@ ProductStore = Store.extend({
             var models = Product.collection.models;
             var length = models.length;
             for (var i = 0; i < length; i++) {
-              var model = models[i];
-              if (regExp.test(model.attributes.title)) {
-                  this.currentCatalog.add(model);
-              }
+                var model = models[i];
+                if (regExp.test(model.attributes.title)) {
+                    this.currentCatalog.add(model);
+                }
             }
         } else {
             this.currentCatalog.reset(Product.collection.models);
