@@ -8,7 +8,7 @@ module.exports =
     React.createClass({
         render : function() {
             return(
-                <div class="header">
+                <div className="header">
                     <h1>Header</h1>
                     <ul>
                         <li>
