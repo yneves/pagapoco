@@ -22,7 +22,9 @@ module.exports =
             var active = this.props.product.added ? 'active' : '';
 
             return (
+              <div className="add">
                 <RaisedButton className={active} type="FLAT" label="Adicionar" onClick={this._handleClick}><i class="fa fa-shopping-cart"></i>AEE</RaisedButton>
+              </div>
             );
         },
 

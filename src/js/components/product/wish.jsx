@@ -21,7 +21,7 @@ wishButton =
 
         render : function () {
             return (
-                <div>
+                <div className="wish">
                     <RaisedButton className="productWishLink" type="FLAT" label="Desejado" onClick={this._handleClick}>
                         <span className="productWish"></span><span className="productWishNumber">230</span>
                     </RaisedButton>

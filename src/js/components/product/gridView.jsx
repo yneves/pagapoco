@@ -26,13 +26,13 @@ var ProductGrid =
             return (
                 <div className="grid-item product-item">
 
-                    <div className="grid-content">
+                    <div className="grid-content grid-content-image">
                         <Link name="product" data={{ id : product.get('id') }}>
                             <img src={product.get('image')} />
                         </Link>
                     </div>
 
-                    <div className="grid-content">
+                    <div className="grid-content grid-content-detail">
                         <h3 className="productTitle">{product.get('title')}</h3>
                         <div className="prices">
                             <p className="price">por R$ {product.get('price')}</p>
