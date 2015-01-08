@@ -4,7 +4,8 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
-    view: 'Ver',    
+    view: 'Ver',
+    stores: 'Lojas',
     search: 'O que está procurando?',
 
 };
