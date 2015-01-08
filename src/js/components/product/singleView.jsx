@@ -1,6 +1,7 @@
 
 var React = require('react'),
     Texts = require('../texts.js'),
+    PriceAlert = require('./priceAlert.jsx'),
     AddProduct = require('./add.jsx'),
     debug = require('debug')('singleView.jsx');
 
@@ -89,10 +90,11 @@ console.log(product);
                             </ul>
                         </div>
 
-                        <div className="product-price-history">
+                        <div className="product-history">
                         </div>
 
                         <div className="product-alert">
+                            <PriceAlert product={product} />
                         </div>
 
                     </div>

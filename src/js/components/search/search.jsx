@@ -6,11 +6,11 @@ var React = require('react'),
 var Search =
     React.createClass({
 
-        getInitialState: function (){
+        getInitialState: function () {
             return { query: '' };
         },
 
-        componentDidUpdate: function (){
+        componentDidUpdate: function () {
             if (this._delayTimeout) {
                 clearTimeout(this._delayTimeout);
             }
@@ -21,10 +21,12 @@ var Search =
         },
 
         onChange: function (event){
-          this.setState({ query: event.target.value });
+          this.setState({
+              query: event.target.value,
+          });
         },
 
-        render: function (){
+        render: function () {
             return (
                 <div className="search">
                     <input
