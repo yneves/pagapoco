@@ -1,5 +1,6 @@
 
 var React = require('react'),
+    Texts = require('../texts.js'),
     ProductStore = require('../../stores/ProductStore');
 
 var Search =
@@ -30,7 +31,7 @@ var Search =
                         type="text"
                         value={this.state.query}
                         onChange={this.onChange}
-                        placeholder="O que está procurando?"
+                        placeholder={Texts.search}
                     />
                 </div>
             );

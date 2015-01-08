@@ -1,7 +1,9 @@
 module.exports = {
 
     wish: 'Adiciona à lista',
-    share: 'Recomendar',    
+    share: 'Recomendar',
+    supplier: 'Fabricante',
+    size: 'Tamanho',    
     search: 'O que está procurando?',
 
 };

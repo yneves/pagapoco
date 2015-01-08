@@ -1,5 +1,6 @@
 
 var React = require('react'),
+    Texts = require('../texts.js'),
     AddProduct = require('./add.jsx'),
     debug = require('debug')('singleView.jsx');
 
@@ -10,13 +11,21 @@ module.exports =
             product: React.PropTypes.object.isRequired
         },
 
-        getDefaultProps : function () {
+        getDefaultProps: function () {
             return {
-                product : {}
+                product: {}
             };
         },
 
-        render : function () {
+        clickWish: function () {
+
+        },
+
+        clickShare: function () {
+
+        },
+
+        render: function () {
             var product = this.props.product,
                 taxonomy = product.get('taxonomy');
 
@@ -29,7 +38,7 @@ module.exports =
                     </div>
                 );
             });
-
+console.log(product);
             return (
                 <div className="product-single-view">
 
@@ -45,9 +54,23 @@ module.exports =
                     <div className="product-body">
 
                         <div className="product-image">
+                            <img src={product.get('image')} />
+                            <button className="wish" type="button" onClick={this.clickWish}>
+                                {Texts.wish}
+                            </button>
+                            <button className="share" type="button" onClick={this.clickShare}>
+                                {Texts.share}
+                            </button>
                         </div>
 
                         <div className="product-description">
+                            <p>{product.get('description')}</p>
+                            <dl>
+                                <dt>{Texts.supplier}</dt>
+                                <dd>{product.get('supplier')}</dd>
+                                <dt>{Texts.size}</dt>
+                                <dd>{'n/a'}</dd>
+                            </dl>
                         </div>
 
                         <div className="product-offers">
