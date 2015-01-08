@@ -73,7 +73,20 @@ console.log(product);
                             </dl>
                         </div>
 
-                        <div className="product-offers">
+                        <div className="product-stores">
+                            <h3>{Texts.stores}</h3>
+                            <ul>
+                                {[].map(function(item) {
+                                    return (
+                                        <li>
+                                            <img src={item.logo}/>
+                                            <strong>{item.price}</strong>
+                                            <small>{item.payment}</small>
+                                            <a href={item.url}>{Texts.view}</a>
+                                        </li>
+                                    );
+                                })}
+                            </ul>
                         </div>
 
                         <div className="product-price-history">
