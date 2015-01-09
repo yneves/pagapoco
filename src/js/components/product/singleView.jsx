@@ -2,10 +2,13 @@
 var React = require('react'),
     Texts = require('../texts.js'),
     Breadcrumbs = require('./breadcrumbs.jsx'),
-    StoreList = require('./storeList.jsx'),
-    PriceAlert = require('./priceAlert.jsx'),
     WishButton = require('./wish.jsx'),
     ShareButton = require('./share.jsx'),
+    StoreList = require('./storeList.jsx'),
+    PriceTag = require('./priceTag.jsx'),
+    PriceAlert = require('./priceAlert.jsx'),
+    PriceHistory = require('./priceHistory.jsx'),
+    ProductReview = require('./productReview.jsx'),
     debug = require('debug')('singleView.jsx');
 
 module.exports =
@@ -21,6 +24,26 @@ module.exports =
             };
         },
 
+        getInitialState: function () {
+            return {
+                tab: 'history',
+            };
+        },
+
+        showHistory: function (event) {
+            event.preventDefault();
+            this.setState({
+                tab: 'history',
+            });
+        },
+
+        showReview: function (event) {
+            event.preventDefault();
+            this.setState({
+                tab: 'review',
+            });
+        },
+
         render: function () {
             var product = this.props.product;
             return (
@@ -34,6 +57,8 @@ module.exports =
                             </h2>
                         </div>
                         <div className="product-price">
+                            <h3>{Texts.priceTag.title}</h3>
+                            <PriceTag product={product} />
                         </div>
                     </div>
 
@@ -60,7 +85,20 @@ module.exports =
                             <StoreList product={product} />
                         </div>
 
-                        <div className="product-history">
+                        <div className="product-tabset">
+                            <div className="product-tab-heading">
+                                <a href="#" onClick={this.showHistory}>
+                                    {Texts.priceHistory.title}
+                                </a>
+                                <a href="#" onClick={this.showReview}>
+                                    {Texts.productReview.title}
+                                </a>
+                            </div>
+                            <div className="product-tab-content">
+                                { this.state.tab === 'review'
+                                  ? <ProductReview product={product} />
+                                  : <PriceHistory product={product} /> }
+                            </div>
                         </div>
 
                         <div className="product-alert">

@@ -11,6 +11,19 @@ module.exports = {
     view: 'Ver',
     stores: 'Lojas',
 
+    priceTag: {
+      title: 'Preços',
+      history: 'VER HISTÓRICO',
+    },
+
+    priceHistory: {
+      title: 'HISTÓRICO DE PREÇOS',
+    },
+
+    productReview: {
+      title: 'AVALIAÇÃO DO PRODUTO',
+    },
+
     priceAlert: {
       title: 'Alerta de Preços',
       submit: 'ME AVISE',
