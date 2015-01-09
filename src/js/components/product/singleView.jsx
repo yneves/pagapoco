@@ -1,6 +1,7 @@
 
 var React = require('react'),
     Texts = require('../texts.js'),
+    Breadcrumbs = require('./breadcrumbs.jsx'),
     PriceAlert = require('./priceAlert.jsx'),
     AddProduct = require('./add.jsx'),
     debug = require('debug')('singleView.jsx');
@@ -27,27 +28,17 @@ module.exports =
         },
 
         render: function () {
-            var product = this.props.product,
-                taxonomy = product.get('taxonomy');
-
-            var breadcrumb = taxonomy.map(function(item,index) {
-                var separator = (index > 0 && index < taxonomy.length - 1) ? '>' : '';
-                var key = item.type + '-' + item.id;
-                return (
-                    <div key={key}>
-                        <a>{key}</a>
-                        <span>{separator}</span>
-                    </div>
-                );
-            });
-console.log(product);
+            var product = this.props.product;
             return (
                 <div className="product-single-view">
 
                     <div className="product-header">
                         <div className="product-title">
                             <h1>{product.get('title')}</h1>
-                            <h2>{breadcrumb}</h2>
+                            <h2>
+                              <Breadcrumbs product={product} />
+
+                            </h2>
                         </div>
                         <div className="product-price">
                         </div>
