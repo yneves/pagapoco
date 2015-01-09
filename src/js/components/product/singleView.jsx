@@ -32,9 +32,10 @@ module.exports =
 
             var breadcrumb = taxonomy.map(function(item,index) {
                 var separator = (index > 0 && index < taxonomy.length - 1) ? '>' : '';
+                var key = item.type + '-' + item.id;
                 return (
-                    <div>
-                        <a>{item.type}-{item.id}</a>
+                    <div key={key}>
+                        <a>{key}</a>
                         <span>{separator}</span>
                     </div>
                 );

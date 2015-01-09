@@ -16,8 +16,11 @@ module.exports =
         },
 
         getInitialState: function () {
+            var price = this.props.product.get('price');
             return {
-                price: this.props.product.get('price'),
+                min: 0,
+                max: price * 2,
+                price: price,
             };
         },
 
@@ -28,17 +31,18 @@ module.exports =
         },
 
         submitAlert: function () {
-
         },
 
         render: function () {
             return (
                 <form className="product-alert-form" onSubmit={this.submitAlert}>
                     <h3>{Texts.priceAlert.title}</h3>
-                    <div className="price-slider">
-                        <strong>{Texts.cs} {this.state.price}</strong>
-                        <input type="range" min="0" max={this.state.price * 2} value={this.state.price} onChange={this.changePrice} />
-                    </div>
+                    <strong>{Texts.cs} {this.state.price}</strong>
+                    <input type="range"
+                        min={this.state.min}
+                        max={this.state.max}
+                        value={this.state.price}
+                        onChange={this.changePrice} />
                     <button type="submit">{Texts.priceAlert.submit}</button>
                 </form>
             );
