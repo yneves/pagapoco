@@ -2,6 +2,7 @@
 var React = require('react'),
     Texts = require('../texts.js'),
     Breadcrumbs = require('./breadcrumbs.jsx'),
+    StoreList = require('./storeList.jsx'),
     PriceAlert = require('./priceAlert.jsx'),
     WishButton = require('./wish.jsx'),
     ShareButton = require('./share.jsx'),
@@ -18,14 +19,6 @@ module.exports =
             return {
                 product: {}
             };
-        },
-
-        clickWish: function () {
-
-        },
-
-        clickShare: function () {
-
         },
 
         render: function () {
@@ -64,18 +57,7 @@ module.exports =
 
                         <div className="product-stores">
                             <h3>{Texts.stores}</h3>
-                            <ul>
-                                {[].map(function(item) {
-                                    return (
-                                        <li>
-                                            <img src={item.logo}/>
-                                            <strong>{item.price}</strong>
-                                            <small>{item.payment}</small>
-                                            <a href={item.url}>{Texts.view}</a>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
+                            <StoreList product={product} />
                         </div>
 
                         <div className="product-history">

@@ -3,11 +3,9 @@ var React = require('react'),
     Texts = require('../texts.js'),
     ProductAction = require('../../actions/ProductActionCreators'),
     RaisedButton = require('material-ui').RaisedButton,
-    debug = require('debug')('share.jsx'),
-    ShareButton;
+    debug = require('debug')('share.jsx');
 
-ShareButton =
-
+module.exports =
     React.createClass({
 
         propTypes : {
@@ -36,5 +34,3 @@ ShareButton =
         },
 
     });
-
-module.exports = ShareButton;

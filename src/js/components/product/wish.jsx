@@ -3,11 +3,9 @@ var React = require('react'),
     Texts = require('../texts.js'),
     ProductAction = require('../../actions/ProductActionCreators'),
     RaisedButton = require('material-ui').RaisedButton,
-    debug = require('debug')('wish.jsx'),
-    WishButton;
+    debug = require('debug')('wish.jsx');
 
-WishButton =
-
+module.exports =
     React.createClass({
 
         propTypes : {
@@ -36,5 +34,3 @@ WishButton =
         },
 
     });
-
-module.exports = WishButton;
