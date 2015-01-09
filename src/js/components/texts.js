@@ -3,7 +3,7 @@ module.exports = {
     cs: 'R$',
 
     search: 'O que está procurando?',
-
+    home: 'Início',
     wish: 'Adiciona à lista',
     share: 'Recomendar',
     supplier: 'Fabricante',
@@ -15,7 +15,5 @@ module.exports = {
       title: 'Alerta de Preços',
       submit: 'ME AVISE',
     },
-
-
 
 };

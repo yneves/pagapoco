@@ -7,7 +7,9 @@ var Search =
     React.createClass({
 
         getInitialState: function () {
-            return { query: '' };
+            return {
+                query: '',
+            };
         },
 
         componentDidUpdate: function () {

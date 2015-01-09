@@ -3,10 +3,10 @@ var React = require('react'),
     Texts = require('../texts.js'),
     ProductAction = require('../../actions/ProductActionCreators'),
     RaisedButton = require('material-ui').RaisedButton,
-    debug = require('debug')('wish.jsx'),
-    WishButton;
+    debug = require('debug')('share.jsx'),
+    ShareButton;
 
-WishButton =
+ShareButton =
 
     React.createClass({
 
@@ -16,20 +16,20 @@ WishButton =
 
         getDefaultProps: function () {
             return {
-                product: {},
+                product : {}
             };
         },
 
-        clickWish: function () {
-            ProductAction.toggleWishProduct(this.props.product.id);
+        clickShare: function () {
+
         },
 
         render: function () {
             return (
-                <div className="wish">
-                    <RaisedButton className="productWishLink" type="FLAT" label={Texts.wish} onClick={this.clickWish}>
-                        <span className="productWish"></span>
-                        <span className="productWishNumber">230</span>
+                <div className="share">
+                    <RaisedButton className="productShareLink" type="FLAT" label={Texts.share} onClick={this.clickShare}>
+                        <span className="productShare"></span>
+                        <span className="productShareNumber">230</span>
                     </RaisedButton>
                 </div>
             );
@@ -37,4 +37,4 @@ WishButton =
 
     });
 
-module.exports = WishButton;
+module.exports = ShareButton;

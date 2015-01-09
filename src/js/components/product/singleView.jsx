@@ -3,7 +3,8 @@ var React = require('react'),
     Texts = require('../texts.js'),
     Breadcrumbs = require('./breadcrumbs.jsx'),
     PriceAlert = require('./priceAlert.jsx'),
-    AddProduct = require('./add.jsx'),
+    WishButton = require('./wish.jsx'),
+    ShareButton = require('./share.jsx'),
     debug = require('debug')('singleView.jsx');
 
 module.exports =
@@ -36,8 +37,7 @@ module.exports =
                         <div className="product-title">
                             <h1>{product.get('title')}</h1>
                             <h2>
-                              <Breadcrumbs product={product} />
-
+                                <Breadcrumbs product={product} />
                             </h2>
                         </div>
                         <div className="product-price">
@@ -48,12 +48,8 @@ module.exports =
 
                         <div className="product-image">
                             <img src={product.get('image')} />
-                            <button className="wish" type="button" onClick={this.clickWish}>
-                                {Texts.wish}
-                            </button>
-                            <button className="share" type="button" onClick={this.clickShare}>
-                                {Texts.share}
-                            </button>
+                            <WishButton product={product} />
+                            <ShareButton product={product} />
                         </div>
 
                         <div className="product-description">
