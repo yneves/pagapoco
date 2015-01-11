@@ -14,7 +14,7 @@
 
 var React = require('react'),
     invariant = require('react/lib/invariant'),
-    storage = require('../../utils/Storage'),
+    storage = require('../../../utils/Storage.js'),
     localStorageMixin;
 
 localStorageMixin = {
@@ -46,14 +46,14 @@ localStorageMixin = {
             // key
             invariant(
                 prevStoredState === prevState,
-                'While component ' + this.displayName + ' was saving state to localStorage, ' +
+                'While component ' + this.props.displayName + ' was saving state to localStorage, ' +
                 'the localStorage entry was modified by another actor. This can happen when multiple ' +
                 'components are using the same localStorage key. Set the property `localStorageKey` ' +
-                'on ' + this.displayName + '.'
+                'on ' + this.props.displayName + '.'
             );
         }
         // everything went fine, let's update the current browser local cache with the current state
-        storage.setData(key, this.state);
+        storage.setData(this.props.key, this.state);
     },
 
     componentWillMount: function() {
@@ -66,9 +66,9 @@ localStorageMixin = {
 
         if (storedState) {
             try {
-                component.setState(storedState);
+                this.setState(storedState);
             } catch(e) {
-                debug("Unable to load state for " + component.displayName + " from localStorage.");
+                console.log("Unable to load state for " + this.props.displayName + " from localStorage.");
             }
         }
     }

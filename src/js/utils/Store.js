@@ -64,18 +64,12 @@ Store = function () {
             this.emitChange();
         }
     }.bind(this));
-
-    this.init();
 };
 
  // TODO crap programming calling _assign twice...
 lodash.objects.assign(Store.prototype, EventEmitter.prototype);
 
 lodash.objects.assign(Store.prototype, {
-
-    init: function () {
-        // init method to be overriden
-    },
 
     CHANGE_EVENT: 'change',
 

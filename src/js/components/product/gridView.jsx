@@ -35,7 +35,7 @@ var ProductGrid =
                     <div className="grid-content grid-content-detail">
                         <h3 className="productTitle">{product.get('title')}</h3>
                         <div className="prices">
-                            <p className="price">por R$ {product.get('price')}</p>
+                            <span>A partir de  R$</span> <span className="price">{product.get('price')}</span>
                         </div>
                     </div>
 

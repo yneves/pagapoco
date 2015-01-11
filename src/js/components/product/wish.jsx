@@ -2,7 +2,8 @@
 var React = require('react'),
     Texts = require('../texts.js'),
     ProductAction = require('../../actions/ProductActionCreators'),
-    RaisedButton = require('material-ui').RaisedButton,
+    mui = require('material-ui'),
+    RaisedButton = mui.RaisedButton,
     debug = require('debug')('wish.jsx');
 
 module.exports =
