@@ -3,22 +3,25 @@ var React = require('react'),
     CartSummary = require('./header-cartsummary.jsx'),
     Link = require('../common/link.jsx'),
     debug = require('debug')('header.jsx');
+    LoginBox = require('../profile/profile.jsx');
 
 module.exports =
     React.createClass({
         render : function() {
             return(
-                <div>
-                    <h1>Header</h1>
-                    <ul>
-                        <li>
-                            <Link name="Home">Início</Link>
-                        </li>
-                        <li>
-                            <Link name="Home">Sobre</Link>
-                        </li>
-                    </ul>
-                    <CartSummary />
+                <div id='header'>
+                    <div className='row' id='header-container'>
+                        <div className='col-lg-1' id='logoBlock'><img id='logoImg' src='../../assets/icons/logo-web.png'/></div>
+                        <div className='col-lg-8'>SEARCH</div>
+                        <div className='col-lg-3'><LoginBox /></div>
+                    </div>
+                    <div className='colorbar'>
+                        <span className='bar1'></span>
+                        <span className='bar2'></span>
+                        <span className='bar3'></span>
+                        <span className='bar4'></span>
+                        <span className='bar5'></span>
+                    </div>
                 </div>
             );
         }

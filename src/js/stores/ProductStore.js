@@ -98,6 +98,10 @@ function toggleWishlist(id) {
 
 ProductStore = Store.extend({
 
+    init: function () {
+      this.currentCatalog = Product.collection.clone();
+    },
+
     getCurrent: function () {
         return _current;
     },
@@ -107,8 +111,26 @@ ProductStore = Store.extend({
     },
 
     getCatalog: function () {
-        return Product.collection;
-    }
+        return this.currentCatalog;
+    },
+
+    applyFilter: function(query) {
+        if (query) {
+            this.currentCatalog.reset();
+            var regExp = new RegExp(query,"i");
+            var models = Product.collection.models;
+            var length = models.length;
+            for (var i = 0; i < length; i++) {
+                var model = models[i];
+                if (regExp.test(model.attributes.title)) {
+                    this.currentCatalog.add(model);
+                }
+            }
+        } else {
+            this.currentCatalog.reset(Product.collection.models);
+        }
+        this.emitChange();
+    },
 
 });
 

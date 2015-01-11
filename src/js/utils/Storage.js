@@ -12,13 +12,14 @@ Storage = {
          * @param key
          * @returns {*}
          */
+
         getData: function getData(key) {
 
             if(!localStorage) return;
 
             var data;
 
-            data = localStorage.get(key);
+            data = localStorage.getItem(key);
             // convert anything to javascript types true or false, booleans, objects, arrays, etc
             return JSON.parse(data);
         },
@@ -37,7 +38,7 @@ Storage = {
             data = JSON.stringify(data);
 
             if (data) {
-                localStorage.set(key, data);
+                localStorage.setItem(key, data);
             }
 
             return Storage.getData(key);

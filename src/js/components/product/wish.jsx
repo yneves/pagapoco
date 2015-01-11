@@ -1,38 +1,37 @@
 
 var React = require('react'),
+    Texts = require('../texts.js'),
     ProductAction = require('../../actions/ProductActionCreators'),
-    RaisedButton = require('material-ui').RaisedButton,
-    debug = require('debug')('wish.jsx'),
-    wishButton;
+    mui = require('material-ui'),
+    RaisedButton = mui.RaisedButton,
+    debug = require('debug')('wish.jsx');
 
-wishButton =
-
+module.exports =
     React.createClass({
 
-        propTypes : { // TODO a validation by instanceOf 'product' would be better, but.. buggy
+        propTypes : {
             product : React.PropTypes.object.isRequired
         },
 
-        getDefaultProps : function() {
+        getDefaultProps: function () {
             return {
-                product : {}
+                product: {},
             };
         },
 
-        render : function () {
+        clickWish: function () {
+            ProductAction.toggleWishProduct(this.props.product.id);
+        },
+
+        render: function () {
             return (
-                <div>
-                    <RaisedButton className="productWishLink" type="FLAT" label="Desejado" onClick={this._handleClick}>
-                        <span className="productWish"></span><span className="productWishNumber">230</span>
+                <div className="wish">
+                    <RaisedButton className="productWishLink" type="FLAT" label={Texts.wish} onClick={this.clickWish}>
+                        <span className="productWish"></span>
+                        <span className="productWishNumber">230</span>
                     </RaisedButton>
                 </div>
             );
         },
 
-        _handleClick : function () {
-            ProductAction.toggleWishProduct(this.props.product.id);
-        }
-
     });
-
-module.exports = wishButton;

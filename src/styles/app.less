@@ -1,13 +1,13 @@
+@import "../../node_modules/flexboxgrid/dist/flexboxgrid";
 @import "product";
 @import "font-awesome/less/font-awesome";
 @import "../../node_modules/material-ui/src/less/scaffolding.less";
 @import "../../node_modules/material-ui/src/less/components.less";
+
 /* Component LESS */
 /* Add Component LESS Above */
 
-/* Required for Angular UI Bootstrap */
-.nav, .pagination, .carousel a { cursor: pointer; }
-
+#main { width: 100%;}
 /* Styles go here */
 
 /* Sticky footer styles
@@ -58,15 +58,12 @@
 }
 
 
-.flex13{
-  max-width: 13%!important;
-}
 
 html,
 body {
   /* The html and body elements cannot have any padding or margin. */
   height: 100%;
-  background: #69758a!important;
+  background: #fff;
   font-family: Avenir-Book, Arial, Sans-Serif;
   font-size: 66.5% !important; /* resets the page font size */
 }
@@ -74,6 +71,22 @@ body {
 img {
   height: auto;
   max-width: 100%;
+}
+
+#logoBlock{
+  display: block;
+  margin: 0 auto;
+  text-align: center;
+}
+
+#logoImg{
+  z-index: 99;
+  position: relative;
+}
+
+
+#productsBlock{
+  padding-top: 68px;
 }
 
 #content {
@@ -93,25 +106,17 @@ img {
   margin-top: -36px;
 }
 
-#secondaryView {
-  background: transparent;
-  position: fixed;
-  top : 50px;  /** same height as top navbar */
-  left: 0;
-}
-
-.ng-cloak { /** make sure conditional elements are hidden when angularjs is still loading **/
-  display: none;
-}
-
 #header{
-  background: #fff!important;
-  border-bottom: none!important;
+  background: #fff;
+  width: 100%;
+  height: 64px;
+  position: fixed;
+  z-index: 99;
 }
 
 .colorbar{
   margin-bottom: -5px;
-  margin-top: -15px;
+  margin-top: -17px;
   position:absolute;
   width:100%;
   top: 72px;
@@ -154,43 +159,16 @@ img {
   line-height:40px;
 }
 
-.searchTop{
+.searchTop {
   background: #f7f8f8;
   border: 1px solid #ededed;
-  border-radius: 0px!important;
+  border-radius: 0px !important;
   height: 40px;
   font-weight: bold;
-  font-size: 1.5em!important;
+  font-size: 1.5em !important;
   padding-left: 10px;
   float: left;
   width: calc(~'100% - 40px');
-
-}
-
-.logo{
-  background-image: url("../assets/icons/logoc.png") !important;
-  background-repeat: no-repeat;
-  background-position: center center;
-  display: block;
-  width: 66px;
-  height: 66px;
-  background-size: 66px;
-  margin-top: -4px !important;
-  position: relative;
-  z-index: 99;
-}
-
-.logoMobile{
-  background-image: url("../assets/icons/logoc.png") !important;
-  background-repeat: no-repeat;
-  background-position: center center;
-  display: block;
-  width: 64px;
-  height: 64px;
-  background-size: 55px;
-  margin-top: -17px !important;
-  position: relative;
-  z-index: 99;
 }
 
 ::-webkit-input-placeholder {
