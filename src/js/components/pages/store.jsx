@@ -1,4 +1,3 @@
-
 var React = require('react'),
     Header = require('../header/header.jsx'),
     Products = require('../products/products.jsx');
