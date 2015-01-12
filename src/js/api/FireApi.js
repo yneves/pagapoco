@@ -9,11 +9,11 @@ var Firebase = require('firebase'),
         }
     },
     baseUrl = 'http://glowing-torch-4538.firebaseio.com/',
-    refs,
+    authKey = 'PCEpiBg4lVOJjSeCZqCIgUitMDmuemq2tjtJ1i6v',
     LoginServerActions = require('../actions/PlayerServerActionCreators'),
-    tables,
     debug = require('debug')('FireApi.js'),
-    fireApi = {};
+    refs,
+    tables;
 
 tables = [];
 refs = {};
@@ -157,10 +157,19 @@ lodash.objects.assign(Firebase.prototype, {
 
 // set the base url
 refs.base = new Firebase(baseUrl);
+if (authKey) {
+    refs.base.authWithCustomToken(authKey, function (error, result)  {
+        if (error) {
+            debug(error);
+            throw new Error('Could not authenticate with firebase');
+        }
+    });
+}
+
 // set all the others
 if (tables.length) {
     lodash.collections.forEach(tables, function (value) {
-        refs[value] = new Firebase(baseUrl + value);
+        refs[value] = refs.base.child(value);
     });
 }
 
