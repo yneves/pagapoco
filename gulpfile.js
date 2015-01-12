@@ -60,8 +60,7 @@ function handleError(err) {
 }
 
 gulp.task('styles', function () {
-    // gulp.src('src/styles/app.less')
-      gulp.src('src/styles/temp.less')
+    gulp.src('src/styles/app.less')
         .pipe(less().on('error', handleError))
         .pipe(gulp.dest('./dist/styles'));
 });
