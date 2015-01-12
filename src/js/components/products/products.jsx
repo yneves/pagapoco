@@ -42,23 +42,16 @@ module.exports =
                 );
 
             } else {
-                var productGrid;
+                
                 var masonryOptions = {
                     transitionDuration: 0
                 };
-                if (this.state.products.length > 0) {
-                    productGrid = [];
-                    var products = this.state.products.models;
-                    var length = products.length;
-                    for (var i = 0; i < length; i++) {
-                        var product = products[i];
-                        productGrid[i] = (
-                            <ProductGrid key={i} product={product} />
-                        );
-                    }
-                } else {
-                    productGrid = null;
-                }
+                
+                var productGrid = this.state.products.models.map(function(model) {
+                    return (
+                        <ProductGrid key={i} product={product} />
+                    );
+                });
 
                 // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
                 // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT
