@@ -12,6 +12,8 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
+var _currentCatalog = Product.collection.clone();
+
 var _currentPlayerId = 0;
 
 var _currentProductId = 0;
@@ -96,11 +98,18 @@ function toggleWishlist(id) {
     }
 }
 
-ProductStore = Store.extend({
+function applyFilter(data) {
+  var models = Product.collection.models;
+  if (data.query) {
+      var regExp = new RegExp(data.query,'i');
+      models = models.filter(function(model) {
+        return regExp.test(model.attributes.title);
+      });
+  }
+  _currentCatalog.reset(models);  
+}
 
-    init: function () {
-      this.currentCatalog = Product.collection.clone();
-    },
+ProductStore = Store.extend({
 
     getCurrent: function () {
         return _current;
@@ -111,26 +120,12 @@ ProductStore = Store.extend({
     },
 
     getCatalog: function () {
-        return this.currentCatalog;
+        return Product.collection;
     },
-
-    applyFilter: function(query) {
-        if (query) {
-            this.currentCatalog.reset();
-            var regExp = new RegExp(query,"i");
-            var models = Product.collection.models;
-            var length = models.length;
-            for (var i = 0; i < length; i++) {
-                var model = models[i];
-                if (regExp.test(model.attributes.title)) {
-                    this.currentCatalog.add(model);
-                }
-            }
-        } else {
-            this.currentCatalog.reset(Product.collection.models);
-        }
-        this.emitChange();
-    },
+    
+    getCurrentCatalog: function () {
+        return _currentCatalog;
+    }
 
 });
 
@@ -141,6 +136,7 @@ ProductInstance = new ProductStore(
     ProductAction.DECREASE_ITEM, decreaseItem,
     ProductAction.RECEIVE_RAW_PRODUCTS_SUCCESS, receiveProducts,
     ProductAction.TOGGLE_WISHLIST, toggleWishlist,
+    ProductAction.APPLY_FILTER, applyFilter,
     ProductAction.PRODUCT_UPDATE_START, updateStart,
     ProductAction.PRODUCT_UPDATE_ERROR, updateError,
     ProductAction.PRODUCT_UPDATE_SUCCESS, updateSuccess,
