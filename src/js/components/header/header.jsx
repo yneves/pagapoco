@@ -2,6 +2,7 @@
 var React = require('react'),
     CartSummary = require('./header-cartsummary.jsx'),
     Link = require('../common/link.jsx'),
+    Search = require("../search/search.jsx"),
     debug = require('debug')('header.jsx');
     LoginBox = require('../profile/profile.jsx');
 
@@ -12,7 +13,7 @@ module.exports =
                 <div id='header'>
                     <div className='row' id='header-container'>
                         <div className='col-lg-1' id='logoBlock'><img id='logoImg' src='../../assets/icons/logo-web.png'/></div>
-                        <div className='col-lg-8'>SEARCH</div>
+                        <div className='col-lg-8'><Search /></div>
                         <div className='col-lg-3'><LoginBox /></div>
                     </div>
                     <div className='colorbar'>

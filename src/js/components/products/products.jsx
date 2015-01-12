@@ -3,7 +3,7 @@ var React = require('react'),
     ProductStore = require('../../stores/ProductStore'),
     Masonry = require('../common/masonry.jsx'),
     ProductGrid = require('../product/gridView.jsx'),
-    ProductSingleView = require("../product/singleView.jsx"),
+    ProductSingleView = require('../product/singleView.jsx'),
     ProductSingleDialog = require('../product/singleDialogView.jsx'),
     debug = require('debug')('products.jsx');
 
@@ -20,7 +20,7 @@ module.exports =
 
         getInitialState: function () {
             return {
-                products        : this.props.products || ProductStore.getCatalog(),
+                products        : this.props.products || ProductStore.getCurrentCatalog(),
                 currentProduct  : this.props.currentProduct || ProductStore.getCurrent()
             };
         },
@@ -96,7 +96,7 @@ module.exports =
          */
         _onChange: function() {
             this.setState({
-                products        : ProductStore.getCatalog(),
+                products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent()
             });
         }
