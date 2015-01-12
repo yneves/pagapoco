@@ -10,6 +10,7 @@ var Store =
                     <Header />
                     <div className="page-body">
                         <div>
+                            <h1>Lets Shop</h1>
                             <Products />
                         </div>
                     </div>

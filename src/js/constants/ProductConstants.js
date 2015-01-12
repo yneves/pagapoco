@@ -1,5 +1,6 @@
 module.exports = {
     // view
+    APPLY_FILTER    : null,
     TOGGLE_WISHLIST : null,
     ADD_ITEM        : null,
     REMOVE_ITEM     : null,

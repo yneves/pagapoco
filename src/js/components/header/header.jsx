@@ -1,9 +1,8 @@
 var React = require('react'),
     Link = require('../common/link.jsx'),
-    debug = require('debug')('header.jsx'),
-    LoginBox = require('../profile/profile.jsx'),
-    Search = require("../search/search.jsx");
-
+    Search = require("../search/search.jsx"),
+    debug = require('debug')('header.jsx');
+    LoginBox = require('../profile/profile.jsx');
 
 module.exports =
     React.createClass({
