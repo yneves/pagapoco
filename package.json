@@ -48,6 +48,6 @@
   },
   "dependencies": {
     "firebase": "^2.1.0",
-    "flexboxgrid": "^6.1.0"
+    "flexboxgrid": "^6.1.1"
   }
 }
