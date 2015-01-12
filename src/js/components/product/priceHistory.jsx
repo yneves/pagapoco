@@ -1,6 +1,7 @@
 
 var React = require('react'),
-    Texts = require('../texts.js');
+    Texts = require('../texts.js'),
+    Chartist = require('../../vendor/chartist.js');
 
 module.exports =
     React.createClass({
@@ -16,8 +17,10 @@ module.exports =
         },
 
         render: function () {
+            var product = this.props.product;
+            
             return (
-                <div class="price-history">
+                <div className="price-history">
 
                 </div>
             );
