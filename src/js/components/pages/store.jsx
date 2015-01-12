@@ -1,3 +1,7 @@
+var React = require('react'),
+    Header = require('../header/header.jsx'),
+    Products = require('../products/products.jsx');
+
 var Store =
     React.createClass({
         render: function (){
@@ -13,5 +17,3 @@ var Store =
             );
         }
     });
-
-module.exports = Store;
