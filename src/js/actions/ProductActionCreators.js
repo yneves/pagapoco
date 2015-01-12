@@ -15,6 +15,14 @@ ProductActionCreator = {
             data : { query: query }
         });
     },
+    
+    // called when the user wants to share a product with friends
+    shareProduct: function(id) {
+        Dispatcher.handleViewAction({
+            type : productAction.SHARE,
+            data : { id : id }
+        });
+    },
 
     // called when the player wishes to know the product reached a certain price
     toggleWishProduct: function (id) {
