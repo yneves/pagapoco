@@ -1,7 +1,7 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    api = require('../api/AppApi'),
+    api = require('../api/AppApi').product,
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
     ProductActionCreator;
@@ -21,7 +21,7 @@ ProductActionCreator = {
             type : productAction.ADD_ITEM,
             data : { id : id }
         });
-        api.product.syncProduct(id);
+        api.syncProduct(id);
     },
     // for future use only - when we develop our own selling system
     removeItem: function (id) {

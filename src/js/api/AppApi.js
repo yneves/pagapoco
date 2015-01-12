@@ -7,10 +7,10 @@
 */
 
 var productApi = require('./ProductApi'),
-    fireApi = require ('./fireApi'),
+    playerApi = require ('./PlayerApi'),
     debug = require('debug')('AppApi.js');
 
 module.exports = {
     product: productApi,
-    firebase: fireApi
+    player: playerApi
 };

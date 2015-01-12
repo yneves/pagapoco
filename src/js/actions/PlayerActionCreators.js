@@ -1,6 +1,6 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    fireApi = require('../api/fireApi'),
+    api = require('../api/AppApi').player,
     playerAction = ActionTypes.Player,
     PlayerActionCreator;
 
@@ -11,7 +11,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
              type: playerAction.INIT,
              data: true
          });
-         fireApi.check();
+         api.check();
      },
 
     logIn: function(user,pass){
@@ -20,7 +20,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
             user: user,
             pass: pass
         });
-        fireApi.login(user,pass);
+        api.login(user,pass);
     },
 
     logOut: function(){
@@ -28,7 +28,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
             type: playerAction.LOGOUT,
             data: false
         });
-        fireApi.logout();
+        api.logout();
     }
 
 };

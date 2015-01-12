@@ -2,7 +2,7 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
     getRoute = require('../utils/Router').getRoute,
-    api = require('../api/AppApi'),
+    api = require('../api/AppApi').product,
     debug = require('debug')('RouteActionCreators.js'),
     routeAction = ActionTypes.Route,
     RouteActionCreator;
@@ -35,7 +35,7 @@ RouteActionCreator = {
             // if the route is looking for products
             if (routeData.type === 'product') {
                 // let's require the products from the server
-                api.product.getAllProducts();
+                api.getAllProducts();
             }
 
         } else {

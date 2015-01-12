@@ -5,7 +5,8 @@
 
 */
 
-var request = require('../utils/Request'),
+var db = require('./FireApi.js'),
+    request = require('../utils/Request'),
     async = require('async'),
     productServerActionCreator = require('../actions/ProductServerActionCreators'),
     _ = require('lodash-node'), // TODO better naming needed here
