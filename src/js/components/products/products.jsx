@@ -42,16 +42,22 @@ module.exports =
                 );
 
             } else {
+              
+                var productGrid,
+                    masonryOptions;
                 
-                var masonryOptions = {
+                masonryOptions = {
                     transitionDuration: 0
                 };
                 
-                var productGrid = this.state.products.models.map(function(model) {
-                    return (
-                        <ProductGrid key={i} product={product} />
-                    );
-                });
+                if (this.state.products) {
+                    productGrid = this.state.products.map(function(product) {
+                        return (
+                            <ProductGrid key={product.get('id')} product={product} />
+                        );
+                    });
+                }
+                  
 
                 // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
                 // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT
@@ -87,7 +93,7 @@ module.exports =
          * Apenas atualizar os states
          * @private
          */
-        _onChange: function() {
+        _onChange: function() {          
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent()

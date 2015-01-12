@@ -106,7 +106,7 @@ function applyFilter(data) {
         return regExp.test(model.attributes.title);
       });
   }
-  _currentCatalog.reset(models);  
+  _currentCatalog.reset(models);
 }
 
 ProductStore = Store.extend({
