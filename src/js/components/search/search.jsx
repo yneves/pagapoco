@@ -1,7 +1,7 @@
 
 var React = require('react'),
     Texts = require('../texts.js'),
-    ProductStore = require('../../stores/ProductStore');
+    ProductAction = require('../../actions/ProductActionCreators');
 
 var Search =
     React.createClass({
@@ -18,7 +18,7 @@ var Search =
             }
             this._delayTimeout = setTimeout(function() {
                 this._delayTimeout = undefined;
-                ProductStore.applyFilter(this.state.query);
+                ProductAction.applyFilter(this.state.query);
             }.bind(this),200);
         },
 
