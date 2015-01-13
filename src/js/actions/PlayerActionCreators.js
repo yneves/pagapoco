@@ -19,6 +19,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
         Dispatcher.handleViewAction({
             type: playerAction.LOGIN_IN,
             data: {
+                state: true,
                 user: user,
                 pass: pass
             }
