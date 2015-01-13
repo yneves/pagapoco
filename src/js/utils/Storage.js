@@ -1,6 +1,7 @@
 
 // TODO perform some validation if global.localStorage exists or not
-var localStorage = global.localStorage || null,
+var global = (typeof window === 'object' ? window : this) || {},
+    localStorage = global.localStorage || null,
     Storage;
 
 Storage = {

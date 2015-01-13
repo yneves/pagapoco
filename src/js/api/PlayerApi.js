@@ -1,7 +1,6 @@
 var db = require('./FireApi.js').base,
     LoginServerActions = require('../actions/PlayerServerActionCreators'),
-    debug = require('debug')('PlayerApi.js'),
-    playerData; // TODO get from data folder
+    debug = require('debug')('PlayerApi.js');
 
 Player = {
     login: function (user, pass) {

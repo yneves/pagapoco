@@ -1,7 +1,7 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    debug = require('debug')('ProductActionCreators.js'),
+    debug = require('debug')('ProductServerActionCreators.js'),
     productAction = ActionTypes.Product,
     ProductServerActionCreator;
 
@@ -40,7 +40,7 @@ ProductServerActionCreator = {
 
         products = products || null;
 
-        // if there is no product set yet (nothing returned from the server yet)
+        // if there is no product set yet (nothing returned from the server)
         if (!products) {
             Dispatcher.handleServerAction({
                 type: productAction.RECEIVE_RAW_PRODUCTS_START,

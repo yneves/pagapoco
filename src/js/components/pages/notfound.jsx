@@ -1,8 +1,9 @@
 
 var React = require('react'),
-    Header = require('../header/header.jsx');
+    Header = require('../header/header.jsx'),
+    debug = require('debug')('notfound.jsx');
 
-var NotFound =
+module.exports =
     React.createClass({
         render: function (){
             return (
@@ -17,5 +18,3 @@ var NotFound =
             );
         }
     });
-
-module.exports = NotFound;
