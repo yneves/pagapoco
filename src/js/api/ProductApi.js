@@ -14,7 +14,7 @@ var db = require('./FireApi.js'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
     productCollection;
-
+    
 // get all products from an API endpoint
 function getAllProducts(callback) {
 

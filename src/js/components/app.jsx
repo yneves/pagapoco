@@ -39,7 +39,17 @@ Application =
 
         componentWillMount: function () {
             routeStore.addChangeListener(this._onChange);
-            routeAction.setRoute(window.location.pathname);
+            routeAction.setRoute(window.location.pathname, null);
+        },
+
+        componentDidMount: function () {
+            if (window && "onpopstate" in window) {
+                // window.onpopstate fires an event everytime the active history
+                // entry changes between two history entries for the same document
+                window.onpopstate = function(event) {
+                    routeAction.setRoute(window.location.pathname, event.state);
+                };
+            }
         },
 
         componentWillUnmount: function () {

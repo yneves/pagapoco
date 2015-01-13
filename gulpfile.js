@@ -55,6 +55,12 @@ gulp.task('html', function () {
 
 });
 
+// specific function to get flex grid css to dist
+gulp.task('flexboxgrid', function () {
+    gulp.src('node_modules/flexboxgrid/dist/flexboxgrid.min.css')
+        .pipe(gulp.dest('./dist/styles'));
+});
+
 function handleError(err) {
     console.log(err.toString());
 }
@@ -109,7 +115,7 @@ gulp.task('build', function (callback) {
     runSequence(
         'clean',
         'server',
-        ['html', 'assets', 'resources', 'js', 'styles'],
+        ['html', 'assets', 'resources', 'js', 'styles', 'flexboxgrid'],
         callback
     );
 });

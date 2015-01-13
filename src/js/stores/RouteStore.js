@@ -1,13 +1,20 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Store = require('../utils/Store'),
+    lodash = {
+        objects: {
+            assign: require('lodash-node/modern/objects/assign')
+        },
+        collections: {
+            find: require('lodash-node/modern/collections/find')
+        }
+    },
     debug = require('debug')('RouteStore.js'),
-    _ = require('lodash-node'),
+    RouteAction = ActionTypes.Route,
     _route,
-    _responseCodes,
     _requestTypes,
-    RouteAction = ActionTypes.Route;
-
+    _responseCodes;
+    
 /**
  * Can work as a route history i guess
  * @type {Array}
@@ -21,7 +28,6 @@ _requestTpyes = [
 
 // complete list of possible response codes
 // Collection (array of objects)
-// TODO deve transformar isso em uma collection
 _responseCodes = [
     //Informational 1xx
     { code : 100, message : '100 Continue' },
@@ -82,7 +88,7 @@ function updateRoute(code, data) {
 
     regex = new RegExp('^[1-3]');
     responseStatus = regex.test(code) ? 'success' : 'error';
-    responseData = _.find(_responseCodes, { code : code });
+    responseData = lodash.collections.find(_responseCodes, { code : code });
 
     _route = {
         status: responseStatus, // based on code
@@ -90,15 +96,22 @@ function updateRoute(code, data) {
         message: responseData.message
     };
 
-    _.assign(_route, data);
+    lodash.objects.assign(_route, data);
 }
 
-function changeRoute(routeString) {
-    updateRoute(100, routeString);
+function changeRoute(routeData) {
+    updateRoute(100, routeData.link);
 }
 
 function changeRouteSuccess(routeData) {
-    history.pushState(routeData.name, '', routeData.href);
+    if (history) {
+        // if it's not a popevent, add as a new state
+        if (!routeData.stateName) {
+            history.pushState(routeData.link.name, '', routeData.link.href);
+        } else { // the state were previously added, update it
+            history.replaceState(routeData.link.name, '', routeData.link.href);
+        }
+    }
     updateRoute(200, routeData);
 }
 

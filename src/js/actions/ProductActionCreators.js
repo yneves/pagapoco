@@ -5,9 +5,9 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
     ProductActionCreator;
-
+    
 ProductActionCreator = {
-  
+
     // called when the user type on search input field
     applyFilter: function (query) {
         Dispatcher.handleViewAction({
@@ -23,7 +23,7 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // called when the player clicks on a product that he wants to buy
     addItem: function (id) {
         Dispatcher.handleViewAction({
@@ -32,7 +32,7 @@ ProductActionCreator = {
         });
         api.syncProduct(id);
     },
-    
+
     // for future use only - when we develop our own selling system
     removeItem: function (id) {
         Dispatcher.handleViewAction({
@@ -40,7 +40,7 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // for future use only - when we develop our own selling system
     decreaseItem: function (id) {
         Dispatcher.handleViewAction({
@@ -48,7 +48,7 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // for future use only - when we develop our own selling system
     increaseItem: function (id) {
         Dispatcher.handleViewAction({
