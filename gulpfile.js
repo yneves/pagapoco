@@ -42,7 +42,7 @@ gulp.task('js', function () {
         .bundle()
         .pipe(source('client.js'))
         .pipe(gulp.dest('./dist/js'))
-        .pipe(gconnect.reload());
+        // .pipe(gconnect.reload());
 });
 
 /**
@@ -51,7 +51,7 @@ gulp.task('js', function () {
 gulp.task('html', function () {
     gulp.src(paths.html)
         .pipe(gulp.dest('dist'))
-        .pipe(gconnect.reload());
+        // .pipe(gconnect.reload());
 
 });
 
@@ -71,7 +71,7 @@ gulp.task('styles', function () {
 gulp.task('assets', function () {
     gulp.src(paths.assets)
         .pipe(gulp.dest('dist/assets'))
-        .pipe(gconnect.reload());
+        // .pipe(gconnect.reload());
 });
 
 /**
@@ -80,9 +80,14 @@ gulp.task('assets', function () {
 gulp.task('resources', function () {
     gulp.src('src/resources/*')
         .pipe(gulp.dest('dist/resources'))
-        .pipe(gconnect.reload());
+        // .pipe(gconnect.reload());
 });
 
+// specific function to get flex grid css to dist
+gulp.task('flexboxgrid', function () {
+    gulp.src('node_modules/flexboxgrid/dist/flexboxgrid.min.css')
+        .pipe(gulp.dest('./dist/styles'));
+});
 
 //Webserver for dev
 gulp.task('server', function () {
@@ -105,11 +110,19 @@ gulp.task('server', function () {
     gulp.watch(paths.js, ['js']);
 });
 
+gulp.task('watch', function (callback) {
+    gutil.log('Watching html, styles, assets and js');
+    gulp.watch(paths.html, ['html']);
+    gulp.watch(paths.styles, ['styles']);
+    gulp.watch(paths.assets, ['assets']);
+    gulp.watch(paths.js, ['js']);
+});
+
 gulp.task('build', function (callback) {
     runSequence(
         'clean',
-        'server',
-        ['html', 'assets', 'resources', 'js', 'styles'],
+        // 'server',
+        ['html', 'assets', 'resources', 'js', 'styles', 'flexboxgrid'],
         callback
     );
 });
