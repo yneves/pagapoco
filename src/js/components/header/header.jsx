@@ -12,7 +12,11 @@ module.exports =
             return(
                 <div id='header'>
                     <div className='row' id='header-container'>
-                        <div className='col-lg-1' id='logoBlock'><img id='logoImg' src='../../assets/icons/logo-web.png'/></div>
+                        <div className='col-lg-1' id='logoBlock'>
+                            <Link name="home">
+                                <img id='logoImg' src='../../assets/icons/logo-web.png'/>
+                            </Link>
+                        </div>
                         <div className='col-lg-8'><Search /></div>
                         <div className='col-lg-3'><LoginBox /></div>
                     </div>

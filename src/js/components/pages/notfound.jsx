@@ -2,7 +2,7 @@
 var React = require('react'),
     Header = require('../header/header.jsx');
 
-var NotFound =
+module.exports = 
     React.createClass({
         render: function (){
             return (
@@ -17,5 +17,3 @@ var NotFound =
             );
         }
     });
-
-module.exports = NotFound;

@@ -1,6 +1,7 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    fireApi = require('../api/fireApi'),
+    api = require('../api/AppApi').player,
+    debug = require('debug')('PlayerActionCreators.js'),
     playerAction = ActionTypes.Player,
     PlayerActionCreator;
 
@@ -9,26 +10,29 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
      initPlayer: function(){
          Dispatcher.handleViewAction({
              type: playerAction.INIT,
-             data: true
+             data: { state: false }
          });
-         fireApi.check();
+         api.check();
      },
 
     logIn: function(user,pass){
         Dispatcher.handleViewAction({
             type: playerAction.LOGIN_IN,
-            user: user,
-            pass: pass
+            data: {
+                state: true,
+                user: user,
+                pass: pass
+            }
         });
-        fireApi.login(user,pass);
+        api.login(user,pass);
     },
 
     logOut: function(){
         Dispatcher.handleViewAction({
             type: playerAction.LOGOUT,
-            data: false
+            data: { state: false }
         });
-        fireApi.logout();
+        api.logout();
     }
 
 };

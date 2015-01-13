@@ -5,7 +5,8 @@
 
 */
 
-var request = require('../utils/Request'),
+var db = require('./FireApi.js'),
+    request = require('../utils/Request'),
     async = require('async'),
     productServerActionCreator = require('../actions/ProductServerActionCreators'),
     _ = require('lodash-node'), // TODO better naming needed here
@@ -13,7 +14,7 @@ var request = require('../utils/Request'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
     productCollection;
-
+    
 // get all products from an API endpoint
 function getAllProducts(callback) {
 
