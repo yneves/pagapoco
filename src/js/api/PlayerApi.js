@@ -9,10 +9,10 @@ Player = {
             "password": pass
         }, function(error, authData) {
             if (error) {
-                debug("Login Failed!", error);
+                console.log("Login Failed!", error);
                 LoginServerActions.logado(false);
             } else {
-                debug("Authenticated successfully with payload:", authData.password.email);
+                console.log("Authenticated successfully with payload:", authData.password.email);
                 LoginServerActions.logado(true);
             }
         });
@@ -21,15 +21,20 @@ Player = {
         LoginServerActions.logado(false);
         db.unauth();
     },
-    authDataCallback: function (authData) {
-        if (authData) {
-          LoginServerActions.logado(true);
-        } else {
-          LoginServerActions.logado(false);
-        }
-    },
+    //authDataCallback: function (authData) {
+    //    if (authData) {
+    //      LoginServerActions.logado(true);
+    //    } else {
+    //      LoginServerActions.logado(false);
+    //    }
+    //},
     check: function () {
-        db.onAuth(this.authDataCallback);
+        var authData = db.getAuth();
+        if (authData) {
+            LoginServerActions.logado(true);
+        } else {
+            LoginServerActions.logado(false);
+        }
     }
 };
 
