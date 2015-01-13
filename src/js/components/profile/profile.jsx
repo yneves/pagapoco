@@ -1,5 +1,6 @@
 
 var React = require('react'),
+    Texts = require('../Texts.js'),
     Box = require('../common/box.jsx'),
     Block = require('./block.jsx'),
     playerStore = require('../../stores/PlayerStore'),
@@ -45,16 +46,16 @@ module.exports =
                 content = (
                     <div>
                         <h5>Logado</h5>
-                        <a href="javascript:void(0)" onClick={this.handleLogout}>Deslogar</a>
+                        <a href="javascript:void(0)" onClick={this.handleLogout}>{Texts.logout}</a>
                     </div>
                 );
                 
             } else {
                 content = (
                     <form id="loginForm" onSubmit={this.handleSubmit}>
-                        <input type="text" ref="username" />
-                        <input type="password" ref="password" />
-                        <button type="submit"></button>
+                        <input type="text" ref="username" placeholder={Texts.username} />
+                        <input type="password" ref="password" placeholder={Texts.password} />
+                        <button type="submit">{Texts.login}</button>
                     </form>
                 );
             }
@@ -67,8 +68,8 @@ module.exports =
         },
 
         _onChange: function() {
-            this.setState(
-                {logged : playerStore.getLogin()}
-            );
+            this.setState({
+              logged: playerStore.getLogin()
+            });
         }
     });

@@ -1,6 +1,11 @@
 module.exports = {
 
     cs: 'R$',
+    
+    login: 'Entrar',
+    logout: 'Sair',
+    username: 'Usuário',
+    password: 'Senha',
 
     search: 'O que está procurando?',
     home: 'Início',
