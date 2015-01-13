@@ -53,6 +53,7 @@ function createPath(pathName, data) {
     return path;
 }
 
+// return an object with the route or null
 function getRoute(link) {
 
     var response,
@@ -71,11 +72,17 @@ function getRoute(link) {
         pathKeys.length = 0;
 
         response = pathToRegexp(value.path, pathKeys);
-        // keys = [{ name: 'foo', ... }]
+        // pathKeys = [{ name: 'foo', ... }]
+        // response should be a string
+        if (response) {
+            route = response.exec(link);
+            //=> ['/123', '123']
+        } else {
+            debug('No valid pathToRegexp response for: ' + value.path);
+            throw new TypeError('Routing problems means Stop');
+        }
 
-        route = response.exec(link);
-        //=> ['/123', '123']
-
+        // checar o typeof daqui
         if (route) {
             routeData = { href : link };
             assign(routeData, value);

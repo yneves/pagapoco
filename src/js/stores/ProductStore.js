@@ -37,13 +37,15 @@ function receiveProducts(data) {
     data.forEach(function (product) {
         Product.create(product);
     });
-    debug(Product.collection);
     setCurrentProduct();
 }
 
-function changedRouteSuccess(data) {
+function changedRouteSuccess(routeData) {
+
     var id;
-    id = parseInt(data.id) || 0;
+    if (routeData.link) {
+        id = parseInt(routeData.link.id) || 0;
+    }
     if (id) {
         _currentProductId = id;
     } else {
@@ -106,7 +108,7 @@ function applyFilter(data) {
         return regExp.test(model.attributes.title);
       });
   }
-  _currentCatalog.reset(models);  
+  _currentCatalog.reset(models);
 }
 
 ProductStore = Store.extend({
@@ -122,7 +124,7 @@ ProductStore = Store.extend({
     getCatalog: function () {
         return Product.collection;
     },
-    
+
     getCurrentCatalog: function () {
         return _currentCatalog;
     }
