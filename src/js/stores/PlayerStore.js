@@ -15,8 +15,8 @@ _showLoginRegister = false;
 
 
 // Boolean
-function _isLogged(logged){
-    _current_login = logged;
+function _isLogged(data){
+    _current_login = data.state;
 }
 
 
