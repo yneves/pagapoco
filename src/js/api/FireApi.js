@@ -165,7 +165,6 @@ lodash.objects.assign(Firebase.prototype, {
 
 // set the base url
 refs.base = new Firebase(baseUrl);
-
 if (authKey) {
     refs.base.authWithCustomToken(authKey, function (error, result)  {
         if (error) {
