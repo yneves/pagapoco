@@ -14,16 +14,6 @@ Link =
             data: React.PropTypes.object
         },
 
-        // TODO acho que este component nem precisa ser stateful ja que o link
-        // pode ser gerado diretamente no render method com o metodo interno _getRoute();
-        // ate porque State e para algo que o component se atualizará e não faz sentido
-        // pensar que o link do componente ficará mudando...
-        getInitialState: function () {
-            return {
-                href: this._getRoute()
-            };
-        },
-
         // TODO este component nem deve funcionar se não tiver o atributo name
         // o data até que está ok ser um objeto vazio mas acredito que o name
         // não deve ter opção default
@@ -34,22 +24,48 @@ Link =
             };
         },
 
+        getInitialState: function () {
+            return {
+                href: this._createLink()
+            };
+        },
+
+        componentWillReceiveProps: function (nextProps) {
+            if (
+                this.props.name !== nextProps.name ||
+                this.props.data !== nextProps.data
+            ) {
+                this.setState({
+                    href: this._createLink(nextProps)
+                });
+            }
+        },
+
         render: function () {
 
-            if (!this.props.name) {
-                debug('Link need the props name');
-                return null;
-            } else if (!this.state.href) {
-                debug('No valid link found');
+            if (!this.state.href) {
+                debug('We need a valid href to create a link');
                 return null;
             }
-
-            // substituir this.state.href por this._getRoute(); ou ainda por direto
-            // createPath(this.props.name, this.props.data);
 
             return (
                 <a href={this.state.href} onClick={this._handleClick}>{this.props.children}</a>
             );
+        },
+
+        _createLink: function (nextProps) {
+            var name,
+                data;
+
+            if (nextProps) {
+                name = nextProps.name;
+                data = nextProps.data;
+            } else {
+                name = this.props.name;
+                data = this.props.data;
+            }
+
+            return createPath(name, data);
         },
 
         _handleClick: function (e) {
@@ -61,22 +77,7 @@ Link =
             // ou talvez seja melhor o mais puro e deixar state/props para informações
             // abstraidas relacionadas a lógica e não necessariamente ao DOM
             routeAction.setRoute(this.state.href);
-        },
-
-        // that's the real deal. This is where the path are created based
-        // on the current maped routes in the site (../utils/Router)
-        _getRoute: function () {
-
-            var link;
-
-            if (this.props.data) {
-                link = createPath(this.props.name, this.props.data);
-            } else {
-                link = createPath(this.props.name);
-            }
-
-            return link;
-        },
+        }
     });
 
 module.exports = Link;
