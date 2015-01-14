@@ -8,7 +8,7 @@ var lodash = {
     Validator;
 
 Validator = {
-
+    
     isBoolean: function isBoolean(boolean) {
         if (boolean === 1) {
             boolean = true;

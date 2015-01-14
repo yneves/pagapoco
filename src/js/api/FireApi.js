@@ -1,8 +1,7 @@
 var Firebase = require('firebase'),
     lodash = {
         objects: {
-            assign: require('lodash-node/modern/objects/assign'),
-            isFunction: require('lodash-node/modern/objects/isFunction')
+            assign: require('lodash-node/modern/objects/assign')
         },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
@@ -10,24 +9,33 @@ var Firebase = require('firebase'),
     },
     baseUrl = 'http://glowing-torch-4538.firebaseio.com/',
     authKey = 'PCEpiBg4lVOJjSeCZqCIgUitMDmuemq2tjtJ1i6v',
-    LoginServerActions = require('../actions/PlayerServerActionCreators'),
     debug = require('debug')('FireApi.js'),
     refs,
     tables;
 
-tables = [];
+tables = [
+    'products',
+    'products_price_history'
+];
+
 refs = {};
 
 // extend the Firebase prototype adding some useful methods for pagapo.co project
 lodash.objects.assign(Firebase.prototype, {
-    getAll: function (collection, callback) {
-       // default implementation to get data from firebase
+    getAll: function (callback) {
+
+        var data;
+
+        callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
+        data = [];
+
+        // default implementation to get data from firebase
         this.once('value', function (snapshot) {
             // snapshot should contain a list of products
-            if (snapshot.val() != null) {
-                var rows,
-                    childData;
-                rows = [];
+            if (snapshot.val() !== null) {
+
+                var childData;
+
                 // loop through the snapshot data object
                 snapshot.forEach( function (childSnapshot) {
 
@@ -40,18 +48,14 @@ lodash.objects.assign(Firebase.prototype, {
                     // as a string, so we need to perform this check
                     childData.id = parseInt(childSnapshot.key()) || childSnapshot.key();
                     // add the product to the list to be added to the collection
-                    rows.push(childData);
+                    data.push(childData);
                 });
-                try {
-                    collection.reset(rows);
-                    callback(collection);
-                } catch (err) {
-                    debug('An error has ocurred while trying to set the collection with the data got from the DB');
-                    debug(err);
-                    callback(false);
-                }
-            } else {
-                callback(false);
+            }
+            callback(data);
+        }, function (err) {
+            if (err) {
+                debug('No permission to read data');
+                callback(new Error('No permission to read data')); // empty, no data got from the server
             }
         });
     },
@@ -60,8 +64,8 @@ lodash.objects.assign(Firebase.prototype, {
         var modelData,
             modelRef;
 
+        callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
         modelData = {};
-
         modelData[key] = false;
 
         try {
@@ -72,27 +76,28 @@ lodash.objects.assign(Firebase.prototype, {
                     // for this matter we delegate to the create method already created bellow
                     modelRef = this.child(key);
                     this.create(modelRef, model, callback);
+                } else {
+                    callback(err);
                 }
             }.bind(this));
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
             debug(err);
-            if (lodash.objects.isFunction(callback)) {
-                callback(true);
-            }
+            callback(true); // true because error
         }
-
     },
     create: function (reference, model, callback) {
 
         var data;
+
+        callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
         // let's make sure we are working with a valid Model instance
         if (model && lodash.objects.isFunction(model.toJSON)) {
             data = model.toJSON();
         } else {
             // no model, fuck this shit
-            throw new Error('Invalid model or no toJSON method found', 'DB.js', 93);
+            throw new Error('Invalid model or no toJSON method found');
         }
 
         // we never save the id because in firebase the ID is the key of the data, not another attribute
@@ -102,22 +107,23 @@ lodash.objects.assign(Firebase.prototype, {
 
         try {
             // just set the data at the reference sended
-            reference.set(data, lodash.objects.isFunction(callback) ? callback : function (err) {});
+            reference.set(data, callback);
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
             debug(err);
-            callback(true);
+            callback(true); // true because error
         }
-
     },
     save: function (reference, model, callback) {
 
         var data;
 
-        if (model && lodash.objects.isFunction(model.toJSON)) {
+        callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
+
+        if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
-            throw new Error('Invalid model or no toJSON method found', 'DB.js', 118);
+            throw new Error('Invalid model or no toJSON method found');
         }
 
         // we never save the id because in firebase the ID is the key of the data, not another attribute
@@ -126,18 +132,20 @@ lodash.objects.assign(Firebase.prototype, {
         }
 
         try {
-            reference.update(data, lodash.objects.isFunction(callback) ? callback : function (err) {});
+            reference.update(data, callback);
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
             debug(err);
-            callback(true);
+            callback(true); // true because error
         }
     },
     remove: function (reference, model, callback) {
 
         var modelKey;
 
-        if (model && lodash.objects.isFunction(model.toJSON)) {
+        callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
+
+        if (model && typeof model.get === 'function') {
             modelKey = model.get('id');
         } else {
             throw new Error('Invalid model or no get method found', 'DB.js', 141);
@@ -145,11 +153,11 @@ lodash.objects.assign(Firebase.prototype, {
 
         if (modelKey) {  // modelId can either be modelId or undefined
             try {
-                reference.child(modelKey).remove(lodash.objects.isFunction(callback) ? callback : function (err) {});
+                reference.child(modelKey).remove(callback);
             } catch (err) {
                 debug('An error has ocurred while trying to remove a model from the DB');
                 debug(err);
-                callback(true);
+                callback(true); // true because error
             }
         }
     }
@@ -157,6 +165,7 @@ lodash.objects.assign(Firebase.prototype, {
 
 // set the base url
 refs.base = new Firebase(baseUrl);
+
 if (authKey) {
     refs.base.authWithCustomToken(authKey, function (error, result)  {
         if (error) {

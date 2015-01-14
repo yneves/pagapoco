@@ -17,21 +17,22 @@ module.exports =
 
         render: function () {
             var product = this.props.product;
+            // TODO categories (old taxonomies) are not an array anymore, need better breadcrumbs
+            // {product.get('categories').map(function(item,index) {
+            //     var key = item.type + '-' + item.id;
+            //     return (
+            //         <div key={key}>
+            //             <a>{key}</a>
+            //             <span>{'>'}</span>
+            //         </div>
+            //     );
+            // })}
             return (
                 <div className="breadcrumbs">
                     <div>
                         <a>{Texts.home}</a>
                         <span>{'>'}</span>
                     </div>
-                    {product.get("taxonomy").map(function(item,index) {
-                        var key = item.type + '-' + item.id;
-                        return (
-                            <div key={key}>
-                                <a>{key}</a>
-                                <span>{'>'}</span>
-                            </div>
-                        );
-                    })}
                     <div>
                         <a>{product.get('title')}</a>
                     </div>

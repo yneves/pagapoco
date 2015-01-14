@@ -1,5 +1,6 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
+    Validator = require('../utils/validator'),
     api = require('../api/AppApi').player,
     debug = require('debug')('PlayerActionCreators.js'),
     playerAction = ActionTypes.Player,
@@ -8,23 +9,30 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
  PlayerActionCreator = {
 
      initPlayer: function(){
-         Dispatcher.handleViewAction({
-             type: playerAction.INIT,
-             data: { state: false }
-         });
-         api.check();
+        Dispatcher.handleViewAction({
+            type: playerAction.INIT,
+            data: { state: false }
+        });
+        if (Validator.isFunction(api.check)) {
+            api.check();
+        } else {
+            debug('No check valid method found');
+        }
      },
 
     logIn: function(user,pass){
         Dispatcher.handleViewAction({
             type: playerAction.LOGIN_IN,
             data: {
-                state: true,
                 user: user,
                 pass: pass
             }
         });
-        api.login(user,pass);
+        if (Validator.isFunction(api.login)) {
+            api.login(user,pass);
+        } else {
+            debug('No login valid method found');
+        }
     },
 
     logOut: function(){
@@ -32,9 +40,12 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
             type: playerAction.LOGOUT,
             data: { state: false }
         });
-        api.logout();
+        if (Validator.isFunction(api.logout)) {
+            api.logout();
+        } else {
+            debug('No logou valid method found');
+        }
     }
-
 };
 
 module.exports = PlayerActionCreator;

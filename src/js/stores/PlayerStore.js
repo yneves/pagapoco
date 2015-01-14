@@ -2,36 +2,31 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
     Store = require('../utils/Store'),
-    assign = require('object-assign'),
-    _playerAction,
-    _player,
+    playerAction = ActionTypes.Player,
     PlayerStore,
-    _current_login;
+    _player,
+    _currentLogin;
 
-_current_login = false;
-_playerAction = ActionTypes.Player;
 _player = {};
-_showLoginRegister = false;
-
+_currentLogin = false;
 
 // Boolean
-function _isLogged(logged){
-    _current_login = logged;
+function _isLogged(data){
+    _currentLogin = data.state;
 }
 
-
 PlayerStore = Store.extend({
+
     CHANGE_EVENT: 'change_player',
 
-    getLogin: function(){
-            return _current_login;
-        }
-    });
+    getLogin: function () {
+        return _currentLogin;
+    }
 
-
+});
 
 PlayerInstance = new PlayerStore(
-    _playerAction.LOGADO,  _isLogged
+    playerAction.LOGADO,  _isLogged
 );
 
 
