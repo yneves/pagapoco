@@ -1,4 +1,3 @@
-
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
     Store = require('../utils/Store'),
@@ -17,13 +16,7 @@ function _isLogged(data){
 
 PlayerStore = Store.extend({
 
-<<<<<<< HEAD
     CHANGE_EVENT: 'change_player',
-=======
-    getLogin: function(){
-        return _current_login;
-    }
-});
 
     getLogin: function () {
         return _currentLogin;
@@ -32,11 +25,7 @@ PlayerStore = Store.extend({
 });
 
 PlayerInstance = new PlayerStore(
-<<<<<<< HEAD
     playerAction.LOGADO,  _isLogged
-=======
-    _playerAction.LOGADO,  _isLogged
-
 );
 
 
