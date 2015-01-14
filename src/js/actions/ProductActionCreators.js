@@ -1,11 +1,12 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    api = require('../api/AppApi').product,
+    Validator = require('../utils/Validator'),
+    api = require('../api/AppApi'),
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
     ProductActionCreator;
-    
+
 ProductActionCreator = {
 
     // called when the user type on search input field
@@ -30,7 +31,12 @@ ProductActionCreator = {
             type : productAction.ADD_ITEM,
             data : { id : id }
         });
-        api.syncProduct(id);
+
+        if (Validator.isFunction(api.product.syncProduct)) {
+            api.product.syncProduct(id);
+        } else {
+            debug('No getProducts valid method found');
+        }
     },
 
     // for future use only - when we develop our own selling system

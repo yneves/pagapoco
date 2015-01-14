@@ -42,6 +42,9 @@ module.exports =
                 );
 
             } else {
+
+                debug(this.state.products);
+
                 var productGrid;
                 var masonryOptions = {
                     transitionDuration: 0

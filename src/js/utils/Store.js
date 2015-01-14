@@ -56,7 +56,7 @@ Store = function () {
                     if (payload.action.data instanceof Object || payload.action.data === null) {
                         // value should be a function of the object that will receive the data
                         // object as it's parameters
-                        if (value instanceof Function) {
+                        if (typeof value === 'function') {
                             value(payload.action.data);
                             shouldEmitChange = true;
                         } else {

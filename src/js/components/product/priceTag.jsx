@@ -18,10 +18,10 @@ module.exports =
         render: function () {
             var product = this.props.product;
             return (
-                <div class="price-tag">                    
+                <div class="price-tag">
                     <strong>
                         {Texts.cs}
-                        {product.get('price')}
+                        {product.getCheapestOffer()}
                     </strong>
                     <a href="#">
                         {Texts.priceTag.history}

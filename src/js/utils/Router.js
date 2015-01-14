@@ -22,7 +22,7 @@ _routes = [
         name: 'product',
         method: 'GET',
         type: 'product',
-        path: '/products/:id'
+        path: '/products/:slug'
     },
     {
         name: 'fechar',

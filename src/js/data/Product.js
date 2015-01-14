@@ -1,9 +1,15 @@
 
-var assign = require('object-assign'),
-    debug = require('debug')('Product.js'),
-    Collection = require('collection'),
+var Collection = require('collection'),
     Model = require('model'),
+    lodash = {
+        collections: {
+            min: require('lodash-node/modern/collections/min')
+        }
+    },
+    Transmuter = require('transmuter'),
+    debug = require('debug')('Product.js'),
     ProductModel,
+    ProductCollectionConstructor,
     ProductCollection,
     Product;
 
@@ -12,15 +18,22 @@ ProductModel = Model.extend({
     _schema: {
         id: '/Product',
         properties: {
-            id: { type: 'integer', minimum: 1 },
-            supplier: { type: 'string' },
+            id: { type: 'string' },                 // the key from firebase
+            id_buscape: { type: 'integer' },        // id reference from buscape
+            categories: { type: 'object' },         // reference to category table
+            offersBySellerId: { type : 'object' },
+            thumb: { type: 'object' },
             title: { type: 'string' },
+            slug: { type: 'string' },
             description: { type: 'string' },
-            image: { type: 'string' },
-            price: { type: 'number', minimum: 0 },
-            price_history: { type: 'object' },
-            wished: { type: 'boolean' },
-            taxonomy: { type: 'array' }
+            tipo: { type: 'string' },
+            original_link: { type: 'object' },
+            rating: { type: 'object' },
+            package: { type: 'string' },     // reference to package table
+            shape: { type: 'string' },      // reference to the shapes table
+            weight: { type: 'string' },     // reference to the weights table
+            supplier: { type: 'string' },   // reference to supplier table
+            volume: { type: 'string' }     // reference to the volumes table
         }
     },
     // TODO future (code for reference only)
@@ -102,6 +115,41 @@ ProductModel = Model.extend({
         }
     },
 
+    getCheapestOffer: function () {
+        if (this.attributes.offersBySellerId) {
+            var selectedOffer = lodash.collections.min(this.attributes.offersBySellerId, function (offer) {
+                return Transmuter.toFloat(offer.price.value);
+            });
+            return selectedOffer.price.value;
+        } else {
+            return 0.00;
+        }
+    },
+
+    getLargeImage: function () {
+        if (this.attributes.thumb && this.attributes.thumb.large) {
+            return this.attributes.thumb.large.url;
+        } else {
+            // TODO return some default large image
+        }
+    },
+
+    getMediumImage: function () {
+        if (this.attributes.thumb && this.attributes.thumb.medium) {
+            return this.attributes.thumb.medium.url;
+        } else {
+            // TODO return some default medium image
+        }
+    },
+
+    getSmallImage: function () {
+        if (this.attributes.thumb && this.attributes.thumb.small) {
+            return this.attributes.thumb.small.url;
+        } else {
+            // TODO return some default small image;
+        }
+    }
+
     // update the quantity by adding to the current ammount
     // TODO STAGE 3
     // updateQuantity: function (quantity) {
@@ -111,17 +159,17 @@ ProductModel = Model.extend({
 
 });
 
-ProductCollection = Collection.extend({
+ProductCollectionConstructor = Collection.extend({
     model: ProductModel
 });
 
-collection = new ProductCollection();
+ProductCollection = new ProductCollectionConstructor();
 
 Product = {
     create : function (data) {
-        collection.add(data);
+        return ProductCollection.add(data);
     },
-    collection : collection
+    collection : ProductCollection
 };
 
 module.exports = Product;
