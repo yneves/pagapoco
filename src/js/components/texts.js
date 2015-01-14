@@ -13,8 +13,11 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
-    view: 'Ver',
-    stores: 'Lojas',
+    
+    storeList: {
+      title: 'Lojas',
+      view: 'Ver',
+    },
 
     priceTag: {
       to: 'a',

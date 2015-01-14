@@ -79,8 +79,7 @@ module.exports =
                             </dl>
                         </div>
 
-                        <div className="product-stores">
-                            <h3>{Texts.stores}</h3>
+                        <div className="product-stores">                            
                             <StoreList product={product} />
                         </div>
 

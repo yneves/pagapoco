@@ -23,18 +23,18 @@ module.exports =
             height: '200px'
           };
           var elm = this.refs.chart.getDOMNode();
-          this.chartist = new Chartist.Line(elm, data, options);
+          // this.chartist = new Chartist.Line(elm, data, options);
         },
         
         chartData: function() {
             var product = this.props.product;
-            var history = product.get('price_history').y[1];
+            // var history = product.get('price_history').y[1];
             var data = {
                 labels: [],
                 series: [ [], [] ]
             };
             
-            history.forEach(function(item,index) {
+            [].forEach(function(item,index) {
               data.labels[index] = item.day;
               data.series[0][index] = item.min;
               data.series[1][index] = item.max;
