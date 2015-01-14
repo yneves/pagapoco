@@ -1,6 +1,7 @@
+
 var db = require('./FireApi.js').base,
-    LoginServerActions = require('../actions/PlayerServerActionCreators'),
-    debug = require('debug')('PlayerApi.js');
+    ApiPlayerActionCreator = require('../actions/ApiPlayerActionCreator'),
+    Player;
 
 Player = {
     login: function (user, pass) {
@@ -9,11 +10,11 @@ Player = {
             "password": pass
         }, function(error, authData) {
             if (error) {
-                console.log("Login Failed!", error);
-                LoginServerActions.logado(false);
+                console.log("Login Failed! Cause: " + error);
+                ApiPlayerActionCreator.logado(false);
             } else {
-                console.log("Authenticated successfully with payload:", authData.password.email);
-                LoginServerActions.logado(true);
+                console.log("Authenticated successfully with payload: " + authData.password.email);
+                ApiPlayerActionCreator.logado(true);
             }
         });
     },
@@ -31,9 +32,9 @@ Player = {
     check: function () {
         var authData = db.getAuth();
         if (authData) {
-            LoginServerActions.logado(true);
+            ApiPlayerActionCreator.logado(true);
         } else {
-            LoginServerActions.logado(false);
+            ApiPlayerActionCreator.logado(false);
         }
     }
 };
