@@ -38,10 +38,6 @@ Player = {
 
     check: function () {
         var authData = db.getAuth();
-<<<<<<< HEAD
-        if (authData) {
-            ApiPlayerActionCreator.logado(true);
-=======
 
         if (authData && authData != null) {
             LoginServerActions.logado(true);

@@ -24,7 +24,6 @@ PlayerStore = Store.extend({
         return _current_login;
     }
 });
->>>>>>> 376e0355d8eb47cd1c34de3562eff4bdd6d3a1bd
 
     getLogin: function () {
         return _currentLogin;
@@ -38,7 +37,6 @@ PlayerInstance = new PlayerStore(
 =======
     _playerAction.LOGADO,  _isLogged
 
->>>>>>> 376e0355d8eb47cd1c34de3562eff4bdd6d3a1bd
 );
 
 
