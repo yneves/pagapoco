@@ -16,22 +16,6 @@ ProductActionCreator = {
             data : { query: query }
         });
     },
-    
-    // called to create a price alert for a product
-    createAlert: function(id,price) {
-        Dispatcher.handleViewAction({
-            type : productAction.CREATE_ALERT,
-            data : { id : id, price: price }
-        });
-    },
-     
-    // called when the user wants to share a product with friends
-    shareProduct: function(id) {
-        Dispatcher.handleViewAction({
-            type : productAction.SHARE,
-            data : { id : id }
-        });
-    },
 
     // called when the player wishes to know the product reached a certain price
     toggleWishProduct: function (id) {

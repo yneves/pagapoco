@@ -35,6 +35,8 @@ module.exports =
 
         render: function () {
             var content;
+            
+            debug(this.state.products);
 
             if (this.state.currentProduct) {
                 content = (

@@ -18,25 +18,49 @@ Player = {
             }
         });
     },
+
+    faceLogin: function(){
+        db.authWithOAuthPopup("facebook", function(error, authData) {
+                if (error) {
+                    console.log("Login Failed!", error);
+                    ApiPlayerActionCreator.logado(false);
+                } else {
+                    console.log("Authenticated successfully with payload:", authData);
+                    ApiPlayerActionCreator.logado(true);
+                }
+         });
+    },
+
     logout: function () {
-        LoginServerActions.logado(false);
+        ApiPlayerActionCreator.logado(false);
         db.unauth();
     },
-    //authDataCallback: function (authData) {
-    //    if (authData) {
-    //      LoginServerActions.logado(true);
-    //    } else {
-    //      LoginServerActions.logado(false);
-    //    }
-    //},
+
     check: function () {
         var authData = db.getAuth();
-        if (authData) {
+        if (authData && authData != null) {
             ApiPlayerActionCreator.logado(true);
         } else {
             ApiPlayerActionCreator.logado(false);
         }
+    },
+
+ userExistsCallback: function(userId, exists) {
+    if (exists){
+        ApiPlayerActionCreator.newUser(true);
+    } else {
+        ApiPlayerActionCreator.newUser(false);
     }
+},
+
+checkIfUserExists: function(userId) {
+    db.child('Users').child(userId).once('value', function(snapshot) {
+        var exists = (snapshot.val() !== null);
+        Player.userExistsCallback(userId, exists);
+    });
+}
+
+
 };
 
 module.exports = Player;

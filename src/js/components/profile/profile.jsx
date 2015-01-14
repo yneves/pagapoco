@@ -62,7 +62,7 @@ module.exports =
             
             return (
                 <div>
-                    {display}
+                    {content}
                 </div>
             );
         },
