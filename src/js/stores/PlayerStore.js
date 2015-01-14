@@ -31,7 +31,6 @@ PlayerStore = Store.extend({
 
 
 PlayerInstance = new PlayerStore(
-    _playerAction.LOGADO,  _isLogged,2
     _playerAction.LOGADO,  _isLogged
 
 );
