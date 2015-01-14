@@ -9,8 +9,6 @@ var Firebase = require('firebase'),
         }
     },
     baseUrl = 'http://glowing-torch-4538.firebaseio.com/',
-    productsUrl = 'http://glowing-torch-4538.firebaseio.com/products',
-    priceHistoryUrl = 'http://glowing-torch-4538.firebaseio.com/products_price_history',
     authKey = 'PCEpiBg4lVOJjSeCZqCIgUitMDmuemq2tjtJ1i6v',
     LoginServerActions = require('../actions/PlayerServerActionCreators'),
     debug = require('debug')('FireApi.js'),
@@ -159,9 +157,6 @@ lodash.objects.assign(Firebase.prototype, {
 
 // set the base url
 refs.base = new Firebase(baseUrl);
-refs.products = new Firebase(productsUrl);
-refs.priceHistory = new Firebase(priceHistoryUrl);
-
 if (authKey) {
     refs.base.authWithCustomToken(authKey, function (error, result)  {
         if (error) {

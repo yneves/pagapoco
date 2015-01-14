@@ -14,7 +14,7 @@ var db = require('./FireApi.js'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
     productCollection;
-    
+
 // get all products from an API endpoint
 function getAllProducts(callback) {
 
@@ -27,29 +27,17 @@ function getAllProducts(callback) {
         // can group the product information like it's taxonomies (or send all the information)
         // already joined from the server
         function getProducts(callback) {
-
             // TODO future firebase api endpoint
-            db.products.on("value", function(snapshot) {
-                    callback(null, snapshot.val())
-            }, function (errorObject) {
-                console.log("The read failed: " + errorObject.code);
-            });
+            request.get('/resources/products.json', {}, callback);
         },
 
         function getTaxonomies(callback) {
             // TODO future firebase api endpoint
             request.get('/resources/products_relationships.json', {}, callback);
-        },
-
-        function getPriceHistory(callback){
-            db.priceHistory.on("value", function(snapshot) {
-                callback(null, snapshot.val())
-            }, function (errorObject) {
-                console.log("The read failed: " + errorObject.code);
-            });
         }
 
     ], function (err, results) { // callback from the requests above
+
         // TODO set the variables on the else statement?
         var products,
             productsRaw,
@@ -65,11 +53,10 @@ function getAllProducts(callback) {
             products = results[0];
             taxonomies = results[1];
 
-
-            data = products; // simple shortcut
+            data = products.body; // simple shortcut
             products = [];
-            productsRaw = data;
-            priceHistoryRaw = results[2];
+            productsRaw = data.products;
+            priceHistoryRaw = data.price_history;
             taxonomiesRaw = taxonomies.body;
             prices = prices || [];
             finalHistory = {

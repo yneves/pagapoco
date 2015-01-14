@@ -15,8 +15,8 @@ _showLoginRegister = false;
 
 
 // Boolean
-function _isLogged(logged){
-    _current_login = logged;
+function _isLogged(data){
+    _current_login = data.state;
 }
 
 
@@ -24,14 +24,16 @@ PlayerStore = Store.extend({
     CHANGE_EVENT: 'change_player',
 
     getLogin: function(){
-            return _current_login;
-        }
-    });
+        return _current_login;
+    }
+});
 
 
 
 PlayerInstance = new PlayerStore(
+    _playerAction.LOGADO,  _isLogged,2
     _playerAction.LOGADO,  _isLogged
+
 );
 
 
