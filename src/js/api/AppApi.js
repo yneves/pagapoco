@@ -6,11 +6,13 @@
 
 */
 
-var productApi = require('./ProductApi'),
-    playerApi = require ('./PlayerApi'),
+var playerApi = require ('./PlayerApi'),
+    productApi = require('./ProductApi'),
+    productPriceHistoryApi = require('./ProductPriceHistoryApi'),
     debug = require('debug')('AppApi.js');
 
 module.exports = {
+    player: playerApi,
     product: productApi,
-    player: playerApi
+    productPriceHistory: productPriceHistoryApi
 };

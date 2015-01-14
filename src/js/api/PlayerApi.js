@@ -1,6 +1,7 @@
+
 var db = require('./FireApi.js').base,
-    LoginServerActions = require('../actions/PlayerServerActionCreators'),
-    debug = require('debug')('PlayerApi.js');
+    ApiPlayerActionCreator = require('../actions/ApiPlayerActionCreator'),
+    Player;
 
 Player = {
     login: function (user, pass) {
@@ -9,11 +10,11 @@ Player = {
             "password": pass
         }, function(error, authData) {
             if (error) {
-                debug("Login Failed!", error);
-                LoginServerActions.logado(false);
+                console.log("Login Failed! Cause: " + error);
+                ApiPlayerActionCreator.logado(false);
             } else {
-                debug("Authenticated successfully with payload:", authData.password.email);
-                LoginServerActions.logado(true);
+                console.log("Authenticated successfully with payload: " + authData.password.email);
+                ApiPlayerActionCreator.logado(true);
             }
         });
     },
@@ -21,15 +22,20 @@ Player = {
         LoginServerActions.logado(false);
         db.unauth();
     },
-    authDataCallback: function (authData) {
-        if (authData) {
-          LoginServerActions.logado(true);
-        } else {
-          LoginServerActions.logado(false);
-        }
-    },
+    //authDataCallback: function (authData) {
+    //    if (authData) {
+    //      LoginServerActions.logado(true);
+    //    } else {
+    //      LoginServerActions.logado(false);
+    //    }
+    //},
     check: function () {
-        db.onAuth(this.authDataCallback);
+        var authData = db.getAuth();
+        if (authData) {
+            ApiPlayerActionCreator.logado(true);
+        } else {
+            ApiPlayerActionCreator.logado(false);
+        }
     }
 };
 

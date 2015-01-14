@@ -1,13 +1,14 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
+    Validator = require('../utils/Validator'),
     api = require('../api/AppApi'),
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
     ProductActionCreator;
 
 ProductActionCreator = {
-  
+
     // called when the user type on search input field
     applyFilter: function (query) {
         Dispatcher.handleViewAction({
@@ -39,16 +40,21 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // called when the player clicks on a product that he wants to buy
     addItem: function (id) {
         Dispatcher.handleViewAction({
             type : productAction.ADD_ITEM,
             data : { id : id }
         });
-        api.product.syncProduct(id);
+
+        if (Validator.isFunction(api.product.syncProduct)) {
+            api.product.syncProduct(id);
+        } else {
+            debug('No getProducts valid method found');
+        }
     },
-    
+
     // for future use only - when we develop our own selling system
     removeItem: function (id) {
         Dispatcher.handleViewAction({
@@ -56,7 +62,7 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // for future use only - when we develop our own selling system
     decreaseItem: function (id) {
         Dispatcher.handleViewAction({
@@ -64,7 +70,7 @@ ProductActionCreator = {
             data : { id : id }
         });
     },
-    
+
     // for future use only - when we develop our own selling system
     increaseItem: function (id) {
         Dispatcher.handleViewAction({
