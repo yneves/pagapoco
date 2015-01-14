@@ -17,7 +17,7 @@ module.exports =
         },
 
         getInitialState: function () {
-            var price = this.props.product.get('price');
+            var price = 0;
             return {
                 min: 0,
                 max: price * 2,

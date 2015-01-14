@@ -21,7 +21,7 @@ module.exports =
                 <div class="price-tag">                    
                     <strong>
                         {Texts.cs}
-                        {product.get('price')}
+                        
                     </strong>
                     <a href="#">
                         {Texts.priceTag.history}

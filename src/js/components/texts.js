@@ -33,5 +33,9 @@ module.exports = {
       title: 'Alerta de Preços',
       submit: 'ME AVISE',
     },
+    
+    category: {
+      suplemento: 'Suplementos',
+    },
 
 };
