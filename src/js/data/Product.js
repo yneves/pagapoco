@@ -126,6 +126,17 @@ ProductModel = Model.extend({
         }
     },
 
+    getMostExpensiveOffer: function () {
+        if (this.attributes.offersBySellerId) {
+            var selectedOffer = lodash.collections.max(this.attributes.offersBySellerId, function (offer) {
+                return Transmuter.toFloat(offer.price.value);
+            });
+            return selectedOffer.price.value;
+        } else {
+            return 0.00;
+        }
+    },
+
     getLargeImage: function () {
         if (this.attributes.thumb && this.attributes.thumb.large) {
             return this.attributes.thumb.large.url;
