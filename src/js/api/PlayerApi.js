@@ -23,23 +23,23 @@ Player = {
         db.authWithOAuthPopup("facebook", function(error, authData) {
                 if (error) {
                     console.log("Login Failed!", error);
-                    LoginServerActions.logado(false);
+                    ApiPlayerActionCreator.logado(false);
                 } else {
                     console.log("Authenticated successfully with payload:", authData);
-                    LoginServerActions.logado(true);
+                    ApiPlayerActionCreator.logado(true);
                 }
          });
     },
 
     logout: function () {
-        LoginServerActions.logado(false);
+        ApiPlayerActionCreator.logado(false);
         db.unauth();
     },
 
     check: function () {
         var authData = db.getAuth();
         if (authData && authData != null) {
-            LoginServerActions.logado(true);
+            ApiPlayerActionCreator.logado(true);
         } else {
             ApiPlayerActionCreator.logado(false);
         }
@@ -47,9 +47,9 @@ Player = {
 
  userExistsCallback: function(userId, exists) {
     if (exists){
-        LoginServerActions.newUser(true);
+        ApiPlayerActionCreator.newUser(true);
     } else {
-        LoginServerActions.newUser(false);
+        ApiPlayerActionCreator.newUser(false);
     }
 },
 
