@@ -1,4 +1,3 @@
-
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
     Store = require('../utils/Store'),
