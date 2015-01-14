@@ -27,7 +27,7 @@ var ProductGrid =
                 <div className="grid-item product-item">
 
                     <div className="grid-content grid-content-image">
-                        <Link name="product" data={{ id : product.get('id') }}>
+                        <Link name="product" data={{ slug : product.get('slug') }}>
                             <img src={product.getLargeImage()} />
                         </Link>
                     </div>

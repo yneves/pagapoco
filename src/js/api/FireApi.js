@@ -9,7 +9,6 @@ var Firebase = require('firebase'),
     },
     baseUrl = 'http://glowing-torch-4538.firebaseio.com/',
     authKey = 'PCEpiBg4lVOJjSeCZqCIgUitMDmuemq2tjtJ1i6v',
-    LoginServerActions = require('../actions/PlayerServerActionCreators'),
     debug = require('debug')('FireApi.js'),
     refs,
     tables;

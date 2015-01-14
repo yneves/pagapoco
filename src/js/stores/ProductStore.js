@@ -9,7 +9,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _products,
     _currentCatalog,
     _currentPlayerId,
-    _currentProductId;
+    _currentProductSlug;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
@@ -17,7 +17,7 @@ RouteAction = ActionTypes.Route;
 _products = null;
 _currentCatalog = [];
 _currentPlayer = null;
-_currentProductId = 0;
+_currentProductSlug = '';
 _current = null;
 
 function updateStart() {
@@ -48,21 +48,21 @@ function receiveProducts(data) {
 
 function changedRouteSuccess(routeData) {
 
-    var id;
+    var slug;
     if (routeData.link) {
-        id = parseInt(routeData.link.id) || 0;
+        slug = routeData.link.slug || '';
     }
-    if (id) {
-        _currentProductId = id;
+    if (slug) {
+        _currentProductSlug = slug;
     } else {
-        _currentProductId = 0;
+        _currentProductSlug = 0;
     }
     setCurrentProduct();
 }
 
 function setCurrentProduct() {
-    if (_currentProductId) {
-        _current = _products.get(_currentProductId);
+    if (_currentProductSlug && _products) {
+        _current = _products.findWhere({'slug' : _currentProductSlug});
     } else {
         _current = null;
     }

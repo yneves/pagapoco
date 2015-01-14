@@ -65,7 +65,7 @@ module.exports =
                     <div className="product-body">
 
                         <div className="product-image">
-                            <img src={product.get('thumb').large} />
+                            <img src={product.getLargeImage()} />
                             <WishButton product={product} />
                             <ShareButton product={product} />
                         </div>
