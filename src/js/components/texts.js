@@ -17,6 +17,7 @@ module.exports = {
     stores: 'Lojas',
 
     priceTag: {
+      to: 'a',
       title: 'Preços',
       history: 'VER HISTÓRICO',
     },

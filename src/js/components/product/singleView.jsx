@@ -56,8 +56,7 @@ module.exports =
                                 <Breadcrumbs product={product} />
                             </h2>
                         </div>
-                        <div className="product-price">
-                            <h3>{Texts.priceTag.title}</h3>
+                        <div className="product-price">                            
                             <PriceTag product={product} />
                         </div>
                     </div>

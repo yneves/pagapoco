@@ -3,7 +3,8 @@ var Collection = require('collection'),
     Model = require('model'),
     lodash = {
         collections: {
-            min: require('lodash-node/modern/collections/min')
+            min: require('lodash-node/modern/collections/min'),
+            max: require('lodash-node/modern/collections/max')
         }
     },
     Transmuter = require('transmuter'),
