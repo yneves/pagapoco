@@ -11,7 +11,15 @@ PlayerServerActionCreator = {
             type: playerAction.LOGADO,
             data: { state: logged }
         });
+    },
+
+    newUser: function(isNew){
+        Dispatcher.handleViewAction({
+            type: playerAction.NEW_USER,
+            data: { state: isNew }
+        });
     }
+
 
 };
 

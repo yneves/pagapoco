@@ -24,6 +24,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
         Dispatcher.handleViewAction({
             type: playerAction.LOGIN_IN,
             data: {
+                state: true,
                 user: user,
                 pass: pass
             }
@@ -35,7 +36,18 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
         }
     },
 
-    logOut: function(){
+     faceLogIn: function(){
+         Dispatcher.handleViewAction({
+             type: playerAction.FACEBOOK_LOGIN,
+             data: {
+                 state: true
+             }
+         });
+         api.faceLogin();
+     },
+
+
+     logOut: function(){
         Dispatcher.handleViewAction({
             type: playerAction.LOGOUT,
             data: { state: false }

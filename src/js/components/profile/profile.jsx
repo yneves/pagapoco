@@ -37,6 +37,10 @@ profile =
             }
         },
 
+        handleFbLogin: function(){
+            playerActions.faceLogIn();
+        },
+
         handleLogout: function(){
             playerActions.logOut();
         },
@@ -48,13 +52,17 @@ profile =
             if (this.state.logged){
                 display = <div><h5>Logado</h5><a href="javascript:void(0)" onClick={this.handleLogout}>Deslogar</a></div>
             } else {
-                display =   <form id="loginForm" onSubmit={this.handleSubmit}>
-<input type="text" ref="username" />
-                    <br />
-                    <input type="password" ref="password" />
-                    <br />
-                    <input type="submit" />
-                </form>;
+                display =
+                <div>
+                    <a href="javascript:void(0)" onClick={this.handleFbLogin}>Facebook</a>
+                    <form id="loginForm" onSubmit={this.handleSubmit}>
+                        <input type="text" ref="username" />
+                        <br />
+                        <input type="password" ref="password" />
+                        <br />
+                        <input type="submit" />
+                     </form>
+                </div>;
 
             }
             return(

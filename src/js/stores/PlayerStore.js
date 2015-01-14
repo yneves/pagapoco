@@ -17,7 +17,14 @@ function _isLogged(data){
 
 PlayerStore = Store.extend({
 
+<<<<<<< HEAD
     CHANGE_EVENT: 'change_player',
+=======
+    getLogin: function(){
+        return _current_login;
+    }
+});
+>>>>>>> 376e0355d8eb47cd1c34de3562eff4bdd6d3a1bd
 
     getLogin: function () {
         return _currentLogin;
@@ -26,7 +33,12 @@ PlayerStore = Store.extend({
 });
 
 PlayerInstance = new PlayerStore(
+<<<<<<< HEAD
     playerAction.LOGADO,  _isLogged
+=======
+    _playerAction.LOGADO,  _isLogged
+
+>>>>>>> 376e0355d8eb47cd1c34de3562eff4bdd6d3a1bd
 );
 
 
