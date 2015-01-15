@@ -25,10 +25,10 @@ _routes = [
         path: '/products/:slug'
     },
     {
-        name: 'fechar',
+        name: 'register',
         method: 'GET',
-        type: 'order',
-        path: '/fechar'
+        type: 'register',
+        path: '/register'
     }
 ];
 

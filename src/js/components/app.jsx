@@ -5,6 +5,7 @@
 var React = require('react'),
     Store = require('../components/pages/store.jsx'),
     Sobre = require('../components/pages/sobre.jsx'),
+    Register = require('../components/pages/register.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
@@ -72,8 +73,8 @@ Application =
                     case 'products':
                         componentToLoad = <Store />;
                         break;
-                    case 'fechar':
-                        componentToLoad = <Sobre />;
+                    case 'register':
+                        componentToLoad = <Register />;
                         break;
                     default:
                         componentToLoad = <Store />;
