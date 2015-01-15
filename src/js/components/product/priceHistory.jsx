@@ -1,7 +1,7 @@
 
 var React = require('react'),
     Texts = require('../texts.js'),
-    Chartist = require('../../vendor/chartist.js');
+    Chartist = require('chartist');
 
 module.exports =
     React.createClass({
