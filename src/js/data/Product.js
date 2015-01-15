@@ -3,7 +3,8 @@ var Collection = require('collection'),
     Model = require('model'),
     lodash = {
         collections: {
-            min: require('lodash-node/modern/collections/min')
+            min: require('lodash-node/modern/collections/min'),
+            max: require('lodash-node/modern/collections/max')
         }
     },
     Transmuter = require('transmuter'),
@@ -118,6 +119,17 @@ ProductModel = Model.extend({
     getCheapestOffer: function () {
         if (this.attributes.offersBySellerId) {
             var selectedOffer = lodash.collections.min(this.attributes.offersBySellerId, function (offer) {
+                return Transmuter.toFloat(offer.price.value);
+            });
+            return selectedOffer.price.value;
+        } else {
+            return 0.00;
+        }
+    },
+
+    getMostExpensiveOffer: function () {
+        if (this.attributes.offersBySellerId) {
+            var selectedOffer = lodash.collections.max(this.attributes.offersBySellerId, function (offer) {
                 return Transmuter.toFloat(offer.price.value);
             });
             return selectedOffer.price.value;

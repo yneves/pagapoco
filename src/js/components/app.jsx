@@ -47,9 +47,9 @@ Application =
             if (window && "onpopstate" in window) {
                 // window.onpopstate fires an event everytime the active history
                 // entry changes between two history entries for the same document
-                window.onpopstate = function(event) {
-                    routeAction.setRoute(window.location.pathname, event.state);
-                };
+               window.onpopstate = function(event) {
+                   routeAction.setRoute(window.location.pathname, event.state);
+               };
             }
         },
 
