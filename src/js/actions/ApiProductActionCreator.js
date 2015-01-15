@@ -42,6 +42,7 @@ ProductServerActionCreator = {
 
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
+            console.log('no products yet');
             Dispatcher.handleServerAction({
                 type: productAction.RECEIVE_RAW_PRODUCTS_START,
                 data: null
