@@ -17,7 +17,7 @@ module.exports =
         },
 
         getInitialState: function () {
-            var price = 0;
+            var price = this.props.product.getCheapestOffer();
             return {
                 min: 0,
                 max: price * 2,
@@ -45,8 +45,8 @@ module.exports =
                     <input type="range"                        
                         min={this.state.min}
                         max={this.state.max}
-                        value={this.state.price}                        
-                        onChange={this.changePrice} 
+                        value={this.state.price}
+                        onChange={this.changePrice}
                         ref="input" />
                     <button type="submit">{Texts.priceAlert.submit}</button>
                 </form>

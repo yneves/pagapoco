@@ -1,6 +1,7 @@
 
 var React = require('react'),
-    Header = require('../header/header.jsx');
+    Header = require('../header/header.jsx'),
+    debug = require('debug')('notfound.jsx');
 
 module.exports = 
     React.createClass({

@@ -7,7 +7,7 @@ var React = require('react'),
     playerActions = require('../../actions/PlayerActionCreators'),
     classSet = React.addons.classSet;
 
-module.exports = 
+module.exports =
     React.createClass({
 
         getInitialState: function () {
@@ -32,7 +32,11 @@ module.exports =
             event.preventDefault();
             var user = this.refs.username.getDOMNode().value;
             var pass = this.refs.password.getDOMNode().value;
-            playerActions.logIn(user,pass);            
+            playerActions.logIn(user,pass);
+        },
+
+        handleFbLogin: function(){
+            playerActions.faceLogIn();
         },
 
         handleLogout: function(){
@@ -41,7 +45,6 @@ module.exports =
 
         render: function () {
             var content;
-
             if (this.state.logged) {
                 content = (
                     <div>
@@ -49,17 +52,18 @@ module.exports =
                         <a href="javascript:void(0)" onClick={this.handleLogout}>{Texts.logout}</a>
                     </div>
                 );
-                
             } else {
                 content = (
-                    <form id="loginForm" onSubmit={this.handleSubmit}>
-                        <input type="text" ref="username" placeholder={Texts.username} />
-                        <input type="password" ref="password" placeholder={Texts.password} />
-                        <button type="submit">{Texts.login}</button>
-                    </form>
+                    <div>
+                        <a href="javascript:void(0)" onClick={this.handleFbLogin}>{Texts.facebook}</a>
+                        <form id="loginForm" onSubmit={this.handleSubmit}>
+                            <input type="text" ref="username" placeholder={Texts.username} />
+                            <input type="password" ref="password" placeholder={Texts.password} />
+                            <button type="submit">{Texts.login}</button>
+                        </form>
+                    </div>
                 );
             }
-            
             return (
                 <div>
                     {content}

@@ -38,20 +38,22 @@ module.exports =
             
             debug(this.state.products);
 
+            debug(this.state.products);
+
             if (this.state.currentProduct) {
                 content = (
                     <ProductSingleView product={this.state.currentProduct} />
                 );
 
             } else {
-              
+
                 var productGrid,
                     masonryOptions;
-                
+
                 masonryOptions = {
                     transitionDuration: 0
                 };
-                
+
                 if (this.state.products) {
                     productGrid = this.state.products.map(function(product) {
                         return (
@@ -60,6 +62,7 @@ module.exports =
                     });
                 }
                   
+
 
                 // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
                 // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT

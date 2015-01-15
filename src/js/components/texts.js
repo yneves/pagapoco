@@ -6,6 +6,7 @@ module.exports = {
     logout: 'Sair',
     username: 'Usuário',
     password: 'Senha',
+    facebook: 'Facebook',
 
     search: 'O que está procurando?',
     home: 'Início',
