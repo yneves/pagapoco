@@ -4,7 +4,8 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     playerAction = ActionTypes.Player,
     PlayerStore,
     _player,
-    _currentLogin;
+    _currentLogin,
+    _isNew;
 
 _player = {};
 _currentLogin = false;
@@ -14,18 +15,27 @@ function _isLogged(data){
     _currentLogin = data.state;
 }
 
+function _newPlayer(data){
+    _isNew = data.state;
+}
+
 PlayerStore = Store.extend({
 
     CHANGE_EVENT: 'change_player',
 
     getLogin: function () {
         return _currentLogin;
+    },
+
+    getUserHistory: function (){
+        return _isNew;
     }
 
 });
 
 PlayerInstance = new PlayerStore(
-    playerAction.LOGADO,  _isLogged
+    playerAction.LOGADO,  _isLogged,
+    playerAction.NEW_USER,  _newPlayer
 );
 
 

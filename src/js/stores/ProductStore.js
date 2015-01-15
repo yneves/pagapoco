@@ -19,18 +19,27 @@ _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
 _current = null;
+_isLoading  = true;
 
 function updateStart() {
-    // show some "loading" icon or something
 }
 
 function updateError() {
-    // rollback
 }
 
 function updateSuccess() {
-    // the model is, allegedly, already updated, so we do nothing
-    // and just wait for the emitChange to happen
+}
+
+function receiveStart() {
+    _isLoading = true;
+}
+
+function receiveError() {
+    _isLoading = false;
+}
+
+function receiveSuccess() {
+    _isLoading = false;
 }
 
 function receivePlayer(data) {
@@ -44,6 +53,7 @@ function receiveProducts(data) {
     _products = data;
     _currentCatalog = data.clone();
     setCurrentProduct();
+    receiveSuccess();
 }
 
 function changedRouteSuccess(routeData) {
@@ -138,6 +148,10 @@ ProductStore = Store.extend({
 
     getCurrentCatalog: function () {
         return _currentCatalog;
+    },
+
+    getLoadingState: function(){
+        return _isLoading;
     }
 
 });
@@ -147,6 +161,8 @@ ProductInstance = new ProductStore(
     // ProductAction.REMOVE_ITEM, removeItem,
     // ProductAction.INCREASE_ITEM, increaseItem,
     // ProductAction.DECREASE_ITEM, decreaseItem,
+    ProductAction.RECEIVE_RAW_PRODUCTS_START, receiveStart,
+    ProductAction.RECEIVE_RAW_PRODUCTS_ERROR, receiveError,
     ProductAction.RECEIVE_RAW_PRODUCTS_SUCCESS, receiveProducts,
     ProductAction.TOGGLE_WISHLIST, toggleWishlist,
     ProductAction.APPLY_FILTER, applyFilter,
