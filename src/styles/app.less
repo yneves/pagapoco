@@ -22,7 +22,7 @@
 
 .colortransition(@duration: 0.3s){
   transition: background-color @duration ease;
-  -webkit-transition: background-color @duration ease;
+  -webkit-transition: background-color @durations ease;
   -moz-transition: background-color @duration ease;
   -o-transition: background-color @duration ease;
 }
@@ -145,6 +145,24 @@ img {
 
 .bar5{
   background:#9ac241;
+}
+
+#loading{
+  margin-top: -10%;
+  width: 100%;
+  height: 130%;
+  display: block;
+  z-index: 999;
+  position: fixed;
+  background-color: rgba(255, 255, 255, 0.6);
+}
+
+#loading #Wrapper{
+  text-align: center;
+  margin: 25%;
+}
+#loading h2{
+  color: #57455b;
 }
 
 .submitSearch{

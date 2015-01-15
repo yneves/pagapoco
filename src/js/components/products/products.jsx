@@ -21,7 +21,8 @@ module.exports =
         getInitialState: function () {
             return {
                 products        : this.props.products || ProductStore.getCurrentCatalog(),
-                currentProduct  : this.props.currentProduct || ProductStore.getCurrent()
+                currentProduct  : this.props.currentProduct || ProductStore.getCurrent(),
+                LoadState       : ProductStore.getLoadingState()
             };
         },
 
@@ -35,7 +36,19 @@ module.exports =
 
         render: function () {
             var content;
+            var Load;
             
+            if (this.state.LoadState){
+                Load = (
+                    <div id="loading">
+                        <div id='Wrapper'>
+                            <img id='loadImg' src='../../assets/icons/ajax-loader.gif'/>
+                            <h2>Carregando...</h2>
+                        </div>
+                    </div>
+                )
+            }
+
             debug(this.state.products);
 
             if (this.state.currentProduct) {
@@ -86,6 +99,7 @@ module.exports =
 
             return (
                 <div className="products">
+                    {Load}
                     {content}
                 </div>
             );
@@ -99,7 +113,8 @@ module.exports =
         _onChange: function() {          
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent()
+                currentProduct  : ProductStore.getCurrent(),
+                LoadState: ProductStore.getLoadingState()
             });
         }
     });

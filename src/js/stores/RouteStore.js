@@ -100,7 +100,7 @@ function updateRoute(code, data) {
 }
 
 function changeRoute(routeData) {
-    updateRoute(100, routeData.link);
+    updateRoute(100, routeData);
 }
 
 function changeRouteSuccess(routeData) {

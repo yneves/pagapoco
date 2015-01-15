@@ -4,6 +4,7 @@
  */
 var React = require('react'),
     Store = require('../components/pages/store.jsx'),
+    Sobre = require('../components/pages/sobre.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
@@ -65,14 +66,14 @@ Application =
             // check if the route as success or error when not loading
 
             if (this.state.route.status == 'success') {
-                switch(this.state.route) {
+                switch(this.state.route.link.type) {
                     case 'home':
                     case 'product':
                     case 'products':
                         componentToLoad = <Store />;
                         break;
-                    case 'cart':
-                        componentToLoad = <Order />;
+                    case 'fechar':
+                        componentToLoad = <Sobre />;
                         break;
                     default:
                         componentToLoad = <Store />;
@@ -83,7 +84,7 @@ Application =
             }
 
             return (
-                <div>
+                <div id='viewPort'>
                     {componentToLoad}
                 </div>
             );
