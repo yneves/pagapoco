@@ -1,6 +1,11 @@
 module.exports = {
 
     cs: 'R$',
+    
+    login: 'Entrar',
+    logout: 'Sair',
+    username: 'Usuário',
+    password: 'Senha',
 
     search: 'O que está procurando?',
     home: 'Início',
@@ -8,10 +13,14 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
-    view: 'Ver',
-    stores: 'Lojas',
+    
+    storeList: {
+      title: 'Lojas',
+      view: 'Ver',
+    },
 
     priceTag: {
+      to: 'a',
       title: 'Preços',
       history: 'VER HISTÓRICO',
     },
@@ -27,6 +36,10 @@ module.exports = {
     priceAlert: {
       title: 'Alerta de Preços',
       submit: 'ME AVISE',
+    },
+    
+    category: {
+      suplemento: 'Suplementos',
     },
 
 };

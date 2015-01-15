@@ -1,6 +1,7 @@
 
 var React = require('react'),
-    Texts = require('../texts.js');
+    Texts = require('../texts.js'),
+    ProductAction = require('../../actions/ProductActionCreators');
 
 module.exports =
     React.createClass({
@@ -26,11 +27,14 @@ module.exports =
 
         changePrice: function (event) {
             this.setState({
-                price: event.target.value,
+                price: this.refs.input.getDOMNode().value,
             });
         },
 
         submitAlert: function () {
+          var id = this.props.product.get('id');
+          var price = this.state.price;
+          ProductAction.createAlert(id,price);
         },
 
         render: function () {
@@ -42,7 +46,8 @@ module.exports =
                         min={this.state.min}
                         max={this.state.max}
                         value={this.state.price}
-                        onChange={this.changePrice} />
+                        onChange={this.changePrice}
+                        ref="input" />
                     <button type="submit">{Texts.priceAlert.submit}</button>
                 </form>
             );
