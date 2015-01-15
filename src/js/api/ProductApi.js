@@ -15,7 +15,14 @@ var db = require('./FireApi.js'),
 ProductApi = {
     getProducts: function () {
 
-        var productData;
+        if (Product.collection.length) {
+            debug('We already have products');
+            ApiProductActionCreator.setAllProducts(Product.collection);
+            return;
+        }
+
+        // start fetching
+        ApiProductActionCreator.setAllProducts(null);
 
         db.products.getAll(function (data) {
             // if there is an error let's dispatch an event and end here
@@ -105,6 +112,20 @@ ProductApi = {
                     debug('Invalid type: Product data should be of Array type');
                 }
             }
+        });
+    },
+    updateProducts: function (search) {
+        // TODO update the current collection list of products]
+        debug('initiating search');
+        db.products.findByKey('-Jfal7bovfG3zRKLax6r', function (results) {
+            debug('first findByKey returned');
+            debug(results.val());
+        });
+
+        var productRef = db.products.child('-Jfal7bovfG3zRKLax6r');
+        productRef.findByKey('categories', function (results) {
+            debug('second findByKey returned');
+            debug(results.val());
         });
     },
     syncProduct: function (productId) {

@@ -55,7 +55,7 @@ lodash.objects.assign(Firebase.prototype, {
         }, function (err) {
             if (err) {
                 debug('No permission to read data');
-                callback(new Error('No permission to read data')); // empty, no data got from the server
+                callback(new Error(err)); // empty, no data got from the server
             }
         });
     },
@@ -82,11 +82,10 @@ lodash.objects.assign(Firebase.prototype, {
             }.bind(this));
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
-            debug(err);
-            callback(true); // true because error
+            callback(new Error(err)); // true because error
         }
     },
-    create: function (reference, model, callback) {
+    create: function (model, callback) {
 
         var data;
 
@@ -107,14 +106,13 @@ lodash.objects.assign(Firebase.prototype, {
 
         try {
             // just set the data at the reference sended
-            reference.set(data, callback);
+            this.set(data, callback);
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
-            debug(err);
-            callback(true); // true because error
+            callback(new Error(err)); // true because error
         }
     },
-    save: function (reference, model, callback) {
+    save: function (model, callback) {
 
         var data;
 
@@ -132,14 +130,13 @@ lodash.objects.assign(Firebase.prototype, {
         }
 
         try {
-            reference.update(data, callback);
+            this.update(data, callback);
         } catch (err) {
             debug('An error has ocurred while trying to update the data in the DB');
-            debug(err);
-            callback(true); // true because error
+            callback(new Error(err)); // true because error
         }
     },
-    remove: function (reference, model, callback) {
+    remove: function (model, callback) {
 
         var modelKey;
 
@@ -148,18 +145,62 @@ lodash.objects.assign(Firebase.prototype, {
         if (model && typeof model.get === 'function') {
             modelKey = model.get('id');
         } else {
-            throw new Error('Invalid model or no get method found', 'DB.js', 141);
+            throw new Error('Invalid model or no get method found');
         }
 
         if (modelKey) {  // modelId can either be modelId or undefined
             try {
-                reference.child(modelKey).remove(callback);
+                this.child(modelKey).remove(callback);
             } catch (err) {
                 debug('An error has ocurred while trying to remove a model from the DB');
-                debug(err);
-                callback(true); // true because error
+                callback(new Error(err)); // true because error
             }
+        } else {
+            debug('Model has no key to remove, that means that either there was an error or the model is not saved in the database yet');
         }
+    },
+    // This do find's only on exact matches, for more complex search we
+    // are going to use ElasticSearch
+    // this method assumes calls of type .once, so data changes on server
+    // won't trigger any reload
+    findByChild: function (field, term, callback) {
+
+        var modelRef;
+
+        // this method need an obrigatory callback
+        if (!callback || typeof callback !== 'function') return;
+
+        try {
+            modelRef = this.orderByChild(field).equalTo(term);
+        } catch (err) {
+            debug('findbyChild error ocurred');
+            callback(new Error(err));
+        }
+        // just get the data and leave the server alone
+        modelRef.once('value', callback);
+    },
+    // Used to look for data in the database, this wrapper is better instead of
+    // only going straight to .child because with this method we have a good
+    // support for error handling (returnning an error object) that works better
+    // with the current project, also there are some more helpfull messages.
+    // this methods aalso assumes calls of type .once, so data changes on server
+    // won't trigger any reload
+    findByKey: function (key, callback) {
+
+        var modelRef;
+
+        // this method need an obrigatory callback
+        if (!callback || typeof callback !== 'function') return;
+
+        try {
+            // firebase will throw an error if no valid identification is sent
+            modelRef = this.child(key);
+        } catch (err) {
+            debug('findByKey error ocurred');
+            callback(new Error(err));
+        }
+        // just get the data and  leave the server alone
+        modelRef.once('value', callback);
     }
 });
 

@@ -13,8 +13,21 @@ ProductActionCreator = {
     applyFilter: function (query) {
         Dispatcher.handleViewAction({
             type : productAction.APPLY_FILTER,
-            data : { query: query }
+            data : { query : query }
         });
+    },
+
+    // called when more products are needed from the database
+    loadMoreProducts: function () {
+        Dispatcher.handleViewAction({
+            type: productAction.LOAD_MORE,
+            data: null
+        });
+        if (Validator.isFunction(api.product.updateProducts)) {
+            api.product.updateProducts();
+        } else {
+            debug('No updateProducts valid method found');
+        }
     },
 
     // called when the player wishes to know the product reached a certain price

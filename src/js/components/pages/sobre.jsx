@@ -13,6 +13,6 @@ module.exports =
                     <p>Aqui paragrafo 1</p>
                     <p>Aqui parágrafo 2</p>
                 </div>
-            )
+            );
         }
     });

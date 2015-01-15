@@ -1,9 +1,11 @@
 var React = require('react'),
     Header = require('../header/header.jsx'),
-    Products = require('../products/products.jsx');
+    Products = require('../products/products.jsx'),
+    debug = require('debug')('store.jsx');
 
 var Store =
     React.createClass({
+
         render: function (){
             return (
                 <div className="page">

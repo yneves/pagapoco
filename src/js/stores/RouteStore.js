@@ -14,7 +14,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _route,
     _requestTypes,
     _responseCodes;
-    
+
 /**
  * Can work as a route history i guess
  * @type {Array}
@@ -100,7 +100,7 @@ function updateRoute(code, data) {
 }
 
 function changeRoute(routeData) {
-    updateRoute(100, routeData.link);
+    updateRoute(100, routeData);
 }
 
 function changeRouteSuccess(routeData) {
