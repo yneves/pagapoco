@@ -8,12 +8,16 @@ module.exports = {
     password: 'Senha',
     facebook: 'Facebook',
 
-    search: 'O que está procurando?',
     home: 'Início',
     wish: 'Adiciona à lista',
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
+    
+    search: {
+      placeholder: 'O que está procurando?',
+      submit: 'Pesquisar',
+    },
     
     storeList: {
       title: 'Lojas',

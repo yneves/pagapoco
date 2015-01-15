@@ -38,8 +38,6 @@ module.exports =
             
             debug(this.state.products);
 
-            debug(this.state.products);
-
             if (this.state.currentProduct) {
                 content = (
                     <ProductSingleView product={this.state.currentProduct} />
