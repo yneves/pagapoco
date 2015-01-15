@@ -19,7 +19,7 @@ module.exports =
         },
 
         clickShare: function () {
-
+            ProductAction.shareProduct(this.props.product.id);
         },
 
         render: function () {

@@ -22,9 +22,9 @@ var Search =
             }.bind(this),200);
         },
 
-        onChange: function (event){
+        changeQuery: function (event) {
           this.setState({
-              query: event.target.value,
+              query: this.refs.input.getDOMNode().value,
           });
         },
 
@@ -34,9 +34,9 @@ var Search =
                     <input
                         type="text"
                         value={this.state.query}
-                        onChange={this.onChange}
                         placeholder={Texts.search}
-                    />
+                        onChange={this.changeQuery}
+                        ref="input" />
                 </div>
             );
         }
