@@ -11,10 +11,31 @@ ProductActionCreator = {
 
     // called when the user type on search input field
     applyFilter: function (query) {
+        debug('applyFilter');
         Dispatcher.handleViewAction({
             type : productAction.APPLY_FILTER,
-            data : { query: query }
+            data : { query : query }
         });
+
+        if (Validator.isFunction(api.product.searchProducts)) {
+            api.product.searchProducts(query);
+        } else {
+            debug('No searchProducts valid method found');
+        }
+    },
+
+    // called when more products are needed from the database
+    loadMoreProducts: function () {
+        Dispatcher.handleViewAction({
+            type: productAction.LOAD_MORE,
+            data: null
+        });
+        if (Validator.isFunction(api.product.updateProducts)) {
+            debug('calling api product updateProducts');
+            // api.product.updateProducts();
+        } else {
+            debug('No updateProducts valid method found');
+        }
     },
 
     // called when the player wishes to know the product reached a certain price

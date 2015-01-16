@@ -15,7 +15,14 @@ var db = require('./FireApi.js'),
 ProductApi = {
     getProducts: function () {
 
-        var productData;
+        if (Product.collection.length) {
+            debug('We already have products');
+            ApiProductActionCreator.setAllProducts(Product.collection);
+            return;
+        }
+
+        // start fetching, fire event
+        ApiProductActionCreator.setAllProducts(null);
 
         db.products.getAll(function (data) {
             // if there is an error let's dispatch an event and end here
@@ -28,40 +35,18 @@ ProductApi = {
                 //     productsRaw,
                 //     taxonomiesRaw,
                 //     prices,
-                //     finalHistory,
                 //     priceData;
                 //
-                // products = results[0];
-                // productsPriceHistory = results[1];
+                //     products = results[0];
                 //
                 //     data = products; // simple shortcut
                 //     products = [];
                 //     productsRaw = data;
-                //     priceHistoryRaw = results[2];
+
                 //     taxonomiesRaw = taxonomies.body;
                 //     prices = prices || [];
-                //     finalHistory = {
-                //         series : [],
-                //         data : []
-                //     };
+
                 //     priceData = {};
-                //
-                //     // Create price history
-                //     priceHistoryRaw.forEach(function (historyValue) {
-                //
-                //         finalHistory.series = _.without(_.keys(historyValue), 'month');
-                //         priceData = {
-                //             'x': finalHistory.series,
-                //             'y': []
-                //         };
-                //
-                //         finalHistory.series.forEach(function (finalHistoryValue) {
-                //             priceData.y.push(historyValue[finalHistoryValue]);
-                //         });
-                //
-                //         finalHistory.data.push(priceData);
-                //     });
-                //
                 //
                 //     /**
                 //      * This actions are wrappers to update the current store data once we go live the discounts will be already
@@ -89,23 +74,56 @@ ProductApi = {
                 //             }
                 //         });
                 //
-                //         // calculate the initial_discount based on the price
-                //         // TODO STAGE 3
-                //         // value.initial_discount = (1 - value.price / value.original_price);
-                //
-                //         // kind hackish, we are assuming that they are in the correct index order...
-                //         value.price_history = finalHistory.data[key];
                 //         value.wished = Transmuter.toBoolean(value.wished);
                 //         products.push(value);
                 //     });
                 if (data instanceof Array) {
-                    Product.create(data);
-                    ApiProductActionCreator.setAllProducts(Product.collection);
+                    if (data.length) {
+                        // we got data, let's set it
+                        Product.create(data);
+                        ApiProductActionCreator.setAllProducts(Product.collection);
+                    } else {
+                        // No data received yet
+                        ApiProductActionCreator.setAllProducts(null);
+                    }
                 } else {
-                    debug('Invalid type: Product data should be of Array type');
+                    debug('Error: data is not an instance of Array');
+                    ApiProductActionCreator.setAllProducts(new Error('Invalid type: Product data should be of Array type'));
                 }
             }
         });
+    },
+    // used for search, it should reset the initial state of the products
+    searchProducts: function (search) {
+        debug('initiating search');
+        debug(search);
+        // start fetching for search, fire event
+        ApiProductActionCreator.setAllProducts(null);
+        db.products.searchFor(search, false, function (data) {
+            debug('returned from search');
+            if (data instanceof Error) {
+                ApiProductActionCreator.setAllProducts(data);
+                debug('Error trying to search for products');
+            } else {
+                if (data.length) {
+                    // clear products data with the search results
+                    Product.collection.reset(data);
+                    ApiProductActionCreator.setAllProducts(Product.collection);
+                } else {
+
+                }
+            }
+
+            debug(data);
+        });
+    },
+    // used for loadMore
+    updateProducts: function (term) {
+
+        // TODO if there is a term we should loadMore based on a search
+
+        // TODO if there is no term we should just loadMore
+
     },
     syncProduct: function (productId) {
         var model;

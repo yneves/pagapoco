@@ -14,7 +14,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _route,
     _requestTypes,
     _responseCodes;
-    
+
 /**
  * Can work as a route history i guess
  * @type {Array}

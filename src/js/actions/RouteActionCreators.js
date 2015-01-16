@@ -36,8 +36,7 @@ RouteActionCreator = {
                 data : routeData
             });
 
-            // now do everything that is needed and route related
-            // if the route is looking for products
+            // Load data based on current Route type
             if (routeData.link.type === 'product') {
                 // let's require the products from the server
                 if (Validator.isFunction(api.product.getProducts)) {
@@ -54,7 +53,7 @@ RouteActionCreator = {
                 }
             }
         } else {
-            // no route found, alert the routing error
+            // no route found, alert a routing error
             Dispatcher.handleViewAction({
                 type: routeAction.CHANGE_ROUTE_ERROR,
                 data: routeData
