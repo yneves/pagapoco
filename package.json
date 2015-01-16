@@ -44,6 +44,7 @@
     "tether": "^0.6.5",
     "transmuter": "git+https://github.com/onyxcorp/transmuter",
     "underscore": "^1.7.0",
+    "underscore.inflections": "^0.2.1",
     "underscore.string": "^2.4.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.1.1"
