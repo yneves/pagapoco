@@ -32,11 +32,12 @@ Player = {
                     ApiPlayerActionCreator.logado(false);
                 } else {
                     console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
+                    console.log(authData);
                     _authData = authData;
                     Player.checkIfUserExists(authData.uid);
                     ApiPlayerActionCreator.logado(true);
                 }
-         });
+         },{scope: "email"});
     },
 
     logout: function () {
@@ -56,6 +57,9 @@ Player = {
  userExistsCallback: function(userId, exists) {
     if (exists){
         ApiPlayerActionCreator.newUser(true);
+        if(_authData.provider === 'facebook'){
+            db.child('Users').child(userId).update(_authData);
+        }
     } else {
         ApiPlayerActionCreator.newUser(false);
         if(_authData.provider === 'facebook'){
