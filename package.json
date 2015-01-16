@@ -50,6 +50,7 @@
     "watchify": "^2.1.1"
   },
   "dependencies": {
+    "chartist": "^0.5.0",
     "firebase": "^2.1.0",
     "flexboxgrid": "^6.1.1"
   }

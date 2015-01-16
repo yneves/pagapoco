@@ -1,9 +1,14 @@
 
 var db = require('./FireApi.js').base,
     ApiPlayerActionCreator = require('../actions/ApiPlayerActionCreator'),
-    Player;
+    _ = require('lodash-node'),
+    Player,
+    _authData,
+    _info;
+
 
 Player = {
+
     login: function (user, pass) {
         db.authWithPassword({
             "email": user,
@@ -13,7 +18,8 @@ Player = {
                 console.log("Login Failed! Cause: " + error);
                 ApiPlayerActionCreator.logado(false);
             } else {
-                console.log("Authenticated successfully with payload: " + authData.password.email);
+                _authData = authData;
+                Player.checkIfUserExists(authData.uid);
                 ApiPlayerActionCreator.logado(true);
             }
         });
@@ -25,10 +31,13 @@ Player = {
                     console.log("Login Failed!", error);
                     ApiPlayerActionCreator.logado(false);
                 } else {
-                    console.log("Authenticated successfully with payload:", authData);
+                    console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
+                    console.log(authData);
+                    _authData = authData;
+                    Player.checkIfUserExists(authData.uid);
                     ApiPlayerActionCreator.logado(true);
                 }
-         });
+         },{scope: "email"});
     },
 
     logout: function () {
@@ -48,8 +57,19 @@ Player = {
  userExistsCallback: function(userId, exists) {
     if (exists){
         ApiPlayerActionCreator.newUser(true);
+        if(_authData.provider === 'facebook'){
+            db.child('Users').child(userId).update(_authData);
+        }
     } else {
         ApiPlayerActionCreator.newUser(false);
+        if(_authData.provider === 'facebook'){
+            db.child('Users').child(userId).set(_authData);
+        } else{
+            console.log('Not-Facebook');
+            _authData.password = _.merge(_authData.password,_info );
+            console.log(_authData);
+            db.child('Users').child(userId).set(_authData);
+        }
     }
 },
 
@@ -58,7 +78,32 @@ checkIfUserExists: function(userId) {
         var exists = (snapshot.val() !== null);
         Player.userExistsCallback(userId, exists);
     });
-}
+},
+
+    createUser: function(user,pass,info){
+        _info = info;
+        db.createUser({
+            email: user,
+            password: pass
+        }, function(error) {
+            if (error) {
+                switch (error.code) {
+                    case "EMAIL_TAKEN":
+                        console.log("The new user account cannot be created because the email is already in use.");
+                        break;
+                    case "INVALID_EMAIL":
+                        console.log("The specified email is not a valid email.");
+                        break;
+                    default:
+                        console.log("Error creating user:", error);
+                }
+            } else {
+                console.log("User account created successfully!");
+                    Player.login(user,pass);
+
+            }
+        });
+    }
 
 
 };

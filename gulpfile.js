@@ -89,6 +89,11 @@ gulp.task('resources', function () {
         .pipe(gconnect.reload());
 });
 
+// specific function to get flex grid css to dist
+gulp.task('flexboxgrid', function () {
+    gulp.src('node_modules/flexboxgrid/dist/flexboxgrid.min.css')
+        .pipe(gulp.dest('./dist/styles'));
+});
 
 //Webserver for dev
 gulp.task('server', function () {
@@ -104,6 +109,14 @@ gulp.task('server', function () {
        livereload: true
     });
 
+    gutil.log('Watching html, styles, assets and js');
+    gulp.watch(paths.html, ['html']);
+    gulp.watch(paths.styles, ['styles']);
+    gulp.watch(paths.assets, ['assets']);
+    gulp.watch(paths.js, ['js']);
+});
+
+gulp.task('watch', function (callback) {
     gutil.log('Watching html, styles, assets and js');
     gulp.watch(paths.html, ['html']);
     gulp.watch(paths.styles, ['styles']);

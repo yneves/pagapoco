@@ -21,7 +21,8 @@ module.exports =
         getInitialState: function () {
             return {
                 products        : this.props.products || ProductStore.getCurrentCatalog(),
-                currentProduct  : this.props.currentProduct || ProductStore.getCurrent()
+                currentProduct  : this.props.currentProduct || ProductStore.getCurrent(),
+                LoadState       : ProductStore.getLoadingState()
             };
         },
 
@@ -35,6 +36,20 @@ module.exports =
 
         render: function () {
             var content;
+            var Load;
+            
+            if (this.state.LoadState){
+                Load = (
+                    <div id="loading">
+                        <div id='Wrapper'>
+                            <img id='loadImg' src='../../assets/icons/ajax-loader.gif'/>
+                            <h2>Carregando...</h2>
+                        </div>
+                    </div>
+                )
+            }
+
+            debug(this.state.products);
 
             if (this.state.currentProduct) {
                 content = (
@@ -43,25 +58,22 @@ module.exports =
 
             } else {
 
-                debug(this.state.products);
+                var productGrid,
+                    masonryOptions;
 
-                var productGrid;
-                var masonryOptions = {
+                masonryOptions = {
                     transitionDuration: 0
                 };
-                if (this.state.products.length > 0) {
-                    productGrid = [];
-                    var products = this.state.products.models;
-                    var length = products.length;
-                    for (var i = 0; i < length; i++) {
-                        var product = products[i];
-                        productGrid[i] = (
-                            <ProductGrid key={i} product={product} />
+
+                if (this.state.products) {
+                    productGrid = this.state.products.map(function(product) {
+                        return (
+                            <ProductGrid key={product.get('id')} product={product} />
                         );
-                    }
-                } else {
-                    productGrid = null;
+                    });
                 }
+                  
+
 
                 // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
                 // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT
@@ -87,6 +99,7 @@ module.exports =
 
             return (
                 <div className="products">
+                    {Load}
                     {content}
                 </div>
             );
@@ -97,10 +110,11 @@ module.exports =
          * Apenas atualizar os states
          * @private
          */
-        _onChange: function() {
+        _onChange: function() {          
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent()
+                currentProduct  : ProductStore.getCurrent(),
+                LoadState: ProductStore.getLoadingState()
             });
         }
     });

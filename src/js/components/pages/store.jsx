@@ -3,7 +3,7 @@ var React = require('react'),
     Products = require('../products/products.jsx'),
     debug = require('debug')('store.jsx');
 
-var Store =
+module.exports = 
     React.createClass({
         render: function (){
             return (
@@ -19,5 +19,3 @@ var Store =
             );
         }
     });
-
-module.exports = Store;

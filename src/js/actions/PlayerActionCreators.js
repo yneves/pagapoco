@@ -46,6 +46,19 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
          api.faceLogin();
      },
 
+     registerUser: function(user,pass,info){
+         Dispatcher.handleViewAction({
+             type: playerAction.CREATE_USER,
+             data: {
+                 state: true,
+                 user: user,
+                 pass: pass,
+                 info: info
+             }
+         });
+         api.createUser(user,pass,info)
+     },
+
 
      logOut: function(){
         Dispatcher.handleViewAction({
