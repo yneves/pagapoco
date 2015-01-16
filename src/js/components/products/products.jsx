@@ -22,7 +22,7 @@ module.exports =
             return {
                 products        : this.props.products || ProductStore.getCurrentCatalog(),
                 currentProduct  : this.props.currentProduct || ProductStore.getCurrent(),
-                LoadState: ProductStore.getLoadingState()
+                LoadState       : ProductStore.getLoadingState()
             };
         },
 
@@ -37,7 +37,7 @@ module.exports =
         render: function () {
             var content;
             var Load;
-            console.log(this.state.LoadState);
+            
             if (this.state.LoadState){
                 Load = (
                     <div id="loading">
@@ -72,6 +72,7 @@ module.exports =
                         );
                     });
                 }
+                  
 
 
                 // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
@@ -109,7 +110,7 @@ module.exports =
          * Apenas atualizar os states
          * @private
          */
-        _onChange: function() {
+        _onChange: function() {          
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent(),

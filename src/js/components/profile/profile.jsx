@@ -45,7 +45,6 @@ module.exports =
 
         render: function () {
             var content;
-
             if (this.state.logged) {
                 content = (
                     <div>
@@ -53,11 +52,10 @@ module.exports =
                         <a href="javascript:void(0)" onClick={this.handleLogout}>{Texts.logout}</a>
                     </div>
                 );
-
             } else {
                 content = (
                     <div>
-                        <a href="javascript:void(0)" onClick={this.handleFbLogin}>Facebook</a>
+                        <a href="javascript:void(0)" onClick={this.handleFbLogin}>{Texts.facebook}</a>
                         <form id="loginForm" onSubmit={this.handleSubmit}>
                             <input type="text" ref="username" placeholder={Texts.username} />
                             <input type="password" ref="password" placeholder={Texts.password} />
@@ -66,7 +64,6 @@ module.exports =
                     </div>
                 );
             }
-
             return (
                 <div>
                     {content}

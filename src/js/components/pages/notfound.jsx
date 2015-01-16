@@ -3,7 +3,7 @@ var React = require('react'),
     Header = require('../header/header.jsx'),
     debug = require('debug')('notfound.jsx');
 
-module.exports =
+module.exports = 
     React.createClass({
         render: function (){
             return (
