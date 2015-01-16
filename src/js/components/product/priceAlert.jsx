@@ -42,7 +42,7 @@ module.exports =
                 <form className="product-alert-form" onSubmit={this.submitAlert}>
                     <h3>{Texts.priceAlert.title}</h3>
                     <strong>{Texts.cs} {this.state.price}</strong>
-                    <input type="range"
+                    <input type="range"                        
                         min={this.state.min}
                         max={this.state.max}
                         value={this.state.price}
