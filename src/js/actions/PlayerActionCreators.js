@@ -43,7 +43,12 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
                  state: true
              }
          });
-         api.faceLogin();
+        if (Validator.isFunction(api.faceLogIn)) {
+            api.faceLogIn();
+        } else {
+            debug('No faceLogIn valid method found');
+        }
+
      },
 
      registerUser: function(user,pass,info){
@@ -56,9 +61,12 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
                  info: info
              }
          });
-         api.createUser(user,pass,info)
+        if (Validator.isFunction(api.createUser)) {
+            api.createUser(user,pass,info);
+        } else {
+            debug('No createUser valid method found');
+        }
      },
-
 
      logOut: function(){
         Dispatcher.handleViewAction({

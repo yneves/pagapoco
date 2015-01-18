@@ -53,7 +53,7 @@ Application =
                };
             }
         },
-          
+
         componentWillUnmount: function () {
             routeStore.removeChangeListener(this._onChange);
         },
@@ -71,13 +71,13 @@ Application =
                     case 'home':
                     case 'product':
                     case 'products':
-                        componentToLoad = <Store />;
+                        componentToLoad = <Store route={this.state.route.link.type} />;
                         break;
                     case 'register':
-                        componentToLoad = <Register />;
+                        componentToLoad = <Register route={this.state.route.link.type} />;
                         break;
                     default:
-                        componentToLoad = <Store />;
+                        componentToLoad = <Store route={this.state.route.link.type} />;
                         break;
                 }
             } else {

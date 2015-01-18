@@ -17,6 +17,7 @@ var Firebase = require('firebase'),
     tables;
 
 tables = [
+    'Users',
     'products',
     'products_price_history'
 ];
@@ -29,15 +30,16 @@ lodash.objects.assign(Firebase.prototype, {
      * Get all data from a certain root child of firebase
      * return Array (empty or not) or Error Object
      */
-    getAll: function (callback) {
+    getAll: function (limit, callback) {
 
         var data;
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
+        limit = parseInt(limit) || 30;
         data = [];
 
         // default implementation to get data from firebase
-        this.once('value', function (snapshot) {
+        this.limitToLast(30).once('value', function (snapshot) {
             // snapshot should contain a list of products
             if (snapshot.val() !== null) {
 
@@ -88,13 +90,21 @@ lodash.objects.assign(Firebase.prototype, {
                     // if no errors, let's find the modelRef and than update it with the wanted data
                     // for this matter we delegate to the create method already created bellow
                     modelRef = this.child(key);
-                    this.create(modelRef, model, callback);
+                    modelRef.create(model, function (err) {
+                        if (err) {
+                            debug('createWithKey - create - error ocurred');
+                            callback(new Error(err));
+                        } else {
+                            callback();
+                        }
+                    });
                 } else {
-                    callback(err);
+                    debug('createWithkey - update - error ocurred');
+                    callback(new Error(err));
                 }
             }.bind(this));
         } catch (err) {
-            debug('An error has ocurred while trying to update the data in the DB');
+            debug('An error exception has ocurred while trying to update the data in the DB');
             callback(new Error(err)); // true because error
         }
     },
@@ -105,7 +115,7 @@ lodash.objects.assign(Firebase.prototype, {
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
         // let's make sure we are working with a valid Model instance
-        if (model && lodash.objects.isFunction(model.toJSON)) {
+        if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
             // no model, fuck this shit
@@ -113,16 +123,28 @@ lodash.objects.assign(Firebase.prototype, {
         }
 
         // we never save the id because in firebase the ID is the key of the data, not another attribute
-        if (data && data.id) {
-            delete data.id;
+        if (data && data[model.idAttribute]) {
+            delete data[model.idAttribute];
         }
 
-        try {
-            // just set the data at the reference sended
-            this.set(data, callback);
-        } catch (err) {
-            debug('An error has ocurred while trying to update the data in the DB');
-            callback(new Error(err)); // true because error
+        // add some failguard, avoiding user ovewrite some root table entirely
+        if (this.parent().toString() === this.root().toString()) {
+            callback(new Error('This method cannot be called from an Root table, try using createWithKey method'));
+        } else {
+            try {
+                // just set the data at the reference sended
+                this.set(data, function (err) {
+                    if (err) {
+                        debug('Create error ocurred');
+                        callback(new Error(err));
+                    } else {
+                        callback();
+                    }
+                });
+            } catch (err) {
+                debug('An error exception has ocurred while trying to update the data in the DB');
+                callback(new Error(err)); // true because error
+            }
         }
     },
     save: function (model, callback) {
@@ -134,20 +156,25 @@ lodash.objects.assign(Firebase.prototype, {
         if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
-            // TODO halting the operation.. it's the best way? Maybe calling callback with
-            // the error would be a more elegant solution
-            throw new Error('Invalid model or no toJSON method found');
+            callback(new Error('Invalid model or no toJSON method found'));
         }
 
         // we never save the id because in firebase the ID is the key of the data, not another attribute
-        if (data && data.id) {
-            delete data.id;
+        if (data && data[model.idAttribute]) {
+            delete data[model.idAttribute];
         }
 
         try {
-            this.update(data, callback);
+            this.update(data, function (err) {
+                if (err) {
+                    debug('Save error ocurred');
+                    callback(new Error(err));
+                } else {
+                    callback();
+                }
+            });
         } catch (err) {
-            debug('An error has ocurred while trying to update the data in the DB');
+            debug('An error exception has ocurred while trying to update the data in the DB');
             callback(new Error(err)); // true because error
         }
     },
@@ -165,9 +192,16 @@ lodash.objects.assign(Firebase.prototype, {
 
         if (modelKey) {  // modelId can either be modelId or undefined
             try {
-                this.child(modelKey).remove(callback);
+                this.child(modelKey).remove( function (err) {
+                    if (err) {
+                        debug('Remove error ocurred');
+                        callback(new Error(err));
+                    } else {
+                        callback();
+                    }
+                });
             } catch (err) {
-                debug('An error has ocurred while trying to remove a model from the DB');
+                debug('An error exception has ocurred while trying to remove a model from the DB');
                 callback(new Error(err)); // true because error
             }
         } else {
@@ -206,7 +240,6 @@ lodash.objects.assign(Firebase.prototype, {
             type = lodash.utilities.inflection.singularize(this.key());
         }
 
-        debug('current type is ' + type);
         // create a new firebase instance
         // TODO using ref (declared bellow) would be better? Not sure...
         searchRef = new Firebase(baseUrl + '/search');
@@ -227,7 +260,6 @@ lodash.objects.assign(Firebase.prototype, {
         // after that return the key to create a watch to get it once
         // the database finish doing it's thing
         searchKey = searchRef.child('request').push(searchObj).key();
-        console.log('search', searchKey, searchObj);
 
         // watch the response, once it's ready, get the data. It will be
         // the ElasticSearch response
@@ -241,22 +273,26 @@ lodash.objects.assign(Firebase.prototype, {
                 hits = snapshot.val().hits;
                 score = snapshot.val().max_score;
                 total = snapshot.val().total;
+                if (parseInt(total)) {
+                    // loop through the snapshot data object
+                    lodash.collections.forEach(hits, function (childSnapshot) {
 
-                // loop through the snapshot data object
-                lodash.collections.forEach(hits, function (childSnapshot) {
+                        // childData will be the actual contents of the child
+                        childData = childSnapshot._source || {};
+                        // set the key as the firebase key, needed because
+                        // firebase has no support for arrays and our collection/model
+                        // object need this for correct data manipulation
+                        // also we run pareInt because integer type data arrive from DB
+                        // as a string, so we need to perform this check
+                        childData.id = parseInt(childSnapshot._id) || childSnapshot._id;
+                        // add the product to the list to be added to the collection
 
-                    // childData will be the actual contents of the child
-                    childData = childSnapshot._source || {};
-                    // set the key as the firebase key, needed because
-                    // firebase has no support for arrays and our collection/model
-                    // object need this for correct data manipulation
-                    // also we run pareInt because integer type data arrive from DB
-                    // as a string, so we need to perform this check
-                    childData.id = parseInt(childSnapshot._id) || childSnapshot._id;
-                    // add the product to the list to be added to the collection
-
-                    data.push(childData);
-                });
+                        data.push(childData);
+                    });
+                } else {
+                    debug('no data for search');
+                    callback(data);
+                }
             }
             callback(data);
         }, function (err) {

@@ -5,7 +5,7 @@
 
 */
 
-var db = require('./FireApi.js').products_price_history,
+var db = require('./FireApi.js'),
     request = require('../utils/Request'),
     ApiProductPriceHistoryActionCreator = require('../actions/ApiProductPriceHistoryActionCreator'),
     ProductPriceHistory = require('../data/ProductPriceHistory'),
@@ -16,7 +16,7 @@ ProductPriceHistoryApi = {
 
     getProductPriceHistory: function () {
 
-        db.getAll(function (data) {
+        db.products_price_history.getAll(30, function (data) {
             // if there is an error let's dispatch an event and end here
             if (data instanceof Error) {
                 productServerActionCreator.setAllProducts(data);

@@ -1,92 +1,153 @@
 
-var db = require('./FireApi.js').base,
+var db = require('./FireApi.js'),
     ApiPlayerActionCreator = require('../actions/ApiPlayerActionCreator'),
-    _ = require('lodash-node'),
-    Player,
-    _authData,
+    lodash = {
+        objects: {
+            merge: require('lodash-node/modern/objects/merge')
+        }
+    },
+    PlayerApi,
+    Player = require('../data/Player'),
     _info;
 
 
-Player = {
+PlayerApi = {
 
-    login: function (user, pass) {
-        db.authWithPassword({
+    login: function (user, pass, isNew) {
+
+        isNew = isNew || null;
+
+        // init server sync, fire event
+        ApiPlayerActionCreator.login(null);
+
+        // start syncing with server
+        db.base.authWithPassword({
             "email": user,
             "password": pass
         }, function(error, authData) {
             if (error) {
                 console.log("Login Failed! Cause: " + error);
-                ApiPlayerActionCreator.logado(false);
+                ApiPlayerActionCreator.login({
+                    state: false
+                });
             } else {
-                _authData = authData;
-                Player.checkIfUserExists(authData.uid);
-                ApiPlayerActionCreator.logado(true);
+                console.log(authData);
+                Player.checkIfUserExists(authData);
             }
         });
     },
 
-    faceLogin: function(){
-        db.authWithOAuthPopup("facebook", function(error, authData) {
-                if (error) {
-                    console.log("Login Failed!", error);
-                    ApiPlayerActionCreator.logado(false);
-                } else {
-                    console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
-                    console.log(authData);
-                    _authData = authData;
-                    Player.checkIfUserExists(authData.uid);
-                    ApiPlayerActionCreator.logado(true);
-                }
+    faceLogIn: function (){
+
+        // init server sync, fire event
+        ApiPlayerActionCreator.login(null);
+
+        // start syncing with server
+        db.base.authWithOAuthPopup("facebook", function(error, authData) {
+            if (error) {
+                console.log("Login Failed!", error);
+                ApiPlayerActionCreator.login({
+                    state: false
+                });
+            } else {
+                console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
+                console.log(authData);
+                PlayerApi.checkIfUserExists(authData);
+            }
          },{scope: "email"});
     },
 
     logout: function () {
-        ApiPlayerActionCreator.logado(false);
-        db.unauth();
+        // TODO check if there is some way to validate this callback
+        ApiPlayerActionCreator.login({
+            state: false
+        });
+        db.base.unauth();
     },
 
     check: function () {
-        var authData = db.getAuth();
-        if (authData && authData != null) {
-            ApiPlayerActionCreator.logado(true);
+        var authData;
+        authData = db.base.getAuth();
+        console.log(authData);
+        if (authData && authData !== null) {
+            ApiPlayerActionCreator.login({
+                state: true
+            });
         } else {
-            ApiPlayerActionCreator.logado(false);
+            ApiPlayerActionCreator.login({
+                state: false
+            });
         }
     },
 
- userExistsCallback: function(userId, exists) {
-    if (exists){
-        ApiPlayerActionCreator.newUser(true);
-        if(_authData.provider === 'facebook'){
-            db.child('Users').child(userId).update(_authData);
-        }
-    } else {
-        ApiPlayerActionCreator.newUser(false);
-        if(_authData.provider === 'facebook'){
-            db.child('Users').child(userId).set(_authData);
-        } else{
-            console.log('Not-Facebook');
-            _authData.password = _.merge(_authData.password,_info );
-            console.log(_authData);
-            db.child('Users').child(userId).set(_authData);
-        }
-    }
-},
+    checkIfUserExists: function(authData) {
 
-checkIfUserExists: function(userId) {
-    db.child('Users').child(userId).once('value', function(snapshot) {
-        var exists = (snapshot.val() !== null);
-        Player.userExistsCallback(userId, exists);
-    });
-},
+        var newUser;
+
+        db.Users.findByKey(authData.uid, function (snapshot) {
+
+            if (snapshot instanceof Error) { // error ocurred
+                console.log(snapshot);
+            } else if (snapshot.val() !== null){ // user exists
+                ApiPlayerActionCreator.login({
+                    state: true,
+                    isNew: false
+                });
+                // get the most recent user data from facebook
+                if (authData.provider === 'facebook') {
+                    newUser = Player.create('facebook', authData);
+                    db.Users.child(authData.uid).save(newUser, function (err) {
+                        if (err) {
+                            console.log('Erro ao atualizar usuário');
+                        } else {
+                            console.log('Usuário atualizado com sucesso');
+                        }
+                    });
+                }
+            } else {    // new user
+                ApiPlayerActionCreator.login({
+                    state: true,
+                    isNew: true
+                });
+                if(authData.provider === 'facebook'){
+                    newUser = Player.create('facebook', authData);
+                    db.Users.createWithKey(newUser.get('uid'), newUser, function (err) {
+                        if (err) {
+                            console.log('Creating new Facebook user - error');
+                        } else {
+                            console.log('Creating new facebook user - success');
+                        }
+                    });
+                } else{
+                    authData.password = lodash.objects.merge(authData.password, _info);
+                    console.log('Not-Facebook');
+                    console.log(authData);
+                    newUser = Player.create('simple', authData);
+                    db.Users.createwithKey(newUser.get('uid'), newUser, function (err) {
+                        if (err) {
+                            console.log('Creating new Simple user - error');
+                        } else {
+                            console.log('Creating new Simple user - success');
+                        }
+                    });
+                }
+            }
+        });
+    },
 
     createUser: function(user,pass,info){
+
         _info = info;
-        db.createUser({
+
+        // start registering player, fire api
+        ApiPlayerActionCreator.register(null);
+
+        db.base.createUser({
             email: user,
             password: pass
         }, function(error) {
             if (error) {
+                ApiPlayerActionCreator.register(new Error(error));
                 switch (error.code) {
                     case "EMAIL_TAKEN":
                         console.log("The new user account cannot be created because the email is already in use.");
@@ -99,8 +160,10 @@ checkIfUserExists: function(userId) {
                 }
             } else {
                 console.log("User account created successfully!");
-                    Player.login(user,pass);
-
+                ApiPlayerActionCreator.register({
+                    user: user
+                });
+                PlayerApi.login(user, pass, true);
             }
         });
     }
@@ -108,4 +171,4 @@ checkIfUserExists: function(userId) {
 
 };
 
-module.exports = Player;
+module.exports = PlayerApi;

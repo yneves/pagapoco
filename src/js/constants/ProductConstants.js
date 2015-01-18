@@ -1,19 +1,16 @@
 module.exports = {
     // view
-    APPLY_FILTER    : null,
+    SEARCH_PRODUCTS : null,
     LOAD_MORE       : null,
     TOGGLE_WISHLIST : null,
-    ADD_ITEM        : null,
-    REMOVE_ITEM     : null,
-    INCREASE_ITEM   : null,
-    DECREASE_ITEM   : null,
     VIEW_PRODUCT    : null,
+
     //server
-    PRODUCT_UPDATE_START : null,
-    PRODUCT_UPDATE_ERROR : null,
-    PRODUCT_UPDATE_SUCCESS : null,
-    RECEIVE_RAW_PRODUCTS_START : null,
-    RECEIVE_RAW_PRODUCTS_ERROR : null,
-    RECEIVE_RAW_PRODUCTS_SUCCESS : null
+    PRODUCT_SAVE_START : null,
+    PRODUCT_SAVE_ERROR : null,
+    PRODUCT_SAVE_SUCCESS : null,
+    PRODUCT_SET_START : null,
+    PRODUCT_SET_ERROR : null,
+    PRODUCT_SET_SUCCESS : null
 
 };

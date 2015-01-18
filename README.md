@@ -41,3 +41,11 @@ from the dispatcher that was sent by the ActionCreator which was called by the A
 
 /utils
 Generic helper tools
+
+
+EVENTS
+
+Every server call must be fire 3 events, in the following order:
+
+FOO_START
+FOO_SUCCESS / FOO_ERROR

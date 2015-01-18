@@ -5,8 +5,13 @@ module.exports = {
     LOGOUT:null,
     FACEBOOK_LOGIN: null,
     CREATE_USER: null,
+
     //server
-    LOGADO: null,
-    NEW_USER: null
+    PLAYER_LOGIN_START: null,
+    PLAYER_LOGIN_SUCCESS: null,
+    PLAYER_LOGIN_ERROR: null,
+    PLAYER_REGISTER_START: null,
+    PLAYER_REGISTER_SUCCESS: null,
+    PLAYER_REGISTER_ERROR: null
 
 };

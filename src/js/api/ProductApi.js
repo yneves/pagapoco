@@ -17,17 +17,17 @@ ProductApi = {
 
         if (Product.collection.length) {
             debug('We already have products');
-            ApiProductActionCreator.setAllProducts(Product.collection);
+            ApiProductActionCreator.setProducts(Product.collection);
             return;
         }
 
         // start fetching, fire event
-        ApiProductActionCreator.setAllProducts(null);
+        ApiProductActionCreator.setProducts(null);
 
-        db.products.getAll(function (data) {
+        db.products.getAll(30, function (data) {
             // if there is an error let's dispatch an event and end here
             if (data instanceof Error) {
-                ApiProductActionCreator.setAllProducts(data);
+                ApiProductActionCreator.setProducts(data);
                 debug('Error trying to get products');
             } else {
                 // TODO set the variables on the else statement?
@@ -81,10 +81,10 @@ ProductApi = {
                     if (data.length) {
                         // we got data, let's set it
                         Product.create(data);
-                        ApiProductActionCreator.setAllProducts(Product.collection);
+                        ApiProductActionCreator.setProducts(Product.collection);
                     } else {
                         // No data received yet
-                        ApiProductActionCreator.setAllProducts(null);
+                        ApiProductActionCreator.setProducts(null);
                     }
                 } else {
                     debug('Error: data is not an instance of Array');
@@ -98,31 +98,31 @@ ProductApi = {
         debug('initiating search');
         debug(search);
         // start fetching for search, fire event
-        ApiProductActionCreator.setAllProducts(null);
+        ApiProductActionCreator.setProducts(null);
         db.products.searchFor(search, false, function (data) {
-            debug('returned from search');
             if (data instanceof Error) {
-                ApiProductActionCreator.setAllProducts(data);
                 debug('Error trying to search for products');
+                ApiProductActionCreator.setProducts(data);
             } else {
                 if (data.length) {
+                    debug('searchProducts - received, now set products');
                     // clear products data with the search results
                     Product.collection.reset(data);
-                    ApiProductActionCreator.setAllProducts(Product.collection);
+                    ApiProductActionCreator.setProducts(Product.collection);
                 } else {
 
                 }
             }
-
-            debug(data);
         });
     },
     // used for loadMore
-    updateProducts: function (term) {
+    updateProducts: function (search) {
 
         // TODO if there is a term we should loadMore based on a search
+        // the search term should come with the action parameter
 
         // TODO if there is no term we should just loadMore
+        // the ammount of which to load should come with the parameter
 
     },
     syncProduct: function (productId) {
@@ -130,7 +130,7 @@ ProductApi = {
         model = Product.collection.get(productId);
 
         if (model) {
-            ApiProductActionCreator.productUpdate();
+            ApiProductActionCreator.saveProducts();
             async.series([
                 function syncProduct(callback) {
                     // TODO some firebase endpoint should go here
@@ -138,9 +138,9 @@ ProductApi = {
                 }
             ], function (err, results) {
                 if (err instanceof Error) {
-                    ApiProductActionCreator.productUpdate(err);
+                    ApiProductActionCreator.saveProducts(err);
                 } else {
-                    ApiProductActionCreator.productUpdate(this.id);
+                    ApiProductActionCreator.saveProducts(this.id);
                 }
             });
         }

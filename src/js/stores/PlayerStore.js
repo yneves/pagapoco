@@ -3,20 +3,27 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Store = require('../utils/Store'),
     playerAction = ActionTypes.Player,
     PlayerStore,
-    _player,
     _currentLogin,
-    _isNew;
+    _isNew,
+    _updatePlayerData;
 
-_player = {};
 _currentLogin = false;
+_isNew = false;
 
 // Boolean
-function _isLogged(data){
-    _currentLogin = data.state;
+function _updatePlayerData(data){
+    if (data) {
+        _currentLogin = data.state || false;
+        _isNew = data.isNew || false;
+    } else {
+        _currentLogin = false;
+        _isNew = false;
+    }
 }
 
-function _newPlayer(data){
-    _isNew = data.state;
+function _registerPlayerData(data) {
+    debug('_registerPLayerData called');
+    debug(data);
 }
 
 PlayerStore = Store.extend({
@@ -34,8 +41,12 @@ PlayerStore = Store.extend({
 });
 
 PlayerInstance = new PlayerStore(
-    playerAction.LOGADO,  _isLogged,
-    playerAction.NEW_USER,  _newPlayer
+    playerAction.PLAYER_LOGIN_START, _updatePlayerData,
+    playerAction.PLAYER_LOGIN_SUCCESS, _updatePlayerData,
+    playerAction.PLAYER_LOGIN_ERROR, _updatePlayerData,
+    playerAction.PLAYER_REGISTER_START, _registerPlayerData,
+    playerAction.PLAYER_REGISTER_SUCCESS, _registerPlayerData,
+    playerAction.PLAYER_REGISTER_ERROR, _registerPlayerData
 );
 
 
