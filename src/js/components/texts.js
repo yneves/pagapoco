@@ -16,7 +16,8 @@ module.exports = {
     
     search: {
       placeholder: 'O que está procurando?',
-      submit: 'Pesquisar'
+      submit: 'Pesquisar',
+      empty: 'Não encontramos nada para a sua busca... =('
     },
 
     loading: {

@@ -18,7 +18,7 @@ module.exports =
         render: function () {
             var product = this.props.product;
             return (
-                <div class="price-tag">
+                <div className="price-tag">
                     <h3>{Texts.priceTag.title}</h3>
                     <p>
                         <strong>{Texts.cs} {product.getCheapestOffer()}</strong>
