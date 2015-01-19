@@ -6,6 +6,7 @@ var React = require('react'),
     Store = require('../components/pages/store.jsx'),
     Sobre = require('../components/pages/sobre.jsx'),
     Register = require('../components/pages/register.jsx'),
+    Loading = require('../components/common/loading.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
@@ -86,6 +87,7 @@ Application =
 
             return (
                 <div id='viewPort'>
+                    <Loading />
                     {componentToLoad}
                 </div>
             );

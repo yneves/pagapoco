@@ -13,6 +13,10 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
+
+    loading:{
+      normal: 'Carregando...'
+    },
     
     search: {
       placeholder: 'O que está procurando?',
