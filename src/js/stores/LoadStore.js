@@ -4,21 +4,24 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Texts = require('../components/texts'),
     loadAction = ActionTypes.Loading,
     LoadStore,
+    _actionType,
     _isLoading,
     _LoadingMessage;
 
+_actionType = null;
 _isLoading  = true;
 _LoadingMessage = Texts.loading.normal;
 
 // Boolean
 function _theLoading(data){
     _isLoading = data.state;
+    _actionType = data.action;
     _LoadingMessage = data.message;
 
     if (data.message === null){
         _LoadingMessage = Texts.loading.normal;
     }
-    console.log(data.state + ' loading...')
+    console.log(_actionType + ': ' + _isLoading + ' loading...');
 }
 
 LoadStore = Store.extend({

@@ -17,20 +17,20 @@ ProductServerActionCreator = {
         // the server receive the product update event but hasn't returned anything yet
         if(!id) {
             debug('Started syncing with server - no data yet');
+            LoadActionCreator.load('PRODUCT_SAVE_START', true);
             Dispatcher.handleServerAction({
                 type: productAction.PRODUCT_SAVE_START,
                 data: null
             });
-            LoadActionCreator.load();
         } else {
             // if there was an error while trying to update the product in the server
+            LoadActionCreator.loaded('PRODUCT_SAVE_START', false);
             if (id instanceof Error) {
                 debug('Server responded - With error');
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SAVE_ERROR,
                     data: { id : id }
                 });
-                LoadActionCreator.loaded();
             } else {
                 debug('Server responded - no errors');
                 // product was successfully updated in the serve
@@ -38,8 +38,6 @@ ProductServerActionCreator = {
                     type: productAction.PRODUCT_SAVE_SUCCESS,
                     data: { id : id }
                 });
-                LoadActionCreator.loaded();
-
             }
         }
     },
@@ -51,30 +49,26 @@ ProductServerActionCreator = {
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
             debug('Started syncing with server - no data yet');
+            LoadActionCreator.load('PRODUCT_SET_START', true);
             Dispatcher.handleServerAction({
                 type: productAction.PRODUCT_SET_START,
                 data: null
             });
-            LoadActionCreator.load();
-
         } else {
             // if there was an error while trying to retrive the products
+            LoadActionCreator.loaded('PRODUCT_SET_START', false);
             if (products instanceof Error) {
                 debug('Server responded - With error');
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SET_ERROR,
                     data: products
                 });
-                LoadActionCreator.loaded();
-
             } else { // everything went fine, dispatch the event with the product data
                 debug('Server responded - no errors');
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SET_SUCCESS,
                     data: products
                 });
-                LoadActionCreator.loaded();
-
             }
         }
     }
