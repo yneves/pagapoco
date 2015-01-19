@@ -13,9 +13,7 @@ var db = require('./FireApi.js'),
 
 PlayerApi = {
 
-    login: function (user, pass, isNew) {
-
-        isNew = isNew || null;
+    login: function (user, pass) {
 
         // init server sync, fire event
         ApiPlayerActionCreator.login(null);
@@ -90,8 +88,7 @@ PlayerApi = {
                 console.log(snapshot);
             } else if (snapshot.val() !== null){ // user exists
                 ApiPlayerActionCreator.login({
-                    state: true,
-                    isNew: false
+                    state: true
                 });
                 // get the most recent user data from facebook
                 if (authData.provider === 'facebook') {
@@ -163,7 +160,7 @@ PlayerApi = {
                 ApiPlayerActionCreator.register({
                     user: user
                 });
-                PlayerApi.login(user, pass, true);
+                PlayerApi.login(user, pass);
             }
         });
     }
