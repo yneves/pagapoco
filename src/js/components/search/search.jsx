@@ -12,7 +12,7 @@ var Search =
                 this.submitQuery();
             }
         },
-        
+
         submitQuery: function () {
             var query;
             newQuery = this.refs.input.getDOMNode().value;
@@ -28,7 +28,7 @@ var Search =
                     ProductAction.searchProducts(newQuery);
                     // redirect to the home page
                     RouteActionCreator.setRoute('/');
-                }.bind(this),200);
+                }.bind(this),300);
             }
         },
 
