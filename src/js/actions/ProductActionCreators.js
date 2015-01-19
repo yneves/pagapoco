@@ -50,6 +50,13 @@ ProductActionCreator = {
         } else {
             debug('No syncProduct valid method found');
         }
+    },
+    // simple sort the products
+    sortProducts: function (sort) {
+        Dispatcher.handleViewAction({
+            type: productAction.SORT_PRODUCT,
+            data: {sortBy : sort}
+        });
     }
 };
 

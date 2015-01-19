@@ -21,7 +21,8 @@ module.exports =
         getInitialState: function () {
             return {
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent()
+                currentProduct  : ProductStore.getCurrent(),
+                sortingProucts  : ProductStore.getSorting()
             };
         },
 
@@ -41,7 +42,7 @@ module.exports =
                 content = (<ProductSingleView product={this.state.currentProduct} />);
 
             } else if (this.state.products.length) {
-                content = (<Products products={this.state.products} />);
+                content = (<Products products={this.state.products} sorting={this.state.sortingProducts} />);
             }
 
             return (
@@ -63,7 +64,8 @@ module.exports =
         _onChange: function() {
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent()
+                currentProduct  : ProductStore.getCurrent(),
+                sortingProducts : ProductStore.getSorting()
             });
         }
     });
