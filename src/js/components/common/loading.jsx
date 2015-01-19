@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 
 var React = require('react'),
     debug = require('debug')('loading.jsx');
@@ -17,6 +18,8 @@ module.exports =
         }
     });
 =======
+=======
+>>>>>>> origin/master
 var React = require('react'),
     LoadStore = require('../../stores/LoadStore'),
     Loading;
@@ -72,4 +75,7 @@ Loading =
     });
 
 module.exports = Loading;
+<<<<<<< HEAD
 >>>>>>> LoadStore Added.
+=======
+>>>>>>> origin/master

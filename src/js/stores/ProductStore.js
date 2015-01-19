@@ -19,7 +19,6 @@ _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
 _current = null;
-_isLoading  = true;
 
 function updateStart() {
 }
@@ -31,15 +30,12 @@ function updateSuccess() {
 }
 
 function receiveStart() {
-    _isLoading = true;
 }
 
 function receiveError() {
-    _isLoading = false;
 }
 
 function receiveSuccess() {
-    _isLoading = false;
 }
 
 function receivePlayer(data) {
@@ -148,10 +144,6 @@ ProductStore = Store.extend({
 
     getCurrentCatalog: function () {
         return _currentCatalog;
-    },
-
-    getLoadingState: function(){
-        return _isLoading;
     }
 
 });
