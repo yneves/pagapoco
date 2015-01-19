@@ -5,11 +5,21 @@ var React = require('react'),
 
 module.exports =
     React.createClass({
+        propTypes: {
+            route: React.PropTypes.string
+        },
+
+        getDefaultProps: function () {
+            return {
+                route: ''
+            };
+        },
+
         render: function () {
             return (
                 <div>
                      <Registro />
                 </div>
-            )
+            );
         }
     });

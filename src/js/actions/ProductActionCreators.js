@@ -10,15 +10,15 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 ProductActionCreator = {
 
     // called when the user type on search input field
-    applyFilter: function (query) {
-        debug('applyFilter');
+    searchProducts: function (searchTerm) {
+        debug('searchProducts');
         Dispatcher.handleViewAction({
-            type : productAction.APPLY_FILTER,
-            data : { query : query }
+            type : productAction.SEARCH_PRODUCTS,
+            data : { query : searchTerm }
         });
 
         if (Validator.isFunction(api.product.searchProducts)) {
-            api.product.searchProducts(query);
+            api.product.searchProducts(searchTerm);
         } else {
             debug('No searchProducts valid method found');
         }
@@ -44,44 +44,12 @@ ProductActionCreator = {
             type : productAction.TOGGLE_WISHLIST,
             data : { id : id }
         });
-    },
-
-    // called when the player clicks on a product that he wants to buy
-    addItem: function (id) {
-        Dispatcher.handleViewAction({
-            type : productAction.ADD_ITEM,
-            data : { id : id }
-        });
 
         if (Validator.isFunction(api.product.syncProduct)) {
             api.product.syncProduct(id);
         } else {
-            debug('No getProducts valid method found');
+            debug('No syncProduct valid method found');
         }
-    },
-
-    // for future use only - when we develop our own selling system
-    removeItem: function (id) {
-        Dispatcher.handleViewAction({
-            type : productAction.REMOVE_ITEM,
-            data : { id : id }
-        });
-    },
-
-    // for future use only - when we develop our own selling system
-    decreaseItem: function (id) {
-        Dispatcher.handleViewAction({
-            type : productAction.DECREASE_ITEM,
-            data : { id : id }
-        });
-    },
-
-    // for future use only - when we develop our own selling system
-    increaseItem: function (id) {
-        Dispatcher.handleViewAction({
-            type : productAction.INCREASE_ITEM,
-            data : { id : id }
-        });
     }
 };
 

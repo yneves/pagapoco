@@ -99,15 +99,6 @@ ProductModel = Model.extend({
     //     }
     // },
 
-    // TODO STAGE 3
-    // toggleAdd : function () {
-    //     if (this.attributes.added) {
-    //         this.set('added', 0);
-    //     } else {
-    //         this.set('added', 1);
-    //     }
-    // },
-
     toggleWished: function () {
         if (this.attributes.wished) {
             this.set('wished', 0);
@@ -161,14 +152,6 @@ ProductModel = Model.extend({
             // TODO return some default small image;
         }
     }
-
-    // update the quantity by adding to the current ammount
-    // TODO STAGE 3
-    // updateQuantity: function (quantity) {
-    //     quantity += this.attributes.quantity;
-    //     this.set('quantity', quantity);
-    // }
-
 });
 
 ProductCollectionConstructor = Collection.extend({
