@@ -2,6 +2,7 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
     debug = require('debug')('ApiProductActionCreator.js'),
+    LoadActionCreator = require('./LoadActionCreators'),
     productAction = ActionTypes.Product,
     ProductServerActionCreator;
 
@@ -19,6 +20,7 @@ ProductServerActionCreator = {
                 type: productAction.PRODUCT_UPDATE_START,
                 data: null
             });
+            LoadActionCreator.load();
         } else {
             // if there was an error while trying to update the product in the server
             if (id instanceof Error) {
@@ -26,12 +28,17 @@ ProductServerActionCreator = {
                     type: productAction.PRODUCT_UPDATE_ERROR,
                     data: { id : id }
                 });
+                LoadActionCreator.loaded();
+
             } else {
                 // product was successfully updated in the serve
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_UPDATE_SUCCESS,
                     data: { id : id }
+
                 });
+                LoadActionCreator.loaded();
+
             }
         }
     },
@@ -47,6 +54,7 @@ ProductServerActionCreator = {
                 type: productAction.RECEIVE_RAW_PRODUCTS_START,
                 data: null
             });
+            LoadActionCreator.load();
         } else {
             // if there was an error while trying to retrive the products
             if (products instanceof Error) {
@@ -54,11 +62,14 @@ ProductServerActionCreator = {
                     type: productAction.RECEIVE_RAW_PRODUCTS_ERROR,
                     data: products
                 });
+                LoadActionCreator.loaded();
+
             } else { // everything went fine, dispatch the event with the product data
                 Dispatcher.handleServerAction({
                     type: productAction.RECEIVE_RAW_PRODUCTS_SUCCESS,
                     data: products
                 });
+                LoadActionCreator.loaded();
             }
         }
     }

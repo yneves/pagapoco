@@ -8,6 +8,7 @@ var keyMirror = require('keymirror'),
     RouteConstants = require('./RouteConstants'),
     ProductConstants = require('./ProductConstants'),
     ProductPriceHistoryConstants = require('./ProductPriceHistoryConstants'),
+    LoadingConstants = require('./LoadingConstants'),
     PlayerConstants = require('./PlayerConstants');
 
 
@@ -18,6 +19,7 @@ module.exports = {
         Route: keyMirror(RouteConstants),
         Product: keyMirror(ProductConstants),
         ProductPriceHistory: keyMirror(ProductPriceHistoryConstants),
+        Loading: keyMirror(LoadingConstants),
         Player: keyMirror(PlayerConstants)
 
     },
