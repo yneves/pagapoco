@@ -1,7 +1,9 @@
 var Firebase = require('firebase'),
     lodash = {
         objects: {
-            assign: require('lodash-node/modern/objects/assign')
+            assign: require('lodash-node/modern/objects/assign'),
+            values: require('lodash-node/modern/objects/values'),
+            keys: require('lodash-node/modern/objects/keys')
         },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
@@ -11,7 +13,7 @@ var Firebase = require('firebase'),
         }
     },
     baseUrl = 'http://glowing-torch-4538.firebaseio.com/',
-    authKey = 'PCEpiBg4lVOJjSeCZqCIgUitMDmuemq2tjtJ1i6v',
+    authKey = '',   // for server side only, on client side will cause bugs
     debug = require('debug')('FireApi.js'),
     refs,
     tables;
@@ -68,6 +70,36 @@ lodash.objects.assign(Firebase.prototype, {
             } else {
                 callback(new Error('An unknown error has ocurred'));
             }
+        });
+    },
+    getByChild: function (field, term, callback) {
+
+        var modelRef,
+            data;
+
+        // this method need an obrigatory callback
+        if (!callback || typeof callback !== 'function') return;
+
+        try {
+            modelRef = this.orderByChild(field).equalTo(term);
+        } catch (err) {
+            debug('findbyChild error ocurred');
+            callback(new Error(err));
+        }
+        // just get the data and leave the server alone
+        modelRef.once('value', function (snapshot) {
+            var value;
+
+            if (snapshot !== null) {
+                // TODO look for ways to improve this ugly thing
+                value = snapshot.val();
+                data = lodash.objects.values(value)[0];
+                data.id = lodash.objects.keys(value)[0];
+                data.id = parseInt(data.id) || data.id;
+            } else {
+                data = null;
+            }
+            callback(data);
         });
     },
     /**

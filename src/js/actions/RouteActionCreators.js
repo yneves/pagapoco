@@ -37,7 +37,7 @@ RouteActionCreator = {
             });
 
             // Load data based on current Route type
-            if (routeData.link.type === 'product') {
+            if (routeData.link.type === 'products') {
                 // let's require the products from the server
                 if (Validator.isFunction(api.product.getProducts)) {
                     api.product.getProducts();
@@ -50,6 +50,12 @@ RouteActionCreator = {
                     api.productPriceHistory.getProductPriceHistory();
                 } else {
                     debug('No getProductPriceHistory valid method found');
+                }
+            } else if (routeData.link.type === 'product') {
+                if (Validator.isFunction(api.product.getCurrentProduct)) {
+                    api.product.getCurrentProduct(routeData.link.slug);
+                } else {
+                    debug('No getCurrentProduct valid method found');
                 }
             }
         } else {

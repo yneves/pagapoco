@@ -66,7 +66,6 @@ PlayerApi = {
     check: function () {
         var authData;
         authData = db.base.getAuth();
-        console.log(authData);
         if (authData && authData !== null) {
             ApiPlayerActionCreator.login({
                 state: true
@@ -134,6 +133,7 @@ PlayerApi = {
 
     createUser: function(user,pass,info){
 
+        // global variable, called in another method with user extra info
         _info = info;
 
         // start registering player, fire api
