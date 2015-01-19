@@ -50,7 +50,7 @@ ProductApi = {
     getProducts: function () {
         var minLength;
 
-        minLength = 30;
+        minLength = 40;
 
         if (Product.collection.length >= minLength) {
             debug('We already have products');
