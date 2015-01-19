@@ -16,35 +16,39 @@ module.exports = {
     
     search: {
       placeholder: 'O que está procurando?',
-      submit: 'Pesquisar',
+      submit: 'Pesquisar'
+    },
+
+    loading: {
+      normal: 'Carregando...'
     },
     
     storeList: {
       title: 'Lojas',
-      view: 'Ver',
+      view: 'Ver'
     },
 
     priceTag: {
       to: 'a',
       title: 'Preços',
-      history: 'VER HISTÓRICO',
+      history: 'VER HISTÓRICO'
     },
 
     priceHistory: {
-      title: 'HISTÓRICO DE PREÇOS',
+      title: 'HISTÓRICO DE PREÇOS'
     },
 
     productReview: {
-      title: 'AVALIAÇÃO DO PRODUTO',
+      title: 'AVALIAÇÃO DO PRODUTO'
     },
 
     priceAlert: {
       title: 'Alerta de Preços',
-      submit: 'ME AVISE',
+      submit: 'ME AVISE'
     },
     
     category: {
-      suplemento: 'Suplementos',
-    },
+      suplemento: 'Suplementos'
+    }
 
 };

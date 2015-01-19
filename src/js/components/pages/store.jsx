@@ -1,7 +1,6 @@
 var React = require('react'),
     ProductStore = require('../../stores/ProductStore'),
     Header = require('../header/header.jsx'),
-    Loading = require('../common/loading.jsx'),
     Products = require('../product/products.jsx'),
     ProductSingleView = require('../product/singleView.jsx'),
     debug = require('debug')('store.jsx');
@@ -22,8 +21,7 @@ module.exports =
         getInitialState: function () {
             return {
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
-                loadState       : ProductStore.getLoadingState()
+                currentProduct  : ProductStore.getCurrent()
             };
         },
 
@@ -39,9 +37,7 @@ module.exports =
 
             var content;
 
-            if (this.state.loadState) {
-                content = (<Loading />);
-            } else if (this.state.currentProduct) {
+            if (this.state.currentProduct) {
                 content = (<ProductSingleView product={this.state.currentProduct} />);
 
             } else if (this.state.products.length) {
@@ -67,8 +63,7 @@ module.exports =
         _onChange: function() {
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
-                loadState       : ProductStore.getLoadingState()
+                currentProduct  : ProductStore.getCurrent()
             });
         }
     });

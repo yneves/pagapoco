@@ -1,17 +1,55 @@
-
 var React = require('react'),
-    debug = require('debug')('loading.jsx');
+    LoadStore = require('../../stores/LoadStore'),
+    Loading;
 
-module.exports =
+Loading =
+
     React.createClass({
-        render: function () {
+
+        getInitialState: function () {
+            return {
+                LoadState  : LoadStore.getLoadingState(),
+                LoadMessage: LoadStore.getLoadingMessage()
+            };
+        },
+
+        componentDidMount: function () {
+            LoadStore.addChangeListener(this._onChange);
+        },
+
+        componentWillUnmount: function () {
+            LoadStore.removeChangeListener(this._onChange);
+        },
+
+        render : function() {
+            var Visible = this.state.LoadState;
+            var LoadMsg = this.state.LoadMessage;
+            var Showing;
+
+            if (Visible){
+               Showing = <div id="loading">
+                           <div id='Wrapper'>
+                               <img id='loadImg' src='../../assets/icons/ajax-loader.gif'/>
+                               <h2>{LoadMsg}</h2>
+                           </div>
+                         </div>;
+            } else {
+                Showing = '';
+            }
+
             return (
-                <div id="loading">
-                    <div id='Wrapper'>
-                        <img id='loadImg' src='../../assets/icons/ajax-loader.gif'/>
-                        <h2>Carregando...</h2>
-                    </div>
+                <div>
+                 {Showing}
                 </div>
             );
+        },
+
+        _onChange: function() {
+            this.setState({
+                LoadState  : LoadStore.getLoadingState(),
+                LoadMessage: LoadStore.getLoadingMessage()
+            });
         }
     });
+
+module.exports = Loading;

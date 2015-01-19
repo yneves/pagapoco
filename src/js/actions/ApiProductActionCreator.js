@@ -1,6 +1,7 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
+    LoadActionCreator = require('./LoadActionCreators'),
     debug = require('debug')('ApiProductActionCreator.js'),
     productAction = ActionTypes.Product,
     ProductServerActionCreator;
@@ -20,6 +21,7 @@ ProductServerActionCreator = {
                 type: productAction.PRODUCT_SAVE_START,
                 data: null
             });
+            LoadActionCreator.load();
         } else {
             // if there was an error while trying to update the product in the server
             if (id instanceof Error) {
@@ -28,6 +30,7 @@ ProductServerActionCreator = {
                     type: productAction.PRODUCT_SAVE_ERROR,
                     data: { id : id }
                 });
+                LoadActionCreator.loaded();
             } else {
                 debug('Server responded - no errors');
                 // product was successfully updated in the serve
@@ -35,6 +38,8 @@ ProductServerActionCreator = {
                     type: productAction.PRODUCT_SAVE_SUCCESS,
                     data: { id : id }
                 });
+                LoadActionCreator.loaded();
+
             }
         }
     },
@@ -50,6 +55,8 @@ ProductServerActionCreator = {
                 type: productAction.PRODUCT_SET_START,
                 data: null
             });
+            LoadActionCreator.load();
+
         } else {
             // if there was an error while trying to retrive the products
             if (products instanceof Error) {
@@ -58,12 +65,16 @@ ProductServerActionCreator = {
                     type: productAction.PRODUCT_SET_ERROR,
                     data: products
                 });
+                LoadActionCreator.loaded();
+
             } else { // everything went fine, dispatch the event with the product data
                 debug('Server responded - no errors');
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SET_SUCCESS,
                     data: products
                 });
+                LoadActionCreator.loaded();
+
             }
         }
     }
