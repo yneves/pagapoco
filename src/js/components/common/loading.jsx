@@ -1,25 +1,3 @@
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-var React = require('react'),
-    debug = require('debug')('loading.jsx');
-
-module.exports =
-    React.createClass({
-        render: function () {
-            return (
-                <div id="loading">
-                    <div id='Wrapper'>
-                        <img id='loadImg' src='../../assets/icons/ajax-loader.gif'/>
-                        <h2>Carregando...</h2>
-                    </div>
-                </div>
-            );
-        }
-    });
-=======
-=======
->>>>>>> origin/master
 var React = require('react'),
     LoadStore = require('../../stores/LoadStore'),
     Loading;
@@ -75,7 +53,3 @@ Loading =
     });
 
 module.exports = Loading;
-<<<<<<< HEAD
->>>>>>> LoadStore Added.
-=======
->>>>>>> origin/master
