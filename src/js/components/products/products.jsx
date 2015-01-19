@@ -57,30 +57,40 @@ module.exports =
                             <ProductGrid key={product.get('id')} product={product} />
                         );
                     });
+                    
+                    if (productGrid) {
+                      
+                        // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
+                        // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT
+                        // @todo temos 3 possíveis soluções neste caso:
+      
+                        // @todo  1. Pais ficam responsáveis por apenas inserir o elemento no DOM e nada mais (entretanto ainda assim terão uma referência
+                        // @todo a este elemento, porém ela não será simplesmente mais utilizada (PROVAVELMENTE ERRADO)
+      
+                        // @todo 2. Todo elemento que se reposiciona no DOM não pode ser chamado por nenhum elemento pai, mas somente
+                        // @todo ser embedado diretamente na página através do React.render(); (POSSIVEL SOLUÇÃO - parece um pouco mais engessada)
+      
+                        // @todo 3. Somente statefull elements e que sejam TOP na hierarquia é que podem implementar elementos de
+                        // @todo reposicionamento de DOM como o Tether Mixin, eles que devem criar tais filhos (POSSÍVEL SOLUÇÃO - parece um pouco mais flexível)
+      
+                        // var modal = this.state.currentProduct ? <ProductSingleDialog openImmediately={true} product={this.state.currentProduct} /> : '';
+      
+                        content = (
+                            <Masonry options={masonryOptions}>
+                                {productGrid}
+                            </Masonry>
+                        );
+                      
+                    } else {
+                      
+                        content = (
+                            <p>{Texts.search.empty}</p>
+                        );
+                      
+                    }
+                                        
                 }
-                  
 
-
-                // @todo quando o state mudar ele tentará limpar este elemento abaixo (React) e como não encontrará uma referência
-                // @todo a ele mais, pois o modal chamado futuramente se reposiciona no DOM, ele acusará um erro de INVARIANT
-                // @todo temos 3 possíveis soluções neste caso:
-
-                // @todo  1. Pais ficam responsáveis por apenas inserir o elemento no DOM e nada mais (entretanto ainda assim terão uma referência
-                // @todo a este elemento, porém ela não será simplesmente mais utilizada (PROVAVELMENTE ERRADO)
-
-                // @todo 2. Todo elemento que se reposiciona no DOM não pode ser chamado por nenhum elemento pai, mas somente
-                // @todo ser embedado diretamente na página através do React.render(); (POSSIVEL SOLUÇÃO - parece um pouco mais engessada)
-
-                // @todo 3. Somente statefull elements e que sejam TOP na hierarquia é que podem implementar elementos de
-                // @todo reposicionamento de DOM como o Tether Mixin, eles que devem criar tais filhos (POSSÍVEL SOLUÇÃO - parece um pouco mais flexível)
-
-                // var modal = this.state.currentProduct ? <ProductSingleDialog openImmediately={true} product={this.state.currentProduct} /> : '';
-
-                content = (
-                    <Masonry options={masonryOptions}>
-                        {productGrid}
-                    </Masonry>
-                );
             }
 
             return (
