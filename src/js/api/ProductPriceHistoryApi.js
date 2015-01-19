@@ -19,7 +19,7 @@ ProductPriceHistoryApi = {
         db.products_price_history.getAll(30, function (data) {
             // if there is an error let's dispatch an event and end here
             if (data instanceof Error) {
-                productServerActionCreator.setAllProducts(data);
+                ApiProductPriceHistoryActionCreator.setAllProductsPriceHistory(data);
                 debug('Error trying to get products price history');
             } else {
                 if (data instanceof Array) {

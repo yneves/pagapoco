@@ -4,9 +4,34 @@ var React = require('react'),
     RouteActionCreator = require('../../actions/RouteActionCreators'),
     ProductAction = require('../../actions/ProductActionCreators');
 
-var Search =
+module.exports = 
     React.createClass({
 
+        getInitialState: function () {
+            return {
+                query: '',
+            };
+        },
+        
+        componentWillMount: function () {
+          this._lastQuery = '';
+          this._delayTimeout = null;
+        },
+        
+        componentDidUpdate: function () {          
+            if (this.state.query !== this._lastQuery) {
+                if (this._delayTimeout) {
+                    clearTimeout(this._delayTimeout);
+                }
+                this._delayTimeout = setTimeout(function() {
+                    this._delayTimeout = undefined;
+                    console.log("applyFilter");
+                    ProductAction.searchProducts(this.state.query);
+                }.bind(this),200);
+                this._lastQuery = this.state.query;
+            }                
+        },
+        
         handleKeyUp: function(event) {
             if (event.which === 13) {
                 this.submitQuery();
@@ -48,5 +73,3 @@ var Search =
             );
         }
     });
-
-module.exports = Search;

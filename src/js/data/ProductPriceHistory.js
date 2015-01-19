@@ -8,6 +8,7 @@ var Collection = require('collection'),
     ProductPriceHistory;
 
 ProductPriceHistoryModel = Model.extend({
+  
     _schema: {
         id: '/ProductPriceHistory',
         properties: {
@@ -15,7 +16,24 @@ ProductPriceHistoryModel = Model.extend({
             id_buscape: { type: 'integer' }, // the buscape_id
             days: { type : 'object' }    // array of objects containing { timestamp : { min, max } }
         }
-    }
+    },
+    
+    getChartData: function() {
+      var data = {
+          labels: [],
+          series: [ [], [] ]
+      };
+      var days = this.get('days');
+      var keys = Object.keys(days);
+      keys.sort();      
+      keys.forEach(function(day,index) {
+          data.labels[index] = day;
+          data.series[0][index] = days[day].min;
+          data.series[1][index] = days[day].max;
+      });
+      return data;
+    },
+    
 });
 
 ProductPriceHistoryCollectionConstructor = Collection.extend({
