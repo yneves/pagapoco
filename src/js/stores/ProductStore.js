@@ -9,7 +9,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _products,
     _currentCatalog,
     _currentPlayerId,
-    _currentProductSlug,
     _currentQuery;
 
 ProductAction = ActionTypes.Product;
@@ -20,7 +19,7 @@ _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
 _currentQuery = '';
-_current = null;
+_currentProduct = null;
 _isLoading  = true;
 
 function receivePlayer(data) {
@@ -28,19 +27,19 @@ function receivePlayer(data) {
     _currentPlayer = data;
 }
 
-function setStart() {
-    _isLoading = true;
-}
-
-function setError() {
+function setProductsError() {
     _isLoading = false;
 }
 
-function setSuccess(data) {
-    _products = data;
-    _isLoading = false;
-    _currentCatalog = data.clone();
-    setCurrentProduct();
+function setProducts(data) {
+    if (data) {
+        _products = data.clone();
+        _isLoading = false;
+        _currentCatalog = data.clone();
+        setCurrentProduct();
+    } else {
+        _isLoading = true;
+    }
 }
 
 function changedRouteSuccess(routeData) {
@@ -57,11 +56,15 @@ function changedRouteSuccess(routeData) {
     setCurrentProduct();
 }
 
+function setCurrentError (error) {
+    _isLoading = false;
+}
+
 function setCurrentProduct() {
     if (_currentProductSlug && _products) {
-        _current = _products.findWhere({'slug' : _currentProductSlug});
+        _currentProduct = _products.findWhere({'slug' : _currentProductSlug});
     } else {
-        _current = null;
+        _currentProduct = null;
     }
 }
 
@@ -81,7 +84,7 @@ function searchProducts(data) {
 ProductStore = Store.extend({
 
     getCurrent: function () {
-        return _current;
+        return _currentProduct;
     },
 
     getWished: function () {
@@ -106,9 +109,9 @@ ProductInstance = new ProductStore(
     ProductAction.TOGGLE_WISHLIST, toggleWishlist,
     ProductAction.SEARCH_PRODUCTS, searchProducts,
     RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
-    ProductAction.PRODUCT_SET_START, setStart,
-    ProductAction.PRODUCT_SET_ERROR, setError,
-    ProductAction.PRODUCT_SET_SUCCESS, setSuccess
+    ProductAction.PRODUCT_SET_START, setProducts,
+    ProductAction.PRODUCT_SET_ERROR, setProductsError,
+    ProductAction.PRODUCT_SET_SUCCESS, setProducts
     // ProductAction.PRODUCT_SAVE_START, saveStart,
     // ProductAction.PRODUT_SAVE_ERROR, saveError,
     // ProductAction.PRODUCT_SAVE_SUCCESS, saveSuccess
