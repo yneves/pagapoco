@@ -351,14 +351,6 @@ lodash.objects.assign(Firebase.prototype, {
 
 // set the base url
 refs.base = new Firebase(baseUrl);
-if (authKey) {
-    refs.base.authWithCustomToken(authKey, function (error, result)  {
-        if (error) {
-            debug(error);
-            throw new Error('Could not authenticate with firebase');
-        }
-    });
-}
 
 // set all the others
 if (tables.length) {

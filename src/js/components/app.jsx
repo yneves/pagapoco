@@ -5,9 +5,10 @@
 var React = require('react'),
     Store = require('../components/pages/store.jsx'),
     Sobre = require('../components/pages/sobre.jsx'),
-    Register = require('../components/pages/register.jsx'),
     Loading = require('../components/common/loading.jsx'),
+    Register = require('../components/pages/register.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
+    playerActions = require('../actions/PlayerActionCreators'),
     routeAction = require('../actions/RouteActionCreators'),
     routeStore = require('../stores/RouteStore'),
     Application,
@@ -42,6 +43,7 @@ Application =
 
         componentWillMount: function () {
             routeStore.addChangeListener(this._onChange);
+            playerActions.initPlayer();
             routeAction.setRoute(window.location.pathname, null);
         },
 

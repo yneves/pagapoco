@@ -1,8 +1,8 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    debug = require('debug')('ApiProductActionCreator.js'),
     LoadActionCreator = require('./LoadActionCreators'),
+    debug = require('debug')('ApiProductActionCreator.js'),
     productAction = ActionTypes.Product,
     ProductServerActionCreator;
 
@@ -31,14 +31,12 @@ ProductServerActionCreator = {
                     data: { id : id }
                 });
                 LoadActionCreator.loaded();
-
             } else {
                 debug('Server responded - no errors');
                 // product was successfully updated in the serve
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SAVE_SUCCESS,
                     data: { id : id }
-
                 });
                 LoadActionCreator.loaded();
 
@@ -58,6 +56,7 @@ ProductServerActionCreator = {
                 data: null
             });
             LoadActionCreator.load();
+
         } else {
             // if there was an error while trying to retrive the products
             if (products instanceof Error) {
@@ -75,6 +74,7 @@ ProductServerActionCreator = {
                     data: products
                 });
                 LoadActionCreator.loaded();
+
             }
         }
     }

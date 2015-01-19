@@ -21,7 +21,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
          if(arguments[1] === 'boolean' && arguments.length == 1){
              message = null;
          }
-
          Dispatcher.handleViewAction({
             type: loadAction.LOADING,
             data: {

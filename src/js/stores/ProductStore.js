@@ -9,7 +9,8 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _products,
     _currentCatalog,
     _currentPlayerId,
-    _currentProductSlug;
+    _currentProductSlug,
+    _currentQuery;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
@@ -18,38 +19,28 @@ _products = null;
 _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
+_currentQuery = '';
 _current = null;
-
-function updateStart() {
-}
-
-function updateError() {
-}
-
-function updateSuccess() {
-}
-
-function receiveStart() {
-}
-
-function receiveError() {
-}
-
-function receiveSuccess() {
-}
+_isLoading  = true;
 
 function receivePlayer(data) {
     // TODO should be a model
     _currentPlayer = data;
 }
 
-function receiveProducts(data) {
-    debug('Products Received');
-    debug(data);
+function setStart() {
+    _isLoading = true;
+}
+
+function setError() {
+    _isLoading = false;
+}
+
+function setSuccess(data) {
     _products = data;
+    _isLoading = false;
     _currentCatalog = data.clone();
     setCurrentProduct();
-    receiveSuccess();
 }
 
 function changedRouteSuccess(routeData) {
@@ -83,55 +74,14 @@ function toggleWishlist(productId) {
     }
 }
 
-function applyFilter(data) {
-    if (_products && _products.models) {
-        var models = _products.models;
-        if (data.query) {
-            var regExp = new RegExp(data.query,'i');
-            models = models.filter(function(model) {
-              return regExp.test(model.attributes.title);
-            });
-        }
-        _currentCatalog.reset(models);
-    }
+function searchProducts(data) {
+    _currentQuery = data.query;
 }
-
-// function addItem(data) {
-//     currentModel = Product.collection.get(data.id);
-//     if (currentModel.get('added')) {
-//         currentModel.updateQuantity(1);
-//     } else {
-//         currentModel.set('added', true);
-//     }
-//     debug(currentModel.attributes);
-// }
-// function removeItem(data) {
-//     currentModel = Product.collection.get(data.id);
-//     if (currentModel && currentModel.get('added')) {
-//         currentModel.set('added', false);
-//     }
-// }
-
-// function increaseItem(data) {
-//     currentModel = Product.collection.get(data.id);
-//     currentModel.updateQuantity(1);
-// }
-//
-// function decreaseItem(data) {
-//     currentModel = Product.collection.get(data.id);
-//     if (currentModel.get('quantity') > 1 ) {
-//         currentModel.updateQuantity(-1);
-//     }
-// }
 
 ProductStore = Store.extend({
 
     getCurrent: function () {
         return _current;
-    },
-
-    getAdded: function () {
-        return _products.where({added : 1}, false);
     },
 
     getWished: function () {
@@ -144,24 +94,24 @@ ProductStore = Store.extend({
 
     getCurrentCatalog: function () {
         return _currentCatalog;
+    },
+
+    getLoadingState: function(){
+        return _isLoading;
     }
 
 });
 
 ProductInstance = new ProductStore(
-    // ProductAction.ADD_ITEM, addItem,
-    // ProductAction.REMOVE_ITEM, removeItem,
-    // ProductAction.INCREASE_ITEM, increaseItem,
-    // ProductAction.DECREASE_ITEM, decreaseItem,
-    ProductAction.RECEIVE_RAW_PRODUCTS_START, receiveStart,
-    ProductAction.RECEIVE_RAW_PRODUCTS_ERROR, receiveError,
-    ProductAction.RECEIVE_RAW_PRODUCTS_SUCCESS, receiveProducts,
     ProductAction.TOGGLE_WISHLIST, toggleWishlist,
-    ProductAction.APPLY_FILTER, applyFilter,
-    ProductAction.PRODUCT_UPDATE_START, updateStart,
-    ProductAction.PRODUCT_UPDATE_ERROR, updateError,
-    ProductAction.PRODUCT_UPDATE_SUCCESS, updateSuccess,
-    RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess
+    ProductAction.SEARCH_PRODUCTS, searchProducts,
+    RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
+    ProductAction.PRODUCT_SET_START, setStart,
+    ProductAction.PRODUCT_SET_ERROR, setError,
+    ProductAction.PRODUCT_SET_SUCCESS, setSuccess
+    // ProductAction.PRODUCT_SAVE_START, saveStart,
+    // ProductAction.PRODUT_SAVE_ERROR, saveError,
+    // ProductAction.PRODUCT_SAVE_SUCCESS, saveSuccess
 );
 
 module.exports = ProductInstance;

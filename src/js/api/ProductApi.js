@@ -6,6 +6,7 @@
 var db = require('./FireApi.js'),
     request = require('../utils/Request'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
+    LoadActionCreator = require('../actions/LoadActionCreators'),
     _ = require('lodash-node'), // TODO better naming needed here
     Product = require('../data/Product'),
     Transmuter = require('transmuter'),
@@ -98,17 +99,23 @@ ProductApi = {
         debug('initiating search');
         debug(search);
         // start fetching for search, fire event
+        console.log('searchProducts start');
+        LoadActionCreator.load();
         ApiProductActionCreator.setProducts(null);
         db.products.searchFor(search, false, function (data) {
             if (data instanceof Error) {
                 debug('Error trying to search for products');
                 ApiProductActionCreator.setProducts(data);
+                //LoadActionCreator.loaded();
+
             } else {
                 if (data.length) {
                     debug('searchProducts - received, now set products');
                     // clear products data with the search results
                     Product.collection.reset(data);
                     ApiProductActionCreator.setProducts(Product.collection);
+                    //LoadActionCreator.loaded();
+
                 } else {
 
                 }

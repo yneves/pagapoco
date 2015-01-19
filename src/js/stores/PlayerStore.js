@@ -4,8 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     playerAction = ActionTypes.Player,
     PlayerStore,
     _currentLogin,
-    _isNew,
-    _updatePlayerData;
+    _isNew;
 
 _currentLogin = false;
 _isNew = false;

@@ -12,14 +12,13 @@ _LoadingMessage = Texts.loading.normal;
 
 // Boolean
 function _theLoading(data){
-    console.log(data);
     _isLoading = data.state;
     _LoadingMessage = data.message;
 
     if (data.message === null){
         _LoadingMessage = Texts.loading.normal;
     }
-
+    console.log(data.state + ' loading...')
 }
 
 LoadStore = Store.extend({
@@ -37,8 +36,8 @@ LoadStore = Store.extend({
 });
 
 LoadInstance = new LoadStore(
-    loadAction.LOADING,  _theLoading,
-    loadAction.READY,  _theLoading
+    loadAction.LOADING, _theLoading,
+    loadAction.READY, _theLoading
 );
 
 

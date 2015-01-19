@@ -18,7 +18,7 @@ module.exports =
 
         componentWillMount: function (){
             // TODO acho que é melhor deixar este call no app.jsx
-            playerActions.initPlayer();
+            //playerActions.initPlayer();
         },
 
         componentDidMount: function() {

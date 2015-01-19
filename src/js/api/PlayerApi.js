@@ -1,4 +1,3 @@
-
 var db = require('./FireApi.js'),
     ApiPlayerActionCreator = require('../actions/ApiPlayerActionCreator'),
     lodash = {
@@ -30,7 +29,7 @@ PlayerApi = {
                 });
             } else {
                 console.log(authData);
-                Player.checkIfUserExists(authData);
+                PlayerApi.checkIfUserExists(authData);
             }
         });
     },
@@ -52,7 +51,7 @@ PlayerApi = {
                 console.log(authData);
                 PlayerApi.checkIfUserExists(authData);
             }
-         },{scope: "email"});
+        },{scope: "email"});
     },
 
     logout: function () {

@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <script src="https://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
+    <script type="text/javascript">
+        var ref= new Firebase("https://glowing-torch-4538.firebaseio.com/");
+
+        var authData = ref.getAuth();
+        if (authData) {
+            console.log("User " + authData.uid + " is logged in with " + authData.provider);
+        } else {
+            console.log("User is logged out");
+        }
+
+
+        function login(){
+            ref.authWithPassword({
+                email    : 'husek@me.com',
+                password : 'nfywlm00'
+            }, function(){console.log('loguei')});
+        }
+
+    </script>
+</head>
+<body>
+<a href="#" onClick="javascript:login()">LOGAR</a>
+</body>
+</html>
+
+
+{
+"rules": {
+".read": true,
+".write": true,
+"search": {
+"request": {
+"$recid": {
+// I can only read records assigned to me
+".read": "auth.id === data.child('id').val() || auth.uid === data.child('id').val()",
+// I can only write new records that don't exist yet
+".write": "!data.exists() && (newData.child('id').val() === auth.id || newData.child('id').val() === auth.uid)",
+".validate": "newData.hasChildren(['query', 'index', 'type'])",
+"index": {
+// accepts arrays or strings
+".validate": "(newData.isString() && newData.val().length < 1000) || newData.hasChildren()",
+"$child": {
+".validate": "newData.isString() && newData.val().length < 1000"
+}
+},
+"type": {
+// accepts arrays or strings
+".validate": "(newData.isString() && newData.val().length < 1000) || newData.hasChildren()",
+"$child": {
+".validate": "newData.isString() && newData.val().length < 1000"
+}
+},
+"query": {
+// structure of the query object is pretty open-ended
+".validate": "newData.isString() || newData.hasChildren()"
+},
+"$other": {
+".validate": false
+}
+}
+},
+"response": {
+"$recid": {
+// I can only read/write records assigned to me
+".read": "auth.id === data.child('id').val() || auth.uid === data.child('id').val()",
+".write": "auth.id === data.child('id').val() || auth.uid === data.child('id').val()",
+// Assumes that Flashlight will be writing the records using a secret or a token that has admin: true
+// The only thing a logged in user needs to do is delete results after reading them
+".validate": false
+}
+}
+}
+}
+}
