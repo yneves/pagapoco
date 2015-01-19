@@ -6,21 +6,26 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductInstance,
     ProductAction,
     RouteAction,
-    _products,
-    _currentCatalog,
+    _currentCatalog,    // general products information
     _currentPlayerId,
-    _currentQuery;
+    _currentQuery,
+    _currentProduct,
+    _isLoading,
+    _sorting;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
-_products = null;
 _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
 _currentQuery = '';
 _currentProduct = null;
 _isLoading  = true;
+_sorting = {
+    price: false,
+    discount: false
+};
 
 function receivePlayer(data) {
     // TODO should be a model
@@ -33,9 +38,8 @@ function setProductsError() {
 
 function setProducts(data) {
     if (data) {
-        _products = data.clone();
-        _isLoading = false;
         _currentCatalog = data.clone();
+        _isLoading = false;
         setCurrentProduct();
     } else {
         _isLoading = true;
@@ -61,8 +65,8 @@ function setCurrentError (error) {
 }
 
 function setCurrentProduct() {
-    if (_currentProductSlug && _products) {
-        _currentProduct = _products.findWhere({'slug' : _currentProductSlug});
+    if (_currentProductSlug && _currentCatalog) {
+        _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
     } else {
         _currentProduct = null;
     }
@@ -72,13 +76,30 @@ function toggleWishlist(productId) {
     var currentModel;
     // if there is a player we set the wishlist, otherwise just ignore the request
     if(_currentPlayer.get('id')) {
-        currentModel = _products.get(productId);
+        currentModel = _currentCatalog.get(productId);
         currentModel.toggleWished();
     }
 }
 
 function searchProducts(data) {
     _currentQuery = data.query;
+}
+
+function setSorting(sort) {
+
+    if (sort) {
+        if (sort.sortBy === 'discount') {
+            _sorting.price = false;
+            _sorting.discount = true;
+            _currentCatalog.comparator = 'title';
+            _currentCatalog.sort();
+        } else if (sort.sortBy === 'price') {
+            _sorting.discount = false;
+            _sorting.price = true;
+            _currentCatalog.comparator = 'id_buscape';
+            _currentCatalog.sort();
+        }
+    }
 }
 
 ProductStore = Store.extend({
@@ -91,16 +112,16 @@ ProductStore = Store.extend({
         return _currentCatalog.where({wished: 1}, false);
     },
 
-    getCatalog: function () {
-        return _products;
-    },
-
     getCurrentCatalog: function () {
         return _currentCatalog;
     },
 
-    getLoadingState: function(){
+    getLoadingState: function (){
         return _isLoading;
+    },
+
+    getSorting: function () {
+        return _sorting;
     }
 
 });
@@ -111,7 +132,8 @@ ProductInstance = new ProductStore(
     RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
     ProductAction.PRODUCT_SET_START, setProducts,
     ProductAction.PRODUCT_SET_ERROR, setProductsError,
-    ProductAction.PRODUCT_SET_SUCCESS, setProducts
+    ProductAction.PRODUCT_SET_SUCCESS, setProducts,
+    ProductAction.SORT_PRODUCT, setSorting
     // ProductAction.PRODUCT_SAVE_START, saveStart,
     // ProductAction.PRODUT_SAVE_ERROR, saveError,
     // ProductAction.PRODUCT_SAVE_SUCCESS, saveSuccess

@@ -4,6 +4,7 @@ module.exports = {
     LOAD_MORE       : null,
     TOGGLE_WISHLIST : null,
     VIEW_PRODUCT    : null,
+    SORT_PRODUCT    : null,
 
     //server
     PRODUCT_SAVE_START : null,
