@@ -2,7 +2,6 @@
 var React = require('react'),
     ProductAction = require('../../actions/ProductActionCreators'),
     Link = require('../common/link.jsx'),
-    AddProduct = require('./add.jsx'),
     WishProduct = require('./wish.jsx'),
     debug = require('debug')('gridView.jsx');
 
@@ -41,7 +40,6 @@ var ProductGrid =
 
                     <div className="butboxes">
                         <WishProduct product={product} />
-                        <AddProduct product={product} />
                     </div>
                 </div>
             );

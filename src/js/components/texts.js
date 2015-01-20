@@ -1,7 +1,7 @@
 module.exports = {
 
     cs: 'R$',
-    
+
     login: 'Entrar',
     logout: 'Sair',
     username: 'Usuário',
@@ -13,16 +13,17 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
-    
+
     search: {
       placeholder: 'O que está procurando?',
-      submit: 'Pesquisar'
+      submit: 'Pesquisar',
+      empty: 'Não encontramos nada para a sua busca... =('
     },
 
     loading: {
       normal: 'Carregando...'
     },
-    
+
     storeList: {
       title: 'Lojas',
       view: 'Ver'
@@ -46,7 +47,12 @@ module.exports = {
       title: 'Alerta de Preços',
       submit: 'ME AVISE'
     },
-    
+
+    sort: {
+        price: 'Ordenar por Menor Preço',
+        discount: 'Ordenar por Maior Desconto'
+    },
+
     category: {
       suplemento: 'Suplementos'
     }

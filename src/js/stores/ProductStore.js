@@ -6,41 +6,44 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductInstance,
     ProductAction,
     RouteAction,
-    _products,
-    _currentCatalog,
+    _currentCatalog,    // general products information
     _currentPlayerId,
-    _currentProductSlug,
-    _currentQuery;
+    _currentQuery,
+    _currentProduct,
+    _isLoading,
+    _sorting;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
-_products = null;
 _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
 _currentQuery = '';
-_current = null;
+_currentProduct = null;
 _isLoading  = true;
+_sorting = {
+    price: false,
+    discount: false
+};
 
 function receivePlayer(data) {
     // TODO should be a model
     _currentPlayer = data;
 }
 
-function setStart() {
-    _isLoading = true;
-}
-
-function setError() {
+function setProductsError() {
     _isLoading = false;
 }
 
-function setSuccess(data) {
-    _products = data;
-    _isLoading = false;
-    _currentCatalog = data.clone();
-    setCurrentProduct();
+function setProducts(data) {
+    if (data) {
+        _currentCatalog = data.clone();
+        _isLoading = false;
+        setCurrentProduct();
+    } else {
+        _isLoading = true;
+    }
 }
 
 function changedRouteSuccess(routeData) {
@@ -57,11 +60,15 @@ function changedRouteSuccess(routeData) {
     setCurrentProduct();
 }
 
+function setCurrentError (error) {
+    _isLoading = false;
+}
+
 function setCurrentProduct() {
-    if (_currentProductSlug && _products) {
-        _current = _products.findWhere({'slug' : _currentProductSlug});
+    if (_currentProductSlug && _currentCatalog) {
+        _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
     } else {
-        _current = null;
+        _currentProduct = null;
     }
 }
 
@@ -69,7 +76,7 @@ function toggleWishlist(productId) {
     var currentModel;
     // if there is a player we set the wishlist, otherwise just ignore the request
     if(_currentPlayer.get('id')) {
-        currentModel = _products.get(productId);
+        currentModel = _currentCatalog.get(productId);
         currentModel.toggleWished();
     }
 }
@@ -78,26 +85,43 @@ function searchProducts(data) {
     _currentQuery = data.query;
 }
 
+function setSorting(sort) {
+
+    if (sort) {
+        if (sort.sortBy === 'discount') {
+            _sorting.price = false;
+            _sorting.discount = true;
+            _currentCatalog.comparator = 'title';
+            _currentCatalog.sort();
+        } else if (sort.sortBy === 'price') {
+            _sorting.discount = false;
+            _sorting.price = true;
+            _currentCatalog.comparator = 'id_buscape';
+            _currentCatalog.sort();
+        }
+    }
+}
+
 ProductStore = Store.extend({
 
     getCurrent: function () {
-        return _current;
+        return _currentProduct;
     },
 
     getWished: function () {
         return _currentCatalog.where({wished: 1}, false);
     },
 
-    getCatalog: function () {
-        return _products;
-    },
-
     getCurrentCatalog: function () {
         return _currentCatalog;
     },
 
-    getLoadingState: function(){
+    getLoadingState: function (){
         return _isLoading;
+    },
+
+    getSorting: function () {
+        return _sorting;
     }
 
 });
@@ -106,9 +130,10 @@ ProductInstance = new ProductStore(
     ProductAction.TOGGLE_WISHLIST, toggleWishlist,
     ProductAction.SEARCH_PRODUCTS, searchProducts,
     RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
-    ProductAction.PRODUCT_SET_START, setStart,
-    ProductAction.PRODUCT_SET_ERROR, setError,
-    ProductAction.PRODUCT_SET_SUCCESS, setSuccess
+    ProductAction.PRODUCT_SET_START, setProducts,
+    ProductAction.PRODUCT_SET_ERROR, setProductsError,
+    ProductAction.PRODUCT_SET_SUCCESS, setProducts,
+    ProductAction.SORT_PRODUCT, setSorting
     // ProductAction.PRODUCT_SAVE_START, saveStart,
     // ProductAction.PRODUT_SAVE_ERROR, saveError,
     // ProductAction.PRODUCT_SAVE_SUCCESS, saveSuccess

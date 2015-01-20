@@ -7,38 +7,47 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 
  LoadActionCreator = {
 
-     load: function(data,message){
-         if(!arguments.length){
-             data = true;
-             message = null;
-         }
+    load: function (action, state, message) {
 
-         if (arguments[0] === 'string' && arguments.length == 1 ){
-             data = true;
-             message = arguments[0];
-         }
+        if (!arguments.length) {
+            throw new Error('You need to specify for which Event this loading being fired for');
+        }
 
-         if(arguments[1] === 'boolean' && arguments.length == 1){
-             message = null;
-         }
-         Dispatcher.handleViewAction({
+        if (arguments[1] === 'boolean' && arguments.length == 2) {
+            state = arguments[1] || true;
+            message = null;
+        }
+
+        if (arguments[1] === 'string' && arguments.length == 2) {
+            data = true;
+            message = arguments[1];
+        }
+
+        Dispatcher.handleViewAction({
             type: loadAction.LOADING,
             data: {
-                state: data,
-                message: message
+                action: action,
+                state: state,        // true for isLoading, false for isNotLoading
+                message: message    // message initializing loading
             }
         });
-     },
+    },
 
-     loaded: function(){
-         Dispatcher.handleViewAction({
-             type: loadAction.READY,
-             data: {
-                 state: false,
-                 message: null
-             }
-         });
-     }
+    loaded: function (action, state, message) {
+
+        if (!arguments.length) {
+            throw new Error('You need to specify wich event this loaded fire for');
+        }
+
+        Dispatcher.handleViewAction({
+            type: loadAction.READY,
+            data: {
+                action: action,
+                state: false,       // false for error, true for success
+                message: null       // error message or success message
+            }
+        });
+    }
 };
 
 

@@ -6,7 +6,6 @@
 var db = require('./FireApi.js'),
     request = require('../utils/Request'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
-    LoadActionCreator = require('../actions/LoadActionCreators'),
     _ = require('lodash-node'), // TODO better naming needed here
     Product = require('../data/Product'),
     Transmuter = require('transmuter'),
@@ -14,9 +13,44 @@ var db = require('./FireApi.js'),
     ProductApi;
 
 ProductApi = {
-    getProducts: function () {
 
-        if (Product.collection.length) {
+    // get a single product from database
+    // uses setProducts
+    getCurrentProduct: function (slug) {
+
+        if (Product.collection.findWhere({slug:slug})) {
+            debug('We already have this product');
+            ApiProductActionCreator.setProducts(Product.collection);
+            return;
+        }
+
+        // start fetching, fire event
+        ApiProductActionCreator.setProducts(null);
+        db.products.getByChild('slug', slug, function (data) {
+            debug('Fetch new product from db');
+            if(data instanceof Error) {
+                ApiProductActionCreator.setProducts(data);
+                debug('Error trying to get a product by its slug');
+            } else if (data) {
+                // product found
+                Product.create(data);
+                ApiProductActionCreator.setProducts(Product.collection);
+            } else {
+                // product not found, 404
+                ApiProductActionCreator.setProducts(new Error('Product not found'));
+                debug('Error 404, Product not found');
+            }
+        });
+    },
+
+    // get products from database
+    // uses setProducts
+    getProducts: function () {
+        var minLength;
+
+        minLength = 30;
+
+        if (Product.collection.length >= minLength) {
             debug('We already have products');
             ApiProductActionCreator.setProducts(Product.collection);
             return;
@@ -24,8 +58,7 @@ ProductApi = {
 
         // start fetching, fire event
         ApiProductActionCreator.setProducts(null);
-
-        db.products.getAll(30, function (data) {
+        db.products.getAll(minLength, function (data) {
             // if there is an error let's dispatch an event and end here
             if (data instanceof Error) {
                 ApiProductActionCreator.setProducts(data);
@@ -95,29 +128,22 @@ ProductApi = {
         });
     },
     // used for search, it should reset the initial state of the products
+    // uses setProducts
     searchProducts: function (search) {
-        debug('initiating search');
-        debug(search);
         // start fetching for search, fire event
-        console.log('searchProducts start');
-        LoadActionCreator.load();
         ApiProductActionCreator.setProducts(null);
         db.products.searchFor(search, false, function (data) {
             if (data instanceof Error) {
                 debug('Error trying to search for products');
                 ApiProductActionCreator.setProducts(data);
-                //LoadActionCreator.loaded();
-
             } else {
                 if (data.length) {
                     debug('searchProducts - received, now set products');
                     // clear products data with the search results
                     Product.collection.reset(data);
                     ApiProductActionCreator.setProducts(Product.collection);
-                    //LoadActionCreator.loaded();
-
                 } else {
-
+                    debug('searchProducts - receveid but no products found');
                 }
             }
         });
