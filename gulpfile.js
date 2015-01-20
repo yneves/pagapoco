@@ -89,9 +89,9 @@ gulp.task('resources', function () {
         .pipe(gconnect.reload());
 });
 
-// specific function to get flex grid css to dist
-gulp.task('flexboxgrid', function () {
-    gulp.src('node_modules/flexboxgrid/dist/flexboxgrid.min.css')
+// specific function to get chartist css to dist
+gulp.task('chartist', function () {
+    gulp.src('node_modules/chartist/dist/chartist.min.css')
         .pipe(gulp.dest('./dist/styles'));
 });
 
@@ -128,7 +128,7 @@ gulp.task('build', function (callback) {
     runSequence(
         'clean',
         'server',
-        ['html', 'assets', 'resources', 'js', 'styles', 'flexboxgrid'],
+        ['html', 'assets', 'resources', 'js', 'styles', 'flexboxgrid', 'chartist'],
         callback
     );
 });
