@@ -44,13 +44,6 @@ RouteActionCreator = {
                 } else {
                     debug('No getProducts valid method found');
                 }
-
-                // let's require the product price history from the server
-                if (Validator.isFunction(api.productPriceHistory.getProductPriceHistory)) {
-                    api.productPriceHistory.getProductPriceHistory();
-                } else {
-                    debug('No getProductPriceHistory valid method found');
-                }
             } else if (routeData.link.type === 'product') {
                 if (Validator.isFunction(api.product.getCurrentProduct)) {
                     api.product.getCurrentProduct(routeData.link.slug);
@@ -64,6 +57,13 @@ RouteActionCreator = {
                 type: routeAction.CHANGE_ROUTE_ERROR,
                 data: routeData
             });
+        }
+        
+        // let's require the product price history from the server
+        if (Validator.isFunction(api.productPriceHistory.getProductPriceHistory)) {
+            api.productPriceHistory.getProductPriceHistory();
+        } else {
+            debug('No getProductPriceHistory valid method found');
         }
     }
 };

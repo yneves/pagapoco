@@ -2,9 +2,11 @@
 var Collection = require('collection'),
     Model = require('model'),
     lodash = {
+        objects: {
+            keys: require('lodash-node/modern/objects/keys')
+        },
         collections: {
-            min: require('lodash-node/modern/collections/min'),
-            max: require('lodash-node/modern/collections/max')
+            forEach: require('lodash-node/modern/collections/forEach')
         }
     },
     Transmuter = require('transmuter'),
@@ -22,7 +24,7 @@ ProductModel = Model.extend({
             id: { type: 'string' },                 // the key from firebase
             id_buscape: { type: 'integer' },        // id reference from buscape
             categories: { type: 'object' },         // reference to category table
-            offersBySellerId: { type : 'object' },
+            offers: { type : 'object' },
             thumb: { type: 'object' },
             title: { type: 'string' },
             slug: { type: 'string' },
@@ -56,10 +58,45 @@ ProductModel = Model.extend({
         // this.setPrice();
     },
 
+    // For specific get queries or virtual fields like, declare they bellow
     get: function (attr) {
         switch(attr) {
-            case 'category':
-                return this.find( attr, { type: 'category' }, false);
+            case 'best_offer':
+                if (this.attributes.offers && this.attributes.offers.best_offer)  {
+                    return Transmuter.toFloat(this.attributes.offers.best_offer.price.value);
+                }
+                return 0;
+            case 'worst_offer':
+                if (this.attributes.offers && this.attributes.offers.worst_offer)  {
+                    return Transmuter.toFloat(this.attributes.offers.worst_offer.price.value);
+                }
+                return 0;
+            case 'discount':
+                if (this.attributes.offers && this.attributes.offers.best_discount) {
+                    return Transmuter.toFloat(this.attributes.offers.best_discount);
+                }
+                return 0;
+            case 'discount_price':
+                if (this.attributes.offers && this.attributes.offers.best_discount_price) {
+                    return Transmuter.toFloat(this.attributes.offers.best_discount_price);
+                }
+                return 0;
+            case 'offers_sellers':
+                var sellers = [];
+                if (this.attributes.offers && this.attributes.offers.offers_by_seller_id) {
+                    lodash.collections.forEach(this.attributes.offers.offers_by_seller_id, function (value, key) {
+                        var seller = value;
+                        seller.id = key;
+                        sellers.push(seller);
+                    });
+                }
+                return sellers;
+            case 'thumb_large':
+                if (this.attributes.thumb && this.attributes.thumb.large) {
+                    return this.attributes.thumb.large.url;
+                }
+                // TODO return some default image
+                return '';
             // TODO STAGE 3
             // case 'category':
             //     return this.find( attr, { type: 'category' }, false);
@@ -104,52 +141,6 @@ ProductModel = Model.extend({
             this.set('wished', 0);
         } else {
             this.set('wished', 1);
-        }
-    },
-
-    getCheapestOffer: function () {
-        if (this.attributes.offersBySellerId) {
-            var selectedOffer = lodash.collections.min(this.attributes.offersBySellerId, function (offer) {
-                return Transmuter.toFloat(offer.price.value);
-            });
-            return selectedOffer.price.value;
-        } else {
-            return 0.00;
-        }
-    },
-
-    getMostExpensiveOffer: function () {
-        if (this.attributes.offersBySellerId) {
-            var selectedOffer = lodash.collections.max(this.attributes.offersBySellerId, function (offer) {
-                return Transmuter.toFloat(offer.price.value);
-            });
-            return selectedOffer.price.value;
-        } else {
-            return 0.00;
-        }
-    },
-
-    getLargeImage: function () {
-        if (this.attributes.thumb && this.attributes.thumb.large) {
-            return this.attributes.thumb.large.url;
-        } else {
-            // TODO return some default large image
-        }
-    },
-
-    getMediumImage: function () {
-        if (this.attributes.thumb && this.attributes.thumb.medium) {
-            return this.attributes.thumb.medium.url;
-        } else {
-            // TODO return some default medium image
-        }
-    },
-
-    getSmallImage: function () {
-        if (this.attributes.thumb && this.attributes.thumb.small) {
-            return this.attributes.thumb.small.url;
-        } else {
-            // TODO return some default small image;
         }
     }
 });

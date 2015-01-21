@@ -19,19 +19,50 @@ ProductPriceHistoryModel = Model.extend({
     },
     
     getChartData: function() {
+      
       var data = {
           labels: [],
-          series: [ [], [] ]
+          series: [[]]
       };
+      
+      function dateKey(time) {
+        var date = new Date(parseInt(time));        
+        var day = date.getDate();
+        var month = date.getMonth() + 1;
+        var year = date.getFullYear();
+        if (day < 10) day = "0" + day;
+        if (month < 10) month = "0" + month;
+        return year + "-" + month + "-" + day;
+      }
+      
       var days = this.get('days');
       var keys = Object.keys(days);
-      keys.sort();      
-      keys.forEach(function(day,index) {
-          data.labels[index] = day;
-          data.series[0][index] = days[day].min;
-          data.series[1][index] = days[day].max;
+      
+      var prices = {};
+      keys.forEach(function(day) {
+        prices[dateKey(day)] = parseFloat(days[day].min);
       });
-      return data;
+      
+      var dates = [];
+      var first = Math.min.apply(null,keys);
+      var last = Math.max.apply(null,keys);
+      while (first <= last) {
+        dates.push(dateKey(first));
+        first += 24 * 60 * 60 * 1000;
+      }
+      
+      dates.forEach(function(date,index) {
+        var price = prices[date];
+        var prev = index - 1;
+        while (!price && prev >= 0) {
+          price = prices[ dates[prev] ];
+          prev--;
+        }
+        data.labels[index] = date;
+        data.series[0][index] = price;        
+      });
+              
+      return data;      
     },
     
 });
