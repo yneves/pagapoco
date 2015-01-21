@@ -15,8 +15,16 @@ module.exports =
             return {
                 product: {},
                 chart: {
-                  width: '300px',
-                  height: '200px'
+                    width: '500px',
+                    height: '340px',
+                    low: 0,
+                    chartPadding: 5,
+                    showArea: true,
+                    axisX: {
+                        labelInterpolationFnc: function(date) {
+                            return date.split("-").reverse().join("/");
+                        },
+                    }
                 },
             };
         },
@@ -54,20 +62,10 @@ module.exports =
             }
         },
         
-        formatDate: function(time) {
-            var date = new Date(time * 1000);
-            var day = date.getDate();
-            var month = date.getMonth() + 1;
-            var year = date.getFullYear();
-            if (day < 10) day = "0" + day;
-            if (month < 10) month = "0" + month;            
-            return day + "/" + month + "/" + year;
-        },
-
         render: function () {
             return (
                 <div className="price-history">
-                    <div className="price-history-chart" ref="chart">
+                    <div className="ct-chart" ref="chart">
                     </div>
                 </div>
             );
