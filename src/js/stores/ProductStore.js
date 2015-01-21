@@ -87,18 +87,37 @@ function searchProducts(data) {
 
 function setSorting(sort) {
 
+    function toggleOrder(currentOrder) {
+        if (currentOrder === 'ASC') {
+            _currentCatalog.setSortingOrder('DESC');
+        } else {
+            _currentCatalog.setSortingOrder('ASC');
+        }
+    }
+
     if (sort) {
         if (sort.sortBy === 'discount') {
-            _sorting.price = false;
-            _sorting.discount = true;
-            _currentCatalog.comparator = 'title';
-            _currentCatalog.sort();
+            _currentCatalog.comparator = 'discount';
+            if (_sorting.discount) {
+                // ordem ASC ou DESC
+                toggleOrder(_currentCatalog._sortOrder);
+            } else {
+                _sorting.price = false;
+                _sorting.discount = true;
+
+            }
         } else if (sort.sortBy === 'price') {
-            _sorting.discount = false;
-            _sorting.price = true;
-            _currentCatalog.comparator = 'id_buscape';
-            _currentCatalog.sort();
+            _currentCatalog.comparator = 'best_offer';
+            if (_sorting.price) {
+                // ordem ASC ou DESC
+                toggleOrder(_currentCatalog._sortOrder);
+            } else {
+                _sorting.discount = false;
+                _sorting.price = true;
+
+            }
         }
+        _currentCatalog.sort();
     }
 }
 

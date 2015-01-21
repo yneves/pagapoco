@@ -4,7 +4,7 @@
  */
 
 var db = require('./FireApi.js'),
-    request = require('../utils/Request'),
+    ElasticSearchDSL = require('../utils/ElasticSearchDSL'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
     _ = require('lodash-node'), // TODO better naming needed here
     Product = require('../data/Product'),
@@ -130,9 +130,14 @@ ProductApi = {
     // used for search, it should reset the initial state of the products
     // uses setProducts
     searchProducts: function (search) {
+        var searchObj;
+
+        // TODO the search by name must count the supplier and title mainly
+        searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
+
         // start fetching for search, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.searchFor(search, false, function (data) {
+        db.products.searchFor(searchObj, function (data) {
             if (data instanceof Error) {
                 debug('Error trying to search for products');
                 ApiProductActionCreator.setProducts(data);
@@ -143,7 +148,7 @@ ProductApi = {
                     Product.collection.reset(data);
                     ApiProductActionCreator.setProducts(Product.collection);
                 } else {
-                    debug('searchProducts - receveid but no products found');
+                    debug('searchProducts - received but no products found');
                 }
             }
         });
@@ -167,7 +172,6 @@ ProductApi = {
             async.series([
                 function syncProduct(callback) {
                     // TODO some firebase endpoint should go here
-                    request.post('/api/some-end-point', model.toJSON(), callback);
                 }
             ], function (err, results) {
                 if (err instanceof Error) {

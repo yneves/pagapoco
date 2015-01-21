@@ -2,6 +2,7 @@ var Firebase = require('firebase'),
     lodash = {
         objects: {
             assign: require('lodash-node/modern/objects/assign'),
+            defaults: require('lodash-node/modern/objects/defaults'),
             values: require('lodash-node/modern/objects/values'),
             keys: require('lodash-node/modern/objects/keys')
         },
@@ -244,11 +245,10 @@ lodash.objects.assign(Firebase.prototype, {
      * Method that search by proximity/similratiy using ElasticSearch algorithms
      *
      */
-    searchFor: function (term, words, callback) {
+    searchFor: function (searchObj, callback) {
 
         var searchRef,
             searchKey,
-            searchObj,
             type,
             data;
 
@@ -256,13 +256,6 @@ lodash.objects.assign(Firebase.prototype, {
         if (!callback || typeof callback !== 'function') return;
         data = [];
 
-        function makeTerm(term, matchWholeWords) {
-            if( !matchWholeWords ) {
-                if( !term.match(/^\*/) ) { term = '*'+term; }
-                if( !term.match(/\*$/) ) { term += '*'; }
-            }
-            return term;
-        }
         // make sure we are searching for in a low level base (products, products_price_history, etc)
         if (this.parent().toString() !== this.root().toString()) {
             callback(new Error('We need a reference to the base table of what you are looking for'));
@@ -275,18 +268,13 @@ lodash.objects.assign(Firebase.prototype, {
         // create a new firebase instance
         // TODO using ref (declared bellow) would be better? Not sure...
         searchRef = new Firebase(baseUrl + '/search');
-        searchObj = {
-            index: 'firebase',
-            type: type,
-            query: {
-                'query_string': {
-                    query: makeTerm(term, words)
-                }
-            },
-            options: {
-                size: 20
-            }
-        };
+
+        // TODO the size was increased in order to avoid problems with limiting by the filters
+        lodash.objects.defaults(searchObj, {index: 'firebase', type: type, options: {size: 50}});
+
+        if (!searchObj.query) {
+            throw new Error('We need a query to perform a search');
+        }
 
         // create a temporary entry on search/request
         // after that return the key to create a watch to get it once
@@ -295,7 +283,7 @@ lodash.objects.assign(Firebase.prototype, {
 
         // watch the response, once it's ready, get the data. It will be
         // the ElasticSearch response
-        searchRef.child('response/'+searchKey).on('value', function(snapshot) {
+        searchRef.child('response/'+searchKey).on('value', function (snapshot) {
             // snapshot should contain a list of products
             if (snapshot.val() !== null) {
                 var hits,
@@ -322,7 +310,7 @@ lodash.objects.assign(Firebase.prototype, {
                         data.push(childData);
                     });
                 } else {
-                    debug('no data for search');
+                    debug('no data from search');
                     callback(data);
                 }
             }

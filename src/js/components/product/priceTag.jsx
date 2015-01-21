@@ -21,8 +21,8 @@ module.exports =
                 <div className="price-tag">
                     <h3>{Texts.priceTag.title}</h3>
                     <p>
-                        <strong>{Texts.cs} {product.getCheapestOffer()}</strong>
-                        <span>{Texts.priceTag.to} {Texts.cs} {product.getMostExpensiveOffer()}</span>
+                        <strong>{Texts.cs} {product.get('best_offer')}</strong>
+                        <span>{Texts.priceTag.to} {Texts.cs} {product.get('worst_offer')}</span>
                     </p>
                     <a href="#">
                         {Texts.priceTag.history}
