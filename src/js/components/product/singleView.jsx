@@ -56,7 +56,7 @@ module.exports =
                                 <Breadcrumbs product={product} />
                             </h2>
                         </div>
-                        <div className="product-price">                            
+                        <div className="product-price">
                             <PriceTag product={product} />
                         </div>
                     </div>
@@ -64,7 +64,7 @@ module.exports =
                     <div className="product-body">
 
                         <div className="product-image">
-                            <img src={product.getLargeImage()} />
+                            <img src={product.get('thumb_large')} />
                             <WishButton product={product} />
                             <ShareButton product={product} />
                         </div>
@@ -79,7 +79,7 @@ module.exports =
                             </dl>
                         </div>
 
-                        <div className="product-stores">                            
+                        <div className="product-stores">
                             <StoreList product={product} />
                         </div>
 

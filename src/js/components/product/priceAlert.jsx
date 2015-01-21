@@ -17,7 +17,7 @@ module.exports =
         },
 
         getInitialState: function () {
-            var price = this.props.product.getCheapestOffer();
+            var price = this.props.product.get('best_offer');
             return {
                 min: 0,
                 max: price * 2,
@@ -42,7 +42,7 @@ module.exports =
                 <form className="product-alert-form" onSubmit={this.submitAlert}>
                     <h3>{Texts.priceAlert.title}</h3>
                     <strong>{Texts.cs} {this.state.price}</strong>
-                    <input type="range"                        
+                    <input type="range"
                         min={this.state.min}
                         max={this.state.max}
                         value={this.state.price}

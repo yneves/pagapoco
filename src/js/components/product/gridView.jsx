@@ -27,14 +27,14 @@ var ProductGrid =
 
                     <div className="grid-content grid-content-image">
                         <Link name="product" data={{ slug : product.get('slug') }}>
-                            <img src={product.getLargeImage()} />
+                            <img src={product.get('thumb_large')} />
                         </Link>
                     </div>
 
                     <div className="grid-content grid-content-detail">
                         <h3 className="productTitle">{product.get('title')}</h3>
                         <div className="prices">
-                            <span>A partir de  R$</span> <span className="price">{product.getCheapestOffer()}</span>
+                            <span>A partir de  R$</span> <span className="price">{product.get('best_offer')}</span>
                         </div>
                     </div>
 

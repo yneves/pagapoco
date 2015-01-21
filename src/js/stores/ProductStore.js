@@ -91,12 +91,12 @@ function setSorting(sort) {
         if (sort.sortBy === 'discount') {
             _sorting.price = false;
             _sorting.discount = true;
-            _currentCatalog.comparator = 'title';
+            _currentCatalog.comparator = 'discount';
             _currentCatalog.sort();
         } else if (sort.sortBy === 'price') {
             _sorting.discount = false;
             _sorting.price = true;
-            _currentCatalog.comparator = 'id_buscape';
+            _currentCatalog.comparator = 'best_offer';
             _currentCatalog.sort();
         }
     }
