@@ -93,7 +93,7 @@ module.exports =
                                 </a>
                             </div>
                             <div className="product-tab-content">
-                                { this.state.tab === 'review' ? <ProductReview product={product} /> : <PriceHistory product={product} /> }
+                                { this.state.tab === 'review' ? <ProductReview product={product} /> : null }
                             </div>
                         </div>
 

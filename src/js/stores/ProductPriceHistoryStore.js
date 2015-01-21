@@ -43,20 +43,16 @@ function receiveProductPriceHistory(data) {
     receiveSuccess();
 }
 
-function changedRouteSuccess(routeData) {
-
-}
-
 ProductPriceHistoryStore = Store.extend({
 
     getCatalog: function () {
         return _history;
     },
-    
+
     getProduct: function (productId) {
         if (_history) {
             return _history.findWhere({ id: productId });
-        }            
+        }
     },
 
     getLoadingState: function() {
@@ -71,8 +67,7 @@ ProductPriceHistoryInstance = new ProductPriceHistoryStore(
     ProductPriceHistoryAction.RECEIVE_PRODUCT_PRICE_HISTORY_SUCCESS, receiveProductPriceHistory,
     ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_START, updateStart,
     ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_ERROR, updateError,
-    ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS, updateSuccess,
-    RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess
+    ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS, updateSuccess
 );
 
 module.exports = ProductPriceHistoryInstance;

@@ -57,7 +57,6 @@ function changedRouteSuccess(routeData) {
     } else {
         _currentProductSlug = 0;
     }
-    setCurrentProduct();
 }
 
 function setCurrentError (error) {
