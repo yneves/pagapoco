@@ -1,11 +1,18 @@
 
 var Model = require('model'),
-    debug = require('debug')('Product.js'),
+    debug = require('debug')('Player.js'),
+    PlayerBaseModel,
     PlayerSimpleModel,
     PlayerFacebookModel,
     Player;
 
-PlayerSimpleModel = Model.extend({
+PlayerBaseModel = Model.extend({
+
+    // common logic should be added here
+
+});
+
+PlayerSimpleModel = PlayerBaseModel.extend({
     _schema: {
         id: '/PlayerSimpleModel',
         properties: {
@@ -14,14 +21,31 @@ PlayerSimpleModel = Model.extend({
             expires: { type: 'integer' },
             password: { type: 'object' },
             provider: { type: 'string' },
-            token: { type: 'string' }
+            token: { type: 'string' },
+            list: { type: 'object' }
         }
     },
 
-    idAttribute: 'uid'
+    idAttribute: 'uid',
+
+    // For specific get queries or virtual fields like, declare they bellow
+    get: function (attr) {
+        switch(attr) {
+            case 'avatar':
+                // TODO load some default avatar image
+                return '';
+            case 'name':
+                // TODO return empty i guess
+                return '';
+            case 'email':
+                return this.attributes.password.email || '';
+            default:
+                return Model.prototype.get.apply(this, arguments);
+        }
+    }
 });
 
-PlayerFacebookModel = Model.extend({
+PlayerFacebookModel = PlayerBaseModel.extend({
     _schema: {
         id: '/PlayerFacebookModel',
         properties: {
@@ -30,22 +54,38 @@ PlayerFacebookModel = Model.extend({
             expires: { type: 'integer' },
             facebook: { type: 'object' },
             provider: { type: 'string' },
-            token: { type: 'string' }
+            token: { type: 'string' },
+            list: { type: 'object' }
         }
     },
 
-    idAttribute: 'uid'
-});
+    idAttribute: 'uid',
 
-
-Player = {
-    create : function (type, data) {
-        if (type === 'facebook') {
-            return new PlayerFacebookModel(data);
-        } else {
-            return new PlayerSimpleModel(data);
+    // For specific get queries or virtual fields like, declare they bellow
+    get: function (attr) {
+        switch(attr) {
+            case 'avatar':
+                return this.attributes.facebook.cachedUserProfile.picture.data.url || '';
+            case 'name':
+                return this.attributes.facebook.cachedUserProfile.first_name || '';
+            case 'email':
+                return this.attributes.facebook.cachedUserProfile.email || '';
+            default:
+                return Model.prototype.get.apply(this, arguments);
         }
     }
+});
+
+Player = {
+    create : function (data) {
+        if (data.facebook) {
+            Player.instance = new PlayerFacebookModel(data);
+        } else {
+            Player.instance = new PlayerSimpleModel(data);
+        }
+        return Player.instance;
+    },
+    instance: null
 };
 
 module.exports = Player;

@@ -93,7 +93,7 @@ ProductModel = Model.extend({
                 return sellers;
             case 'thumb_large':
                 if (this.attributes.thumb && this.attributes.thumb.large) {
-                    return this.attributes.thumb.large.url;
+                    return this.attributes.thumb.large.url || '';
                 }
                 // TODO return some default image
                 return '';
@@ -135,14 +135,6 @@ ProductModel = Model.extend({
     //         this.attributes.price = this.attributes.original_price;
     //     }
     // },
-
-    toggleWished: function () {
-        if (this.attributes.wished) {
-            this.set('wished', 0);
-        } else {
-            this.set('wished', 1);
-        }
-    }
 });
 
 ProductCollectionConstructor = Collection.extend({

@@ -22,7 +22,7 @@ module.exports =
             return {
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent(),
-                sortingProucts  : ProductStore.getSorting()
+                sortingProducts : ProductStore.getSorting()
             };
         },
 
@@ -37,12 +37,12 @@ module.exports =
         render: function (){
 
             var content;
-
-            if (this.state.currentProduct) {
+            if (this.props.route === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
                 content = (<ProductSingleView product={this.state.currentProduct} />);
-
-            } else if (this.state.products.length) {
+            } else if (this.props.route === 'products' && Object.getOwnPropertyNames(this.state.products).length) {
                 content = (<Products products={this.state.products} sorting={this.state.sortingProducts} />);
+            } else {
+                content = null;
             }
 
             return (
