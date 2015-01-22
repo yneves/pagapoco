@@ -13,6 +13,10 @@ _isLoading  = true;
 _LoadingMessage = Texts.loading.normal;
 
 // Boolean
+
+// TODO precisa verificar o state do loading para os action types
+// TODO já que ele precisa preservar o loading caso tenha qualquer action type
+// TODO ainda carregando
 function _theLoading(data){
     _isLoading = data.state;
     _actionType = data.action;
@@ -21,7 +25,7 @@ function _theLoading(data){
     if (data.message === null){
         _LoadingMessage = Texts.loading.normal;
     }
-    console.log(_actionType + ': ' + _isLoading + ' loading...');
+    console.log(_actionType + ' loading status: ' + _isLoading);
 }
 
 LoadStore = Store.extend({

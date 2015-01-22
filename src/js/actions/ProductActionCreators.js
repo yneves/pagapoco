@@ -11,7 +11,6 @@ ProductActionCreator = {
 
     // called when the user type on search input field
     searchProducts: function (searchTerm) {
-        debug('searchProducts');
         Dispatcher.handleViewAction({
             type : productAction.SEARCH_PRODUCTS,
             data : { query : searchTerm }
@@ -38,19 +37,6 @@ ProductActionCreator = {
         }
     },
 
-    // called when the player wishes to know the product reached a certain price
-    toggleWishProduct: function (id) {
-        Dispatcher.handleViewAction({
-            type : productAction.TOGGLE_WISHLIST,
-            data : { id : id }
-        });
-
-        if (Validator.isFunction(api.product.syncProduct)) {
-            api.product.syncProduct(id);
-        } else {
-            debug('No syncProduct valid method found');
-        }
-    },
     // simple sort the products
     sortProducts: function (sort) {
         Dispatcher.handleViewAction({

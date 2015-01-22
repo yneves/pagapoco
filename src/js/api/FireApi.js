@@ -21,6 +21,7 @@ var Firebase = require('firebase'),
 
 tables = [
     'Users',
+    'players_lists',
     'products',
     'products_price_history'
 ];
@@ -73,6 +74,7 @@ lodash.objects.assign(Firebase.prototype, {
             }
         });
     },
+    // TODO why i created that? findByChild looks like it does the same thing
     getByChild: function (field, term, callback) {
 
         var modelRef,

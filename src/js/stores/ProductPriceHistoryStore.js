@@ -9,7 +9,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _history,
     _currentCatalog;
 
-ProductPriceHistoryAction = ActionTypes.ProductPriceHistory;
+ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
 _history = null;
@@ -37,8 +37,6 @@ function receiveSuccess() {
 }
 
 function receiveProductPriceHistory(data) {
-    debug('ProductPriceHistory Received');
-    debug(data);
     _history = data;
     receiveSuccess();
 }
@@ -62,12 +60,12 @@ ProductPriceHistoryStore = Store.extend({
 });
 
 ProductPriceHistoryInstance = new ProductPriceHistoryStore(
-    ProductPriceHistoryAction.RECEIVE_PRODUCT_PRICE_HISTORY_START, receiveStart,
-    ProductPriceHistoryAction.RECEIVE_PRODUCT_PRICE_HISTORY_ERROR, receiveError,
-    ProductPriceHistoryAction.RECEIVE_PRODUCT_PRICE_HISTORY_SUCCESS, receiveProductPriceHistory,
-    ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_START, updateStart,
-    ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_ERROR, updateError,
-    ProductPriceHistoryAction.PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS, updateSuccess
+    ProductAction.RECEIVE_PRODUCT_PRICE_HISTORY_START, receiveStart,
+    ProductAction.RECEIVE_PRODUCT_PRICE_HISTORY_ERROR, receiveError,
+    ProductAction.RECEIVE_PRODUCT_PRICE_HISTORY_SUCCESS, receiveProductPriceHistory,
+    ProductAction.PRODUCT_PRICE_HISTORY_UPDATE_START, updateStart,
+    ProductAction.PRODUCT_PRICE_HISTORY_UPDATE_ERROR, updateError,
+    ProductAction.PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS, updateSuccess
 );
 
 module.exports = ProductPriceHistoryInstance;
