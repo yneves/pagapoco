@@ -11,30 +11,41 @@ module.exports =
     React.createClass({
 
         propTypes: {
-            products: React.PropTypes.object,
+            products: React.PropTypes.object.isRequired,
             sorting: React.PropTypes.object
         },
 
         getDefaultProps: function () {
             return {
-                products    : []
+                products    : {},
+                sorting     : {}
             };
+        },
+
+        componentWillUnmount: function () {
+            debug('unmounting products.jsx');
         },
 
         render: function () {
             var productGrid,
+                sortBar,
                 masonryOptions;
 
             masonryOptions = {
                 transitionDuration: 0
             };
 
-            if (this.props.products.length) {
+            if (this.props.products.map) {
                 productGrid = this.props.products.map(function(product) {
                     return (
                         <ProductGrid key={product.get('id')} product={product} />
                     );
                 });
+            }
+            if (this.props.sorting && this.props.sorting.hasOwnProperty('price') && this.props.sorting.hasOwnProperty('discount')) {
+                sortBar = (<SortBar price={this.props.sorting.price} discount={this.props.sorting.discount} />);
+            } else {
+                sortBar = null;
             }
 
             return (
@@ -44,7 +55,7 @@ module.exports =
                     <br/>
                     <br/>
                     <br/>
-                    <SortBar price={this.props.sorting.price} discount={this.props.sorting.discount} />
+                    {sortBar}
                     <Masonry options={masonryOptions}>
                         {productGrid}
                     </Masonry>

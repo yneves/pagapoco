@@ -58,13 +58,6 @@ RouteActionCreator = {
                 data: routeData
             });
         }
-        
-        // let's require the product price history from the server
-        if (Validator.isFunction(api.productPriceHistory.getProductPriceHistory)) {
-            api.productPriceHistory.getProductPriceHistory();
-        } else {
-            debug('No getProductPriceHistory valid method found');
-        }
     }
 };
 

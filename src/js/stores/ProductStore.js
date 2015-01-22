@@ -7,7 +7,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductAction,
     RouteAction,
     _currentCatalog,    // general products information
-    _currentPlayerId,
     _currentProduct,
     _isLoading,
     _sorting;
@@ -15,23 +14,19 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
-_currentCatalog = [];
-_currentPlayer = null;
+_currentCatalog = {};
 _currentProductSlug = '';
-_currentProduct = null;
+_currentProduct = {};
 _isLoading  = true;
 _sorting = {
     price: false,
     discount: false
 };
 
-function receivePlayer(data) {
-    // TODO data should be a model
-    _currentPlayer = data;
-}
-
-function setProductsError() {
+function setProductsError(error) {
+    debug(error);
     _isLoading = false;
+    setCurrentProduct();
 }
 
 function setProducts(data) {
@@ -48,7 +43,7 @@ function changedRouteSuccess(routeData) {
 
     var slug;
     if (routeData.link) {
-        slug = routeData.link.slug || '';
+        slug = routeData.link.slug || null;
     }
     if (slug) {
         _currentProductSlug = slug;
@@ -77,22 +72,24 @@ function setSorting(sort) {
 
     if (sort) {
         if (sort.sortBy === 'discount') {
+            _currentCatalog.comparator = 'discount';
             if (_sorting.discount) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
+                _sorting.sortBy = 'discount';
                 _sorting.price = false;
                 _sorting.discount = true;
-                _currentCatalog.comparator = 'discount';
             }
         } else if (sort.sortBy === 'price') {
+            _currentCatalog.comparator = 'best_offer';
             if (_sorting.price) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
+                _sorting.sortBy = 'price';
                 _sorting.discount = false;
                 _sorting.price = true;
-                _currentCatalog.comparator = 'best_offer';
             }
         }
         _currentCatalog.sort();
