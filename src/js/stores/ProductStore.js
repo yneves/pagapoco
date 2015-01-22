@@ -43,12 +43,12 @@ function changedRouteSuccess(routeData) {
 
     var slug;
     if (routeData.link) {
-        slug = routeData.link.slug || null;
+        slug = routeData.link.slug || '';
     }
     if (slug) {
         _currentProductSlug = slug;
     } else {
-        _currentProductSlug = 0;
+        _currentProductSlug = '';
     }
 }
 
@@ -56,7 +56,7 @@ function setCurrentProduct() {
     if (_currentProductSlug && _currentCatalog) {
         _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
     } else {
-        _currentProduct = null;
+        _currentProduct = {};
     }
 }
 
