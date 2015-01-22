@@ -14,7 +14,7 @@ module.exports =
         getDefaultProps: function () {
             return {
                 product: {},
-                chart: {
+                chartist: {
                     width: '500px',
                     height: '340px',
                     low: 0,
@@ -43,29 +43,20 @@ module.exports =
             ProductPriceHistoryStore.removeChangeListener(this._onChange);
         },
         
-        componentDidUpdate: function() {
-            var data = this.getChartData();          
-            var options = this.props.chart;
-            var elm = this.refs.chart.getDOMNode();
-            this.chartist = new Chartist.Line(elm, data, options);
-        },
-        
-        getChartData: function() {
+        componentDidUpdate: function() {            
             var productHistory = this.state.history;
             if (productHistory) {
-                return productHistory.getChartData();
-            } else {
-                return {
-                  labels: [],
-                  series: [],
-                };
+                var data = productHistory.getChartData();
+                var options = this.props.chartist;
+                var elm = this.refs.chartist.getDOMNode();
+                this.chartist = new Chartist.Line(elm, data, options);
             }
         },
         
         render: function () {
             return (
                 <div className="price-history">
-                    <div className="ct-chart" ref="chart">
+                    <div className="ct-chart" ref="chartist">
                     </div>
                 </div>
             );
