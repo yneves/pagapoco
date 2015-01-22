@@ -60,9 +60,11 @@ ProductApi = {
                     ApiProductActionCreator.setAllProductsPriceHistory(data);
                 } else if (data.val() !== null) {
                     debug('data price history ok');
+                    debug(data.val());
                     ProductPriceHistory.create(data.val());
                     ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
                 } else {
+                    debug('no data price history for this product');
                     ApiProductActionCreator.setAllProductsPriceHistory(new Error('No price history found for this product'));
                 }
             });
