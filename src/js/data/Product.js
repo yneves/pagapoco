@@ -135,14 +135,6 @@ ProductModel = Model.extend({
     //         this.attributes.price = this.attributes.original_price;
     //     }
     // },
-
-    toggleWished: function () {
-        if (this.attributes.wished) {
-            this.set('wished', 0);
-        } else {
-            this.set('wished', 1);
-        }
-    }
 });
 
 ProductCollectionConstructor = Collection.extend({

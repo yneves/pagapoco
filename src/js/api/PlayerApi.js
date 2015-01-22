@@ -7,6 +7,7 @@ var db = require('./FireApi.js'),
     },
     PlayerApi,
     Player = require('../data/Player'),
+    debug = require('debug')('PlayerApi.js'),
     _info;
 
 
@@ -162,8 +163,11 @@ PlayerApi = {
                 PlayerApi.login(user, pass);
             }
         });
-    }
+    },
 
+    syncPlayerProductList: function () {
+        debug('should start player product list with server');
+    }
 
 };
 

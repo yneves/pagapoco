@@ -14,23 +14,8 @@ PlayerSimpleModel = Model.extend({
             expires: { type: 'integer' },
             password: { type: 'object' },
             provider: { type: 'string' },
-            token: { type: 'string' }
-        }
-    },
-
-    idAttribute: 'uid'
-});
-
-PlayerFacebookModel = Model.extend({
-    _schema: {
-        id: '/PlayerFacebookModel',
-        properties: {
-            uid: { type: 'string' },
-            auth: { type: 'object' },
-            expires: { type: 'integer' },
-            facebook: { type: 'object' },
-            provider: { type: 'string' },
-            token: { type: 'string' }
+            token: { type: 'string' },
+            list: { type: 'object' }
         }
     },
 
@@ -41,7 +26,7 @@ PlayerFacebookModel = Model.extend({
 Player = {
     create : function (type, data) {
         if (type === 'facebook') {
-            return new PlayerFacebookModel(data);
+            return new PlayerSimpleModel(data);
         } else {
             return new PlayerSimpleModel(data);
         }

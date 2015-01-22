@@ -8,7 +8,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     RouteAction,
     _currentCatalog,    // general products information
     _currentPlayerId,
-    _currentQuery,
     _currentProduct,
     _isLoading,
     _sorting;
@@ -19,7 +18,6 @@ RouteAction = ActionTypes.Route;
 _currentCatalog = [];
 _currentPlayer = null;
 _currentProductSlug = '';
-_currentQuery = '';
 _currentProduct = null;
 _isLoading  = true;
 _sorting = {
@@ -28,7 +26,7 @@ _sorting = {
 };
 
 function receivePlayer(data) {
-    // TODO should be a model
+    // TODO data should be a model
     _currentPlayer = data;
 }
 
@@ -59,29 +57,12 @@ function changedRouteSuccess(routeData) {
     }
 }
 
-function setCurrentError (error) {
-    _isLoading = false;
-}
-
 function setCurrentProduct() {
     if (_currentProductSlug && _currentCatalog) {
         _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
     } else {
         _currentProduct = null;
     }
-}
-
-function toggleWishlist(productId) {
-    var currentModel;
-    // if there is a player we set the wishlist, otherwise just ignore the request
-    if(_currentPlayer.get('id')) {
-        currentModel = _currentCatalog.get(productId);
-        currentModel.toggleWished();
-    }
-}
-
-function searchProducts(data) {
-    _currentQuery = data.query;
 }
 
 function setSorting(sort) {
@@ -96,24 +77,22 @@ function setSorting(sort) {
 
     if (sort) {
         if (sort.sortBy === 'discount') {
-            _currentCatalog.comparator = 'discount';
             if (_sorting.discount) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
                 _sorting.price = false;
                 _sorting.discount = true;
-
+                _currentCatalog.comparator = 'discount';
             }
         } else if (sort.sortBy === 'price') {
-            _currentCatalog.comparator = 'best_offer';
             if (_sorting.price) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
                 _sorting.discount = false;
                 _sorting.price = true;
-
+                _currentCatalog.comparator = 'best_offer';
             }
         }
         _currentCatalog.sort();
@@ -145,8 +124,6 @@ ProductStore = Store.extend({
 });
 
 ProductInstance = new ProductStore(
-    ProductAction.TOGGLE_WISHLIST, toggleWishlist,
-    ProductAction.SEARCH_PRODUCTS, searchProducts,
     RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
     ProductAction.PRODUCT_SET_START, setProducts,
     ProductAction.PRODUCT_SET_ERROR, setProductsError,

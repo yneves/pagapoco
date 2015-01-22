@@ -78,6 +78,36 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
         } else {
             debug('No logou valid method found');
         }
+    },
+
+    // called when a player want's to add a product to a list
+    addProductToList: function (productId) {
+        debug('ActionCreator - addProductToList');
+        Dispatcher.handleViewAction({
+            type : productAction.ADD_PRODUCT_TO_LIST,
+            data : { id : productId }
+        });
+
+        if (Validator.isFunction(api.syncPlayerProductList)) {
+            api.syncPlayerProductList(productId);
+        } else {
+            debug('No syncProduct valid method found');
+        }
+    },
+
+    // called when a player want's to remove a product from a list
+    removeProductFromList: function (productId) {
+        debug('ActionCreator = removeProductFromList');
+        Dispatcher.handleViewAction({
+            type : productAction.REMOVE_PRODUCT_FROM_LIST,
+            data : { id : productId }
+        });
+
+        if (Validator.isFunction(api.syncPlayerProductList)) {
+            api.syncPlayerProductList(productId);
+        } else {
+            debug('No syncProduct valid method found');
+        }
     }
 };
 

@@ -2,7 +2,6 @@ module.exports = {
     // view
     SEARCH_PRODUCTS : null,
     LOAD_MORE       : null,
-    TOGGLE_WISHLIST : null,
     VIEW_PRODUCT    : null,
     SORT_PRODUCT    : null,
 
