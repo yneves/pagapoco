@@ -1,21 +1,30 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
     Store = require('../utils/Store'),
+    debug = require('debug')('PlayerStore.js'),
     playerAction = ActionTypes.Player,
     PlayerStore,
     _currentPlayer,
     _isNew;
 
-_currentPlayer = false;
+_currentPlayer = null;
 _isNew = false;
 
 // Boolean
 function _updatePlayerData(data){
-    if (data) {
-        _currentPlayer = data.state || false;
-        _isNew = data.isNew || false;
+
+    _currentPlayer = data || null;
+    if (data instanceof Error) {
+
+    } else if (data && data.player) {
+        _currentPlayer = data.player;
+        if (data.isNew) {
+            _isNew = true;
+        } else {
+            _isNew = false;
+        }
     } else {
-        _currentPlayer = false;
+        _currentPlayer = null;
         _isNew = false;
     }
 }
@@ -26,20 +35,22 @@ function _registerPlayerData(data) {
 }
 
 
-function addProductToList(list, productId) {
+function addProductToList(data) {
     var model;
     // if there is a player we set the product to a list, otherwise just ignore the request
     if(_currentPlayer && _currentPlayer.get('uid')) {
         debug('Adicionando a lista do jogador');
+        _currentPlayer.addProductToList(data.productId);
     } else {
         debug('No current player');
     }
 }
 
-function removeProductFromList(list, productId) {
+function removeProductFromList(data) {
     var model;
     if (_currentPlayer && _currentPlayer.get('uid')) {
         debug('Removendo da lista do jogador');
+        _currentPlayer.removeProductFromList(data.productId);
     } else {
         debug('No current player');
     }

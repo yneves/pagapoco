@@ -8,10 +8,10 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 
  PlayerActionCreator = {
 
-     initPlayer: function(){
+     initPlayer: function () {
         Dispatcher.handleViewAction({
             type: playerAction.INIT,
-            data: { state: false }
+            data: null
         });
         if (Validator.isFunction(api.check)) {
             api.check();
@@ -20,17 +20,13 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
         }
      },
 
-    logIn: function(user,pass){
+    logIn: function (user, pass) {
         Dispatcher.handleViewAction({
             type: playerAction.LOGIN_IN,
-            data: {
-                state: true,
-                user: user,
-                pass: pass
-            }
+            data: null
         });
         if (Validator.isFunction(api.login)) {
-            api.login(user,pass);
+            api.login(user, pass);
         } else {
             debug('No login valid method found');
         }
@@ -39,9 +35,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
      faceLogIn: function(){
          Dispatcher.handleViewAction({
              type: playerAction.FACEBOOK_LOGIN,
-             data: {
-                 state: true
-             }
+             data: null
          });
         if (Validator.isFunction(api.faceLogIn)) {
             api.faceLogIn();
@@ -54,15 +48,10 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
      registerUser: function(user,pass,info){
          Dispatcher.handleViewAction({
              type: playerAction.CREATE_USER,
-             data: {
-                 state: true,
-                 user: user,
-                 pass: pass,
-                 info: info
-             }
+             data: null
          });
         if (Validator.isFunction(api.createUser)) {
-            api.createUser(user,pass,info);
+            api.createUser(user, pass, info);
         } else {
             debug('No createUser valid method found');
         }
@@ -71,12 +60,13 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
      logOut: function(){
         Dispatcher.handleViewAction({
             type: playerAction.LOGOUT,
-            data: { state: false }
+            data: null
         });
         if (Validator.isFunction(api.logout)) {
+            debug('Api logout');
             api.logout();
         } else {
-            debug('No logou valid method found');
+            debug('No logOut valid method found');
         }
     },
 
@@ -84,8 +74,8 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     addProductToList: function (productId) {
         debug('ActionCreator - addProductToList');
         Dispatcher.handleViewAction({
-            type : productAction.ADD_PRODUCT_TO_LIST,
-            data : { id : productId }
+            type : playerAction.ADD_PRODUCT_TO_LIST,
+            data : { productId : productId }
         });
 
         if (Validator.isFunction(api.syncPlayerProductList)) {
@@ -99,8 +89,8 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     removeProductFromList: function (productId) {
         debug('ActionCreator = removeProductFromList');
         Dispatcher.handleViewAction({
-            type : productAction.REMOVE_PRODUCT_FROM_LIST,
-            data : { id : productId }
+            type : playerAction.REMOVE_PRODUCT_FROM_LIST,
+            data : { productId : productId }
         });
 
         if (Validator.isFunction(api.syncPlayerProductList)) {

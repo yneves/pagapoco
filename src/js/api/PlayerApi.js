@@ -117,7 +117,6 @@ PlayerApi = {
     logout: function () {
         // TODO check if there is some way to validate this callback
         db.base.unauth();
-        ApiPlayerActionCreator.login(null);
     },
 
     // check current user state

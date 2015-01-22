@@ -1,12 +1,26 @@
 
 var Model = require('model'),
-    debug = require('debug')('Product.js'),
+    debug = require('debug')('Player.js'),
+    PlayerBaseModel,
     PlayerSimpleModel,
     PlayerFacebookModel,
     PlayerInstance,
     Player;
 
-PlayerSimpleModel = Model.extend({
+PlayerBaseModel = Model.extend({
+
+    addProductToList: function (productId) {
+        debug('add product to list');
+        debug(productId);
+    },
+
+    removeProductFromlist: function (productId) {
+        debug('remove product from list');
+        debug(productId);
+    }
+});
+
+PlayerSimpleModel = PlayerBaseModel.extend({
     _schema: {
         id: '/PlayerSimpleModel',
         properties: {
@@ -39,7 +53,7 @@ PlayerSimpleModel = Model.extend({
     }
 });
 
-PlayerFacebookModel = Model.extend({
+PlayerFacebookModel = PlayerBaseModel.extend({
     _schema: {
         id: '/PlayerFacebookModel',
         properties: {
