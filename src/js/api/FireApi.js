@@ -21,6 +21,7 @@ var Firebase = require('firebase'),
 
 tables = [
     'Users',
+    'players_lists',
     'products',
     'products_price_history'
 ];

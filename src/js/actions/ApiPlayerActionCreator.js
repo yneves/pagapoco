@@ -68,7 +68,36 @@ PlayerServerActionCreator = {
                 });
             }
         }
-    }
+    },
+
+    update: function (playerData) {
+
+        playerData = playerData || null;
+
+        // the server receive the player update event but hasn't returned anything yet
+        if(!playerData) {
+            LoadActionCreator.load('PLAYER_UPDATE_START', true);
+            Dispatcher.handleServerAction({
+                type: playerAction.PLAYER_UPDATE_START,
+                data: null
+            });
+        } else {
+            // if there was an error while trying to update the player in the server
+            LoadActionCreator.loaded('PLAYER_UPDATE_START', false);
+            if (playerData instanceof Error) {
+                Dispatcher.handleServerAction({
+                    type: playerAction.PLAYER_UPDATE_ERROR,
+                    data: playerData
+                });
+            } else {
+                // player was successfully updated in the serve
+                Dispatcher.handleServerAction({
+                    type: playerAction.PLAYER_UPDATE_SUCCESS,
+                    data: playerData
+                });
+            }
+        }
+    },
 };
 
 module.exports = PlayerServerActionCreator;

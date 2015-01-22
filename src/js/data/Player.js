@@ -4,20 +4,12 @@ var Model = require('model'),
     PlayerBaseModel,
     PlayerSimpleModel,
     PlayerFacebookModel,
-    PlayerInstance,
     Player;
 
 PlayerBaseModel = Model.extend({
 
-    addProductToList: function (productId) {
-        debug('add product to list');
-        debug(productId);
-    },
+    // common logic should be added here
 
-    removeProductFromlist: function (productId) {
-        debug('remove product from list');
-        debug(productId);
-    }
 });
 
 PlayerSimpleModel = PlayerBaseModel.extend({
@@ -87,13 +79,13 @@ PlayerFacebookModel = PlayerBaseModel.extend({
 Player = {
     create : function (data) {
         if (data.facebook) {
-            PlayerInstance = new PlayerFacebookModel(data);
+            Player.instance = new PlayerFacebookModel(data);
         } else {
-            PlayerInstance = new PlayerSimpleModel(data);
+            Player.instance = new PlayerSimpleModel(data);
         }
-        return PlayerInstance;
+        return Player.instance;
     },
-    instance: PlayerInstance
+    instance: null
 };
 
 module.exports = Player;

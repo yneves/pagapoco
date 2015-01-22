@@ -7,6 +7,7 @@ var db = require('./FireApi.js'),
     },
     PlayerApi,
     Player = require('../data/Player'),
+    PlayerList = require('../data/PlayerList'),
     debug = require('debug')('PlayerApi.js'),
     _info;
 
@@ -41,6 +42,7 @@ function _checkOrUpdatePlayerData(authData) {
             ApiPlayerActionCreator.login({
                 player: newPlayer
             });
+            PlayerApi.loadPlayerProductList();
 
         } else {
 
@@ -62,10 +64,9 @@ function _checkOrUpdatePlayerData(authData) {
                         player: newPlayer,
                         isNew: true
                     });
+                    PlayerApi.loadPlayerProductList();
                 }
             });
-
-
         }
     });
 }
@@ -117,6 +118,7 @@ PlayerApi = {
     logout: function () {
         // TODO check if there is some way to validate this callback
         db.base.unauth();
+        Player.instance = null;
     },
 
     // check current user state
@@ -127,6 +129,7 @@ PlayerApi = {
             ApiPlayerActionCreator.login({
                 player: Player.create(authData)
             });
+            PlayerApi.loadPlayerProductList();
         } else {
             ApiPlayerActionCreator.login(null);
         }
@@ -167,8 +170,73 @@ PlayerApi = {
         });
     },
 
+    loadPlayerProductList: function () {
+        var currentPlayerUid;
+
+        if (Player.instance) {
+            currentPlayerUid = Player.instance.get('uid');
+        }
+        debug(Player.instance);
+        if (currentPlayerUid) {
+            db.players_lists.findByKey(currentPlayerUid, function (data) {
+                if (data instanceof Error) {
+                    // some nasty error
+                    debug('Error');
+                } else if (data.val() !== null) {
+                    debug('data ok');
+                } else {
+                    debug('no player list data found');
+                }
+            });
+        } else {
+            debug('loadPlayerProductList - No player UID found');
+        }
+
+    },
+
+    syncPlayer: function () {
+        debug('sync player data');
+    },
+
     syncPlayerProductList: function () {
-        debug('should start player product list with server');
+        debug('syncPlayerProductList');
+        var currentPlayerUid,
+            listToSave;
+
+        if (Player.instance) {
+            currentPlayerUid = Player.instance.get('uid');
+        }
+
+        if (currentPlayerUid) {
+            db.players_lists.findByKey(playerId, function (data) {
+                if (data instanceof Error) {
+                    debug('Player list data ERROR, oh gawd');
+                } else if (data.val() !== null) {
+                    debug('Player list data found, updating it');
+                    listToSave = PlayerList.collection.get(currentPlayerUid);
+                    var playerListRef = db.players_lists.child(currentPlayerUid);
+                    playerListRef.save(listToSave, function (err) {
+                        if (err) {
+                            PlayerActionCreator.update(new Error(err));
+                        } else {
+                            debug('Player list data updated with great success');
+                        }
+                    });
+                } else {
+                    debug('Player list data NOT found, creating it');
+                    listToSave = PlayerList.collection.get(currentPlayerUid);
+                    db.players_lists.createWithKey(currentPlayerUid, listToSave, function (err) {
+                        if (err) {
+                            PlayerActionCreator.update(new Error(err));
+                        } else {
+                            debug('Player list data created with great success');
+                        }
+                    });
+                }
+            });
+        } else {
+            debug('syncPlayerProductList - no player uid found');
+        }
     }
 
 };
