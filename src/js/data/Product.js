@@ -93,7 +93,7 @@ ProductModel = Model.extend({
                 return sellers;
             case 'thumb_large':
                 if (this.attributes.thumb && this.attributes.thumb.large) {
-                    return this.attributes.thumb.large.url;
+                    return this.attributes.thumb.large.url || '';
                 }
                 // TODO return some default image
                 return '';

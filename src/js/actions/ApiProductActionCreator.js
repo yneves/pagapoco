@@ -48,7 +48,6 @@ ProductServerActionCreator = {
 
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
-            debug('Started syncing with server - no data yet');
             LoadActionCreator.load('PRODUCT_SET_START', true);
             Dispatcher.handleServerAction({
                 type: productAction.PRODUCT_SET_START,
@@ -64,7 +63,6 @@ ProductServerActionCreator = {
                     data: products
                 });
             } else { // everything went fine, dispatch the event with the product data
-                debug('Server responded - no errors');
                 Dispatcher.handleServerAction({
                     type: productAction.PRODUCT_SET_SUCCESS,
                     data: products

@@ -13,7 +13,6 @@ PlayerServerActionCreator = {
 
         // the server receive the product update event but hasn't returned anything yet
         if(!playerData) {
-            debug('Started login player with server - no data yet');
             LoadActionCreator.load('PLAYER_LOGIN_START', true);
             Dispatcher.handleServerAction({
                 type: playerAction.PLAYER_LOGIN_START,
@@ -23,15 +22,11 @@ PlayerServerActionCreator = {
             // if there was an error while trying to update the product in the server
             LoadActionCreator.loaded('PLAYER_LOGIN_START', false);
             if (playerData instanceof Error) {
-                debug('Server login responded - With error');
-                debug(playerData);
                 Dispatcher.handleServerAction({
                     type: playerAction.PLAYER_LOGIN_ERROR,
                     data: playerData
                 });
             } else {
-                debug(playerData);
-                debug('Server login responded - no errors');
                 // product was successfully updated in the serve
                 Dispatcher.handleServerAction({
                     type: playerAction.PLAYER_LOGIN_SUCCESS,

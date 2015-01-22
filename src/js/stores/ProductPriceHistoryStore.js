@@ -37,8 +37,6 @@ function receiveSuccess() {
 }
 
 function receiveProductPriceHistory(data) {
-    debug('ProductPriceHistory Received');
-    debug(data);
     _history = data;
     receiveSuccess();
 }

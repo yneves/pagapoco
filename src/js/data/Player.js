@@ -3,6 +3,7 @@ var Model = require('model'),
     debug = require('debug')('Product.js'),
     PlayerSimpleModel,
     PlayerFacebookModel,
+    PlayerInstance,
     Player;
 
 PlayerSimpleModel = Model.extend({
@@ -19,18 +20,66 @@ PlayerSimpleModel = Model.extend({
         }
     },
 
-    idAttribute: 'uid'
-});
+    idAttribute: 'uid',
 
-
-Player = {
-    create : function (type, data) {
-        if (type === 'facebook') {
-            return new PlayerSimpleModel(data);
-        } else {
-            return new PlayerSimpleModel(data);
+    // For specific get queries or virtual fields like, declare they bellow
+    get: function (attr) {
+        switch(attr) {
+            case 'avatar':
+                // TODO load some default avatar image
+                return '';
+            case 'name':
+                // TODO return empty i guess
+                return '';
+            case 'email':
+                return this.attributes.password.email || '';
+            default:
+                return Model.prototype.get.apply(this, arguments);
         }
     }
+});
+
+PlayerFacebookModel = Model.extend({
+    _schema: {
+        id: '/PlayerFacebookModel',
+        properties: {
+            uid: { type: 'string' },
+            auth: { type: 'object' },
+            expires: { type: 'integer' },
+            facebook: { type: 'object' },
+            provider: { type: 'string' },
+            token: { type: 'string' },
+            list: { type: 'object' }
+        }
+    },
+
+    idAttribute: 'uid',
+
+    // For specific get queries or virtual fields like, declare they bellow
+    get: function (attr) {
+        switch(attr) {
+            case 'avatar':
+                return this.attributes.facebook.cachedUserProfile.picture.data.url || '';
+            case 'name':
+                return this.attributes.facebook.cachedUserProfile.first_name || '';
+            case 'email':
+                return this.attributes.facebook.cachedUserProfile.email || '';
+            default:
+                return Model.prototype.get.apply(this, arguments);
+        }
+    }
+});
+
+Player = {
+    create : function (data) {
+        if (data.facebook) {
+            PlayerInstance = new PlayerFacebookModel(data);
+        } else {
+            PlayerInstance = new PlayerSimpleModel(data);
+        }
+        return PlayerInstance;
+    },
+    instance: PlayerInstance
 };
 
 module.exports = Player;
