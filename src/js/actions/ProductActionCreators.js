@@ -11,6 +11,7 @@ ProductActionCreator = {
 
     // called when the user type on search input field
     searchProducts: function (searchTerm) {
+
         Dispatcher.handleViewAction({
             type : productAction.SEARCH_PRODUCTS,
             data : { query : searchTerm }
@@ -21,8 +22,22 @@ ProductActionCreator = {
         } else {
             debug('No searchProducts valid method found');
         }
-    },
 
+    },
+    // filter products
+    filterProducts: function (filters) {
+
+        Dispatcher.handleViewAction({
+            type : productAction.FILTER_PRODUCTS,
+            data : { filters: filters }
+        });
+        if (Validator.isFunction(api.product.filterProducts)) {
+            api.product.filterProducts(filters);
+        } else {
+            debug('No filterProducts valid method found');
+        }
+
+    },
     // called when more products are needed from the database
     loadMoreProducts: function () {
         Dispatcher.handleViewAction({
@@ -36,7 +51,6 @@ ProductActionCreator = {
             debug('No updateProducts valid method found');
         }
     },
-
     // simple sort the products
     sortProducts: function (sort) {
         Dispatcher.handleViewAction({

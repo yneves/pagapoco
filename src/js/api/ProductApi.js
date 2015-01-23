@@ -117,24 +117,24 @@ ProductApi = {
     // used for search with exact matches
     filterProducts: function (filter) {
 
+        // TODO the filter must check if there is any query set before creating the
+        // object
+
         var searchObj;
         searchObj = ElasticSearchDSL.getBySingleFilter(filter);
-        debug(searchObj);
         ProductApi.updateProducts(searchObj);
     },
     // used for search, it should reset the initial state of the products
     // uses setProducts
     searchProducts: function (search) {
 
-        var searchObj;
-
         // TODO the search by name must count the supplier and title mainly
 
         // TODO the search must look up to see if there are any filter set
         // to know which method to call (query with or without filters)
+        var searchObj;
         searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
         ProductApi.updateProducts(searchObj);
-
     },
     // used for loadMore
     updateProducts: function (searchObj) {

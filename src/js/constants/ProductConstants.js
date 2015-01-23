@@ -1,6 +1,7 @@
 module.exports = {
     // view
     SEARCH_PRODUCTS : null,
+    FILTER_PRODUCTS : null,
     LOAD_MORE       : null,
     SORT_PRODUCT    : null,
     ADD_PRICE_ALERT: null,

@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     debug = require('debug')('PlayerStore.js'),
     playerAction = ActionTypes.Player,
     PlayerStore,
+    PlayerInstance,
     _currentPlayer,
     _isNew;
 
