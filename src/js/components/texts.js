@@ -18,7 +18,7 @@ module.exports = {
         from: 'A partir de',
         at: 'em'
     },
-
+    
     search: {
       placeholder: 'O que está procurando?',
       submit: 'Pesquisar',
@@ -47,7 +47,8 @@ module.exports = {
     },
 
     productReview: {
-      title: 'AVALIAÇÃO DO PRODUTO'
+      title: 'AVALIAÇÃO DO PRODUTO',
+      text: 'Reviews aqui'
     },
 
     priceAlert: {
