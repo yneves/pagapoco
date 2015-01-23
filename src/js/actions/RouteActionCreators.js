@@ -35,7 +35,6 @@ RouteActionCreator = {
                 type : routeAction.CHANGE_ROUTE_SUCCESS,
                 data : routeData
             });
-
             // Load data based on current Route type
             if (routeData.link.type === 'products') {
                 // let's require the products from the server
@@ -49,6 +48,12 @@ RouteActionCreator = {
                     api.product.getCurrentProduct(routeData.link.slug);
                 } else {
                     debug('No getCurrentProduct valid method found');
+                }
+            } else if (routeData.link.type === 'taxonomy') {
+                if (Validator.isFunction(api.product.filterProducts)) {
+                    api.product.filterProducts(routeData.link.name);
+                } else {
+                    debug('No filterProducts valid method found');
                 }
             }
         } else {

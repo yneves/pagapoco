@@ -39,7 +39,7 @@ module.exports =
             var content;
             if (this.props.route === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
                 content = (<ProductSingleView product={this.state.currentProduct} />);
-            } else if (this.props.route === 'products' && Object.getOwnPropertyNames(this.state.products).length) {
+            } else if ((this.props.route === 'products' || this.props.route === 'taxonomy') && Object.getOwnPropertyNames(this.state.products).length) {
                 content = (<Products products={this.state.products} sorting={this.state.sortingProducts} />);
             } else {
                 content = null;

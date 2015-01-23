@@ -34,7 +34,7 @@ module.exports =
             masonryOptions = {
                 transitionDuration: 0
             };
-
+            
             if (this.props.products.map) {
                 productGrid = this.props.products.map(function(product) {
                     return (

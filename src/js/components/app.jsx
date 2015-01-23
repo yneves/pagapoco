@@ -74,6 +74,7 @@ Application =
                     case 'home':
                     case 'product':
                     case 'products':
+                    case 'taxonomy':
                         componentToLoad = <Store route={this.state.route.link.type} />;
                         break;
                     case 'register':

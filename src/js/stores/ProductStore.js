@@ -30,6 +30,7 @@ function setProductsError(error) {
 function setProducts(data) {
     if (data) {
         if (Object.getOwnPropertyNames(data).length) {
+            debug('me');
             // new data arrived
             _currentCatalog = data.clone();
         }

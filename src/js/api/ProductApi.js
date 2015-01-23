@@ -114,9 +114,44 @@ ProductApi = {
             }
         });
     },
+    // used for search with exact matches
+    filterProducts: function (filter) {
+
+        var searchObj;
+
+        debug(filter);
+        searchObj = ElasticSearchDSL.getBySingleFilter(filter);
+
+        debug(searchObj);
+        // start fetching for search, fire event
+        ApiProductActionCreator.setProducts(null);
+        db.products.searchFor(searchObj, function (data) {
+            if (data instanceof Error) {
+                debug('Error trying to search for products');
+                ApiProductActionCreator.setProducts(data);
+            } else {
+                if (data instanceof Array) {
+                    if (data.length) {
+                        debug('searchProducts - received, now set products');
+                        // clear products data with the search results
+                        Product.collection.reset(data);
+                        ApiProductActionCreator.setProducts(Product.collection);
+                        debug(Product.collection);
+                    } else {
+                        debug('searchProducts - received but no products found');
+                        ApiProductActionCreator.setProducts({});
+                    }
+                } else {
+                    debug('Error: data is not an instance of Array');
+                    ApiProductActionCreator.setProducts(new Error('Invalid type: Product data should be of type Array'));
+                }
+            }
+        });
+    },
     // used for search, it should reset the initial state of the products
     // uses setProducts
     searchProducts: function (search) {
+
         var searchObj;
 
         // TODO the search by name must count the supplier and title mainly
