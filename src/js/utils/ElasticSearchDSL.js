@@ -6,6 +6,11 @@
 */
 
 var debug = require('debug')('ElasticSearchDSL.js'),
+    lodash = {
+        collections: {
+            forEach: require('lodash-node/modern/collections/forEach')
+        }
+    },
     ElasticSearchDSL;
 
 // *** ATTENTION *** ATTENZIONE ** ATENÇÃO ** WARNING ** MUHABADU!
@@ -70,27 +75,108 @@ ElasticSearchDSL = {
             }
         };
     },
-    getBySingleFilter: function (term) {
-        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-        return {
+    // return data based on query with one filter only
+    getQueryWithSingleFilter: function (term) {
+        var searchObj;
+
+        searchObj = {
             'query': {
-                'term': {
-                    'supplier': {
-                        'value': term,
-                        'boost': 2.0
+                'filtered': {
+                    'query': {
+
+                    },
+                    'filter': {
+
+                    }
+                }
+            }
+        };
+
+        return searchObj;
+    },
+    // return data bsed on query with possible multiple filters
+    getQueryWithMultipleFilters: function (term) {
+        var searchObj;
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'query': {
+
+                    },
+                    'filter': {
+
                     }
                 }
             }
         };
     },
-    getByMultipleFilter: function (terms) {
-        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html
+
+    // return data based on filter only, the complex/simple cases scenarios were
+    // created due to the way data was indexed with elasticsearch + flashlight
+    // this is in order to cover cases with hyphen, bellow are a link describing
+    // the problem and one possible solution
+    // http://stackoverflow.com/questions/11566838/elastic-search-hyphen-issue-with-term-filter
+    getBySingleFilter: function (filter) {
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+        var searchObj;
+
+        var returned = filter.split('-');
+
+        // for simple cases
+        if (returned.length <= 1) {
+            searchObj = {
+                'query': {
+                    'filtered': {
+                        'filter': {
+                            'term': {
+                                'supplier': {
+                                    'value': returned[0]
+                                }
+                            }
+                        }
+                    }
+                }
+            };
+        } else {
+            // for complex cases
+            searchObj = {
+                'query': {
+                    'filtered': {
+                        'filter': {
+                            'bool': {
+                                'must': []
+                            }
+                        }
+                    }
+                }
+            };
+
+            lodash.collections.forEach(returned, function (value) {
+                searchObj.query.filtered.filter.bool.must.push({
+                    'term': { 'supplier': value }
+                });
+            });
+
+        }
+        debug(searchObj);
+        return searchObj;
+    },
+    // return data based on multiple filters only
+    getByMultipleFilter: function (filters) {
+        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
         // it works, but not for multiple different terms as it seems.. must dig further
         return {
             'query': {
-                'terms': {
-                    'supplier': ['integralmedica', 'probiotica'],
-                    'minimum_should_match': 1
+                'filtered': {
+                    'filter': {
+                        'terms': {
+                            'supplier': ['integralmedica', 'probiotica'],
+                            'minimum_should_match': 1
+                        }
+                    }
                 }
             }
         };

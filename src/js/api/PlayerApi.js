@@ -52,7 +52,7 @@ function _checkOrUpdatePlayerData(authData) {
             }
 
             newPlayer = Player.create(authData);
-            db.Users.createwithKey(newPlayer.get('uid'), newPlayer, function (err) {
+            db.Users.createWithKey(newPlayer.get('uid'), newPlayer, function (err) {
                 if (err) {
                     console.log('Creating new user data - error');
                 } else {
