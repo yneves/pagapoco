@@ -323,7 +323,8 @@ lodash.objects.assign(Firebase.prototype, {
         }
         // just get the data and leave the server alone
         modelRef.once('value', function (snapshot) {
-            var value;
+            var value,
+                data;
 
             if (snapshot.val() !== null) {
                 // TODO look for ways to improve this ugly thing
@@ -343,9 +344,11 @@ lodash.objects.assign(Firebase.prototype, {
     // with the current project, also there are some more helpfull messages.
     // this methods aalso assumes calls of type .once, so data changes on server
     // won't trigger any reload
-    findByKey: function (key, callback) {
+    findByKey: function (key, callback, idAttribute) {
 
         var modelRef;
+
+        idAttribute = idAttribute || 'id';
 
         // this method need an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
@@ -358,7 +361,24 @@ lodash.objects.assign(Firebase.prototype, {
             callback(new Error(err));
         }
         // just get the data and  leave the server alone
-        modelRef.once('value', callback);
+        modelRef.once('value', function (snapshot) {
+            var value,
+                data;
+
+            if (snapshot.val() !== null) {
+                // childData will be the actual contents of the child
+                data = snapshot.val() || {};
+                // set the key as the firebase key, needed because
+                // firebase has no support for arrays and our collection/model
+                // object need this for correct data manipulation
+                // also we run pareInt because integer type data arrive from DB
+                // as a string, so we need to perform this check
+                data[idAttribute] = parseInt(snapshot.key()) || snapshot.key();
+            } else {
+                data = null;
+            }
+            callback(data);
+        });
     }
 });
 

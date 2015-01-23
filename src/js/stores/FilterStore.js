@@ -27,7 +27,7 @@ FilterStore = Store.extend({
 
 });
 
-FilterInstance = new PlayerStore(
+FilterInstance = new FilterStore(
     productAction.SEARCH_PRODUCTS, handleSearch,
     productAction.FILTER_PRODUCTS, handleFilter
 );

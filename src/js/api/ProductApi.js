@@ -56,14 +56,9 @@ ProductApi = {
         // if no price history data found for this product, we should fetch it from the server
         if (!currentProductPriceHistory) {
             // no data found
-            debug(productId);
             db.products_price_history.findByKey(productId, function (data) {
-                if (data instanceof Error) {
-                    ApiProductActionCreator.setAllProductsPriceHistory(data);
-                } else if (data.val() !== null) {
-                    debug('data price history ok');
-                    debug(data.val());
-                    ProductPriceHistory.create(data.val());
+                if (data !== null) {
+                    ProductPriceHistory.create(data);
                     ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
                 } else {
                     debug('No price history found for this product');
