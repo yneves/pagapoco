@@ -171,21 +171,27 @@ PlayerApi = {
     },
 
     loadPlayerProductList: function () {
+
         var currentPlayerUid;
 
         if (Player.instance) {
             currentPlayerUid = Player.instance.get('uid');
         }
-        debug(Player.instance);
+
         if (currentPlayerUid) {
+
+            // start fetching player list from server
+            ApiPlayerActionCreator.setPlayerProductList(null);
+
             db.players_lists.findByKey(currentPlayerUid, function (data) {
                 if (data instanceof Error) {
                     // some nasty error
-                    debug('Error');
+                    ApiPlayerActionCreator.setPlayerProductList(data);
                 } else if (data.val() !== null) {
-                    debug('data ok');
+                    PlayerList.create(data.val());
+                    ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
                 } else {
-                    debug('no player list data found');
+                    ApiPlayerActionCreator.setPlayerProductList(new Error('No player list data found'));
                 }
             });
         } else {
@@ -198,6 +204,8 @@ PlayerApi = {
         debug('sync player data');
     },
 
+    // sync current player product list with
+    // if there is no list, create the first one, otherwise update it
     syncPlayerProductList: function () {
         debug('syncPlayerProductList');
         var currentPlayerUid,
@@ -208,26 +216,31 @@ PlayerApi = {
         }
 
         if (currentPlayerUid) {
-            db.players_lists.findByKey(playerId, function (data) {
+            db.players_lists.findByKey(currentPlayerUid, function (data) {
                 if (data instanceof Error) {
                     debug('Player list data ERROR, oh gawd');
                 } else if (data.val() !== null) {
-                    debug('Player list data found, updating it');
+                    debug('Player list data found, we should update it');
                     listToSave = PlayerList.collection.get(currentPlayerUid);
-                    var playerListRef = db.players_lists.child(currentPlayerUid);
-                    playerListRef.save(listToSave, function (err) {
-                        if (err) {
-                            PlayerActionCreator.update(new Error(err));
-                        } else {
-                            debug('Player list data updated with great success');
-                        }
-                    });
+                    if (listToSave) {
+                        var playerListRef = db.players_lists.child(currentPlayerUid);
+                        playerListRef.save(listToSave, function (err) {
+                            if (err) {
+                                debug(err);
+                                ApiPlayerActionCreator.update(new Error(err));
+                            } else {
+                                debug('Player list data updated with great success');
+                            }
+                        });
+                    } else {
+                        debug('No valid list found to update in the player list at the server');
+                    }
                 } else {
-                    debug('Player list data NOT found, creating it');
+                    debug('Player list data NOT found, we should create it');
                     listToSave = PlayerList.collection.get(currentPlayerUid);
                     db.players_lists.createWithKey(currentPlayerUid, listToSave, function (err) {
                         if (err) {
-                            PlayerActionCreator.update(new Error(err));
+                            ApiPlayerActionCreator.update(new Error(err));
                         } else {
                             debug('Player list data created with great success');
                         }

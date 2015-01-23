@@ -40,7 +40,6 @@ function addProductToList(data) {
     // if there is a player we set the product to a list, otherwise just ignore the request
     if(_currentPlayer && _currentPlayer.get('uid')) {
         debug('Adicionando a lista do jogador');
-        _currentPlayer.addProductToList(data.productId);
     } else {
         debug('No current player');
     }
@@ -50,10 +49,14 @@ function removeProductFromList(data) {
     var model;
     if (_currentPlayer && _currentPlayer.get('uid')) {
         debug('Removendo da lista do jogador');
-        _currentPlayer.removeProductFromList(data.productId);
     } else {
         debug('No current player');
     }
+}
+
+function _checkProductList(data) {
+    debug('_checkProductList');
+    debug(data);
 }
 
 
@@ -83,7 +86,10 @@ PlayerInstance = new PlayerStore(
     playerAction.PLAYER_LOGIN_ERROR, _updatePlayerData,
     playerAction.PLAYER_REGISTER_START, _registerPlayerData,
     playerAction.PLAYER_REGISTER_SUCCESS, _registerPlayerData,
-    playerAction.PLAYER_REGISTER_ERROR, _registerPlayerData
+    playerAction.PLAYER_REGISTER_ERROR, _registerPlayerData,
+    playerAction.PLAYER_PRODUCT_LIST_START, _checkProductList,
+    playerAction.PLAYER_PRODUCT_LIST_SUCCESS, _checkProductList,
+    playerAction.PLAYER_PRODUCT_LIST_ERROR, _checkProductList
 );
 
 

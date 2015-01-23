@@ -98,6 +98,35 @@ PlayerServerActionCreator = {
             }
         }
     },
+
+    setPlayerProductList: function (playerListData) {
+
+        playerListData = playerListData || null;
+
+        // the server receive the player update event but hasn't returned anything yet
+        if(!playerListData) {
+            LoadActionCreator.load('PLAYER_PRODUCT_LIST_START', true);
+            Dispatcher.handleServerAction({
+                type: playerAction.PLAYER_UPDATE_START,
+                data: null
+            });
+        } else {
+            // if there was an error while trying to update the player in the server
+            LoadActionCreator.loaded('PLAYER_PRODUCT_LIST_START', false);
+            if (playerListData instanceof Error) {
+                Dispatcher.handleServerAction({
+                    type: playerAction.PLAYER_PRODUCT_LIST_ERROR,
+                    data: playerListData
+                });
+            } else {
+                // player was successfully updated in the serve
+                Dispatcher.handleServerAction({
+                    type: playerAction.PLAYER_PRODUCT_LIST_SUCCESS,
+                    data: playerListData
+                });
+            }
+        }
+    }
 };
 
 module.exports = PlayerServerActionCreator;
