@@ -118,35 +118,8 @@ ProductApi = {
     filterProducts: function (filter) {
 
         var searchObj;
-
-        debug(filter);
         searchObj = ElasticSearchDSL.getBySingleFilter(filter);
-
-        debug(searchObj);
-        // start fetching for search, fire event
-        ApiProductActionCreator.setProducts(null);
-        db.products.searchFor(searchObj, function (data) {
-            if (data instanceof Error) {
-                debug('Error trying to search for products');
-                ApiProductActionCreator.setProducts(data);
-            } else {
-                if (data instanceof Array) {
-                    if (data.length) {
-                        debug('searchProducts - received, now set products');
-                        // clear products data with the search results
-                        Product.collection.reset(data);
-                        ApiProductActionCreator.setProducts(Product.collection);
-                        debug(Product.collection);
-                    } else {
-                        debug('searchProducts - received but no products found');
-                        ApiProductActionCreator.setProducts({});
-                    }
-                } else {
-                    debug('Error: data is not an instance of Array');
-                    ApiProductActionCreator.setProducts(new Error('Invalid type: Product data should be of type Array'));
-                }
-            }
-        });
+        ProductApi.updateProducts(searchObj);
     },
     // used for search, it should reset the initial state of the products
     // uses setProducts
@@ -156,10 +129,21 @@ ProductApi = {
 
         // TODO the search by name must count the supplier and title mainly
         searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
+        ProductApi.updateProducts(searchObj);
+
+    },
+    // used for loadMore
+    updateProducts: function (searchObj) {
+
+        var options;
+        options = {
+            from: 0,
+            size: 20
+        };
 
         // start fetching for search, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.searchFor(searchObj, function (data) {
+        db.products.searchFor(searchObj, options, function (data) {
             if (data instanceof Error) {
                 debug('Error trying to search for products');
                 ApiProductActionCreator.setProducts(data);
@@ -180,16 +164,6 @@ ProductApi = {
                 }
             }
         });
-    },
-    // used for loadMore
-    updateProducts: function (search) {
-
-        // TODO if there is a term we should loadMore based on a search
-        // the search term should come with the action parameter
-
-        // TODO if there is no term we should just loadMore
-        // the ammount of which to load should come with the parameter
-
     },
     syncProduct: function (productId) {
         var model;

@@ -216,16 +216,25 @@ lodash.objects.assign(Firebase.prototype, {
      * Method that search by proximity/similratiy using ElasticSearch algorithms
      *
      */
-    searchFor: function (searchObj, callback) {
+    searchFor: function (searchObj, options, callback) {
 
         var searchRef,
             searchKey,
+            defaultOptions,
             type,
             data;
 
         // this method need's an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
         data = [];
+
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/client/javascript-api/current/api-reference.html
+        defaultOptions = {
+            from: 0,    // offset of results
+            size: 10    // total ammount of results to return, 10 is the elasticsearch default
+        };
+        // override default options of search
+        lodash.objects.defaults(options, defaultOptions);
 
         // make sure we are searching for in a low level base (products, products_price_history, etc)
         if (this.parent().toString() !== this.root().toString()) {
@@ -241,7 +250,7 @@ lodash.objects.assign(Firebase.prototype, {
         searchRef = new Firebase(baseUrl + '/search');
 
         // TODO the size was increased in order to avoid problems with limiting by the filters
-        lodash.objects.defaults(searchObj, {index: 'firebase', type: type, options: {size: 50}});
+        lodash.objects.defaults(searchObj, {index: 'firebase', type: type, options: options});
 
         if (!searchObj.query) {
             throw new Error('We need a query to perform a search');
