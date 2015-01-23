@@ -316,7 +316,7 @@ lodash.objects.assign(Firebase.prototype, {
         modelRef.once('value', function (snapshot) {
             var value;
 
-            if (snapshot !== null) {
+            if (snapshot.val() !== null) {
                 // TODO look for ways to improve this ugly thing
                 value = snapshot.val();
                 data = lodash.objects.values(value)[0];

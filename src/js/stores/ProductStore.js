@@ -15,7 +15,6 @@ ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
 _currentCatalog = {};
-_currentProductSlug = '';
 _currentProduct = {};
 _isLoading  = true;
 _sorting = {
@@ -35,28 +34,19 @@ function setProducts(data) {
             _currentCatalog = data.clone();
         }
         _isLoading = false;
-        setCurrentProduct();
     } else {
         _isLoading = true;
     }
 }
 
-function changedRouteSuccess(routeData) {
-
-    var slug;
-    if (routeData.link) {
-        slug = routeData.link.slug || '';
-    }
-    if (slug) {
-        _currentProductSlug = slug;
-    } else {
-        _currentProductSlug = '';
-    }
+function viewProductError(data) {
+    debug('404');
+    debug(data);
 }
 
-function setCurrentProduct() {
-    if (_currentProductSlug && _currentCatalog) {
-        _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
+function viewProduct(data) {
+    if (Object.getOwnPropertyNames(_currentCatalog).length) {
+        _currentProduct = _currentCatalog.findWhere({'slug' : data.slug});
     } else {
         _currentProduct = {};
     }
@@ -94,7 +84,6 @@ function setSorting(sort) {
             }
         }
         _currentCatalog.sort();
-        debug(_currentCatalog);
     }
 }
 
@@ -123,10 +112,12 @@ ProductStore = Store.extend({
 });
 
 ProductInstance = new ProductStore(
-    RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
     ProductAction.PRODUCT_SET_START, setProducts,
     ProductAction.PRODUCT_SET_ERROR, setProductsError,
     ProductAction.PRODUCT_SET_SUCCESS, setProducts,
+    ProductAction.PRODUCT_VIEW_START, viewProduct,
+    ProductAction.PRODUCT_VIEW_ERROR, viewProductError,
+    ProductAction.PRODUCT_VIEW_SUCCESS, viewProduct,
     ProductAction.SORT_PRODUCT, setSorting
     // ProductAction.PRODUCT_SAVE_START, saveStart,
     // ProductAction.PRODUT_SAVE_ERROR, saveError,
