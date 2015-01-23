@@ -64,8 +64,9 @@ module.exports =
         
         _onChange: function () {
             var product = this.props.product;
+            var productId = product.get('id');
             this.setState({
-                history: ProductPriceHistoryStore.getProduct(product)
+                history: ProductPriceHistoryStore.getProduct(productId)
             });
         }
     });
