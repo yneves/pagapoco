@@ -1,6 +1,7 @@
 
 var React = require('react'),
-    ProductAction = require('../../actions/ProductActionCreators'),
+    Texts = require('../texts.js'),
+    ProductAction = require('../../actions/ProductActionCreators'),    
     Link = require('../common/link.jsx'),
     WishProduct = require('./wish.jsx'),
     debug = require('debug')('gridView.jsx');
@@ -21,7 +22,6 @@ var ProductGrid =
         render: function () {
 
             var product = this.props.product;
-
             return (
                 <div className="grid-item product-item">
 
@@ -34,7 +34,9 @@ var ProductGrid =
                     <div className="grid-content grid-content-detail">
                         <h3 className="productTitle">{product.get('title')}</h3>
                         <div className="prices">
-                            <span>A partir de  R$</span> <span className="price">{product.get('best_offer')}</span>
+                            <span>{Texts.gridView.from} {Texts.cs}</span>
+                            <span className="price">{product.get('best_offer')}</span>
+                            <span className="seller">{Texts.gridView.at} {product.get('best_offer_supplier')}</span>
                         </div>
                     </div>
 

@@ -13,6 +13,11 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
+    
+    gridView: {
+        from: 'A partir de',
+        at: 'em'
+    },
 
     search: {
       placeholder: 'O que está procurando?',
