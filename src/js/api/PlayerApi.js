@@ -42,7 +42,7 @@ function _checkOrUpdatePlayerData(authData) {
             ApiPlayerActionCreator.login({
                 player: newPlayer
             });
-            PlayerApi.loadPlayerProductList();
+            PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
 
         } else {
 
@@ -64,7 +64,7 @@ function _checkOrUpdatePlayerData(authData) {
                         player: newPlayer,
                         isNew: true
                     });
-                    PlayerApi.loadPlayerProductList();
+                    PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
                 }
             });
         }
@@ -85,11 +85,9 @@ PlayerApi = {
         }, function(error, authData) {
             if (error) {
                 console.log('Login Failed! Cause: ' + error);
-                // TODO return an error like new Error(error);
-                ApiPlayerActionCreator.login(null);
+                ApiPlayerActionCreator.login(new Error(error));
             } else {
                 console.log('Login success!');
-                console.log(authData);
                 _checkOrUpdatePlayerData(authData);
             }
         });
@@ -104,8 +102,7 @@ PlayerApi = {
         db.base.authWithOAuthPopup("facebook", function(error, authData) {
                 if (error) {
                     console.log("Login Failed!", error);
-                    // TODO return an error like new Error(error);
-                    ApiPlayerActionCreator.login(null);
+                    ApiPlayerActionCreator.login(new Error(error));
                 } else {
                     console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
                     _checkOrUpdatePlayerData(authData);
@@ -119,17 +116,21 @@ PlayerApi = {
         // TODO check if there is some way to validate this callback
         db.base.unauth();
         Player.instance = null;
+        ApiPlayerActionCreator.login({});
     },
 
     // check current user state
     check: function () {
-        var authData;
+        var authData,
+            player;
         authData = db.base.getAuth();
         if (authData && authData !== null) {
+            player = Player.create(authData);
             ApiPlayerActionCreator.login({
-                player: Player.create(authData)
+                player: player
             });
-            PlayerApi.loadPlayerProductList();
+            // we have a player now get it's data
+            PlayerApi.loadPlayerProductList(player.get('uid'));
         } else {
             ApiPlayerActionCreator.login(null);
         }
@@ -170,27 +171,23 @@ PlayerApi = {
         });
     },
 
-    loadPlayerProductList: function () {
-        var currentPlayerUid;
+    loadPlayerProductList: function (uid) {
 
-        if (Player.instance) {
-            currentPlayerUid = Player.instance.get('uid');
-        }
-        debug(Player.instance);
-        if (currentPlayerUid) {
-            db.players_lists.findByKey(currentPlayerUid, function (data) {
-                if (data instanceof Error) {
-                    // some nasty error
-                    debug('Error');
-                } else if (data.val() !== null) {
-                    debug('data ok');
-                } else {
-                    debug('no player list data found');
-                }
-            });
-        } else {
-            debug('loadPlayerProductList - No player UID found');
-        }
+        // start fetching player list from server
+        ApiPlayerActionCreator.setPlayerProductList(null);
+
+        db.players_lists.findByKey(uid, function (data) {
+            if (data instanceof Error) {
+                // some nasty error
+                ApiPlayerActionCreator.setPlayerProductList(data);
+            } else if (data.val() !== null) {
+                PlayerList.create(data.val());
+                ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
+            } else {
+                debug('No player list data found');
+                ApiPlayerActionCreator.setPlayerProductList({});
+            }
+        });
 
     },
 
@@ -198,6 +195,8 @@ PlayerApi = {
         debug('sync player data');
     },
 
+    // sync current player product list with
+    // if there is no list, create the first one, otherwise update it
     syncPlayerProductList: function () {
         debug('syncPlayerProductList');
         var currentPlayerUid,
@@ -208,26 +207,31 @@ PlayerApi = {
         }
 
         if (currentPlayerUid) {
-            db.players_lists.findByKey(playerId, function (data) {
+            db.players_lists.findByKey(currentPlayerUid, function (data) {
                 if (data instanceof Error) {
                     debug('Player list data ERROR, oh gawd');
                 } else if (data.val() !== null) {
-                    debug('Player list data found, updating it');
+                    debug('Player list data found, we should update it');
                     listToSave = PlayerList.collection.get(currentPlayerUid);
-                    var playerListRef = db.players_lists.child(currentPlayerUid);
-                    playerListRef.save(listToSave, function (err) {
-                        if (err) {
-                            PlayerActionCreator.update(new Error(err));
-                        } else {
-                            debug('Player list data updated with great success');
-                        }
-                    });
+                    if (listToSave) {
+                        var playerListRef = db.players_lists.child(currentPlayerUid);
+                        playerListRef.save(listToSave, function (err) {
+                            if (err) {
+                                debug(err);
+                                ApiPlayerActionCreator.update(new Error(err));
+                            } else {
+                                debug('Player list data updated with great success');
+                            }
+                        });
+                    } else {
+                        debug('No valid list found to update in the player list at the server');
+                    }
                 } else {
-                    debug('Player list data NOT found, creating it');
+                    debug('Player list data NOT found, we should create it');
                     listToSave = PlayerList.collection.get(currentPlayerUid);
                     db.players_lists.createWithKey(currentPlayerUid, listToSave, function (err) {
                         if (err) {
-                            PlayerActionCreator.update(new Error(err));
+                            ApiPlayerActionCreator.update(new Error(err));
                         } else {
                             debug('Player list data created with great success');
                         }

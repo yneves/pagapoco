@@ -2,10 +2,7 @@ module.exports = {
     // view
     SEARCH_PRODUCTS : null,
     LOAD_MORE       : null,
-    VIEW_PRODUCT    : null,
     SORT_PRODUCT    : null,
-
-    // view
     ADD_PRICE_ALERT: null,
     REMOVE_PRICE_ALERT: null,
 
@@ -16,6 +13,9 @@ module.exports = {
     PRODUCT_SET_START : null,
     PRODUCT_SET_ERROR : null,
     PRODUCT_SET_SUCCESS : null,
+    PRODUCT_VIEW_START: null,
+    PRODUCT_VIEW_ERROR: null,
+    PRODUCT_VIEW_SUCCESS: null,
     PRODUCT_PRICE_HISTORY_UPDATE_START: null,
     PRODUCT_PRICE_HISTORY_UPDATE_ERROR: null,
     PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS: null,

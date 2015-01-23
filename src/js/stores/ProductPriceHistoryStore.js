@@ -37,8 +37,14 @@ function receiveSuccess() {
 }
 
 function receiveProductPriceHistory(data) {
-    _history = data;
-    receiveSuccess();
+    if (data instanceof Error) {
+        debug('Error receiving product price history');
+    } else {
+        debug('received product price history success');
+        _history = data;
+        receiveSuccess();
+    }
+
 }
 
 ProductPriceHistoryStore = Store.extend({

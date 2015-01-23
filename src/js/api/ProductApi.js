@@ -22,27 +22,29 @@ ProductApi = {
 
         if (currentProduct) {
             debug('We already have this product');
-            ApiProductActionCreator.setProducts(Product.collection);
             ProductApi.getProductPriceHistory(currentProduct.get('id'));
+            ApiProductActionCreator.viewProduct({slug: slug});
             return;
         }
 
         // start fetching, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.getByChild('slug', slug, function (data) {
+        db.products.findByChild('slug', slug, function (data) {
             debug('Fetch new product from db');
             if(data instanceof Error) {
-                ApiProductActionCreator.setProducts(data);
                 debug('Error trying to get a product by its slug');
+                ApiProductActionCreator.setProducts(data);
+                ApiProductActionCreator.viewProduct(data);
             } else if (data) {
                 // product found
                 currentProduct = Product.create(data);
                 ApiProductActionCreator.setProducts(Product.collection);
                 ProductApi.getProductPriceHistory(currentProduct.get('id'));
+                ApiProductActionCreator.viewProduct({slug:currentProduct.get('slug')});
             } else {
-                // product not found, 404
-                ApiProductActionCreator.setProducts(new Error('Product not found'));
+                // product not found, 404 send empty object
                 debug('Error 404, Product not found');
+                ApiProductActionCreator.viewProduct({});
             }
         });
     },
@@ -64,8 +66,8 @@ ProductApi = {
                     ProductPriceHistory.create(data.val());
                     ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
                 } else {
-                    debug('no data price history for this product');
-                    ApiProductActionCreator.setAllProductsPriceHistory(new Error('No price history found for this product'));
+                    debug('No price history found for this product');
+                    ApiProductActionCreator.setAllProductsPriceHistory({});
                 }
             });
         }
@@ -83,7 +85,8 @@ ProductApi = {
         minLength = 30;
 
         if (Product.collection.length >= minLength) {
-            ApiProductActionCreator.setProducts(new Error('We already have some random products'));
+            debug('We already have some random products');
+            ApiProductActionCreator.setProducts({});
             return;
         }
 
@@ -95,65 +98,18 @@ ProductApi = {
                 ApiProductActionCreator.setProducts(data);
                 debug('Error trying to get products');
             } else {
-                // TODO set the variables on the else statement?
-                // var products,
-                //     productsRaw,
-                //     taxonomiesRaw,
-                //     prices,
-                //     priceData;
-                //
-                //     products = results[0];
-                //
-                //     data = products; // simple shortcut
-                //     products = [];
-                //     productsRaw = data;
-
-                //     taxonomiesRaw = taxonomies.body;
-                //     prices = prices || [];
-
-                //     priceData = {};
-                //
-                //     /**
-                //      * This actions are wrappers to update the current store data once we go live the discounts will be already
-                //      * calculated in the backend and will be sent ready in the $resource.$get().products.json
-                //      */
-                //     productsRaw.forEach(function (value, key) {
-                //         value.taxonomy = [];
-                //
-                //         // associate category with the product
-                //         taxonomiesRaw.category_product.forEach(function (categoryValue) {
-                //             if (value.id === categoryValue.product_id) {
-                //                 categoryValue.category_id.forEach(function (categoryId) {
-                //                     value.taxonomy.push({id: categoryId, type: 'category'});
-                //                 });
-                //             }
-                //         });
-                //
-                //         // associate the tags with the product (should be the product review)
-                //         // by the users (which will be gathered from buscape api)
-                //         taxonomiesRaw.tag_product.forEach(function (tagValue) {
-                //             if (value.id === tagValue.product_id) {
-                //                 tagValue.tag_id.forEach(function (tagId) {
-                //                     value.taxonomy.push({id: tagId, type: 'tag'});
-                //                 });
-                //             }
-                //         });
-                //
-                //         value.wished = Transmuter.toBoolean(value.wished);
-                //         products.push(value);
-                //     });
                 if (data instanceof Array) {
                     if (data.length) {
-                        // we got data, let's set it
+                        // we've got data, let's set it
                         Product.create(data);
                         ApiProductActionCreator.setProducts(Product.collection);
                     } else {
-                        // No data received yet
-                        ApiProductActionCreator.setProducts(null);
+                        debug('No products received');
+                        ApiProductActionCreator.setProducts({});
                     }
                 } else {
                     debug('Error: data is not an instance of Array');
-                    ApiProductActionCreator.setAllProducts(new Error('Invalid type: Product data should be of Array type'));
+                    ApiProductActionCreator.setProducts(new Error('Invalid type: Product data should be of type Array'));
                 }
             }
         });
@@ -173,13 +129,19 @@ ProductApi = {
                 debug('Error trying to search for products');
                 ApiProductActionCreator.setProducts(data);
             } else {
-                if (data.length) {
-                    debug('searchProducts - received, now set products');
-                    // clear products data with the search results
-                    Product.collection.reset(data);
-                    ApiProductActionCreator.setProducts(Product.collection);
+                if (data instanceof Array) {
+                    if (data.length) {
+                        debug('searchProducts - received, now set products');
+                        // clear products data with the search results
+                        Product.collection.reset(data);
+                        ApiProductActionCreator.setProducts(Product.collection);
+                    } else {
+                        debug('searchProducts - received but no products found');
+                        ApiProductActionCreator.setProducts({});
+                    }
                 } else {
-                    debug('searchProducts - received but no products found');
+                    debug('Error: data is not an instance of Array');
+                    ApiProductActionCreator.setProducts(new Error('Invalid type: Product data should be of type Array'));
                 }
             }
         });
