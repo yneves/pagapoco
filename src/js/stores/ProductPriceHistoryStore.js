@@ -53,9 +53,15 @@ ProductPriceHistoryStore = Store.extend({
         return _history;
     },
 
-    getProduct: function (productIdBuscape) {
+    getProduct: function (product) {
         if (_history) {
-            return _history.findWhere({ id_buscape: productIdBuscape });
+            var productId = product.get('id');
+            var productHistory = _history.findWhere({ id_buscape: productIdBuscape });
+            if (!productHistory) {
+                var productIdBuscape = product.get('id_buscape');
+                productHistory = _history.findWhere({ id_buscape: productIdBuscape });
+            }            
+            return productHistory;
         }
     },
 

@@ -64,9 +64,8 @@ module.exports =
         
         _onChange: function () {
             var product = this.props.product;
-            var productIdBuscape = product.get('id_buscape');
             this.setState({
-                history: ProductPriceHistoryStore.getProduct(productIdBuscape)
+                history: ProductPriceHistoryStore.getProduct(product)
             });
         }
     });
