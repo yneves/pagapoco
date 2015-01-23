@@ -29,6 +29,50 @@ function makeTerm(term, matchWholeWords) {
     return term;
 }
 
+// this is in order to cover cases with hyphen, bellow are a link describing
+// the problem and one possible solution
+// http://stackoverflow.com/questions/11566838/elastic-search-hyphen-issue-with-term-filter
+function handleHyphenFilter(field, data) {
+    var filterObject,
+        arrayComplex = [];
+    lodash.collections.forEach(data, function (value) {
+        filterObject = {
+            'term' : {}
+        };
+        filterObject.term[field] = value;
+        arrayComplex.push(filterObject);
+    });
+    return arrayComplex;
+}
+
+// for simple cases (single filters)
+function makeSingleFilter(field, data) {
+    var filterObject,
+        returned;
+    returned = data.split('-');
+    if (returned.length <= 1) {
+        filterObject = {
+            'term': {}
+        };
+        filterObject.term[field] = {
+            'value': returned[0]
+        };
+    } else {
+        filterObject = handleHyphenFilter(field, returned);
+    }
+    return filterObject;
+}
+
+// for multiple filters cases
+function makeMultipleFilters(field, data) {
+    var filterObject;
+    filterObject = [];
+    lodash.collections.forEach(data, function (value) {
+        filterObject.push(makeSingleFilter(field, value));
+    });
+    return filterObject;
+}
+
 ElasticSearchDSL = {
     getDefaultShittyQuery: function (shittyTerm) {
         return {
@@ -115,71 +159,42 @@ ElasticSearchDSL = {
 
     // return data based on filter only, the complex/simple cases scenarios were
     // created due to the way data was indexed with elasticsearch + flashlight
-    // this is in order to cover cases with hyphen, bellow are a link describing
-    // the problem and one possible solution
-    // http://stackoverflow.com/questions/11566838/elastic-search-hyphen-issue-with-term-filter
     getBySingleFilter: function (filter) {
         // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
         // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
         var searchObj;
 
-        var returned = filter.split('-');
-
-        // for simple cases
-        if (returned.length <= 1) {
-            searchObj = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'term': {
-                                'supplier': {
-                                    'value': returned[0]
-                                }
-                            }
-                        }
-                    }
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'filter': makeSingleFilter('supplier', filter)
                 }
-            };
-        } else {
-            // for complex cases
-            searchObj = {
-                'query': {
-                    'filtered': {
-                        'filter': {
-                            'bool': {
-                                'must': []
-                            }
-                        }
-                    }
-                }
-            };
+            }
+        };
 
-            lodash.collections.forEach(returned, function (value) {
-                searchObj.query.filtered.filter.bool.must.push({
-                    'term': { 'supplier': value }
-                });
-            });
-
-        }
-        debug(searchObj);
         return searchObj;
     },
     // return data based on multiple filters only
+    // TODO esta funcionando mas não tenho certeza ainda se os filtros estão realmente top mega foda...
     getByMultipleFilter: function (filters) {
+
+        var searchObj;
         // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
         // it works, but not for multiple different terms as it seems.. must dig further
-        return {
+
+        searchObj = {
             'query': {
                 'filtered': {
                     'filter': {
-                        'terms': {
-                            'supplier': ['integralmedica', 'probiotica'],
-                            'minimum_should_match': 1
+                        'bool': {
+                            'should': makeMultipleFilters('supplier', filters)
                         }
                     }
                 }
             }
         };
+
+        return searchObj;
     }
 };
 

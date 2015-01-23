@@ -119,6 +119,7 @@ ProductApi = {
 
         var searchObj;
         searchObj = ElasticSearchDSL.getBySingleFilter(filter);
+        debug(searchObj);
         ProductApi.updateProducts(searchObj);
     },
     // used for search, it should reset the initial state of the products
@@ -128,6 +129,9 @@ ProductApi = {
         var searchObj;
 
         // TODO the search by name must count the supplier and title mainly
+
+        // TODO the search must look up to see if there are any filter set
+        // to know which method to call (query with or without filters)
         searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
         ProductApi.updateProducts(searchObj);
 
@@ -136,6 +140,7 @@ ProductApi = {
     updateProducts: function (searchObj) {
 
         var options;
+        // TODO load more should update the from property bellow
         options = {
             from: 0,
             size: 20
