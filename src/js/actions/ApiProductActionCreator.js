@@ -70,6 +70,35 @@ ProductServerActionCreator = {
             }
         }
     },
+    // event on which product are being viewed now
+    viewProduct: function (productData) {
+
+        productData = productData || null;
+
+        // if there is no product set yet (nothing returned from the server)
+        if (!productData) {
+            LoadActionCreator.load('PRODUCT_VIEW_START', true);
+            Dispatcher.handleServerAction({
+                type: productAction.PRODUCT_SET_START,
+                data: null
+            });
+        } else {
+            // if there was an error while trying to retrive the products
+            LoadActionCreator.loaded('PRODUCT_VIEW_START', false);
+            if (productData instanceof Error) {
+                debug('Server responded - With error');
+                Dispatcher.handleServerAction({
+                    type: productAction.PRODUCT_VIEW_ERROR,
+                    data: productData
+                });
+            } else { // everything went fine, dispatch the event with the product data
+                Dispatcher.handleServerAction({
+                    type: productAction.PRODUCT_VIEW_SUCCESS,
+                    data: productData
+                });
+            }
+        }
+    },
 
     // normally will be called when the player wants to update something realted to the price history
     // like being alerted of certain prices, etc

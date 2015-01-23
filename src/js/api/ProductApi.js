@@ -22,27 +22,29 @@ ProductApi = {
 
         if (currentProduct) {
             debug('We already have this product');
-            ApiProductActionCreator.setProducts(Product.collection);
             ProductApi.getProductPriceHistory(currentProduct.get('id'));
+            ApiProductActionCreator.viewProduct({slug: slug});
             return;
         }
 
         // start fetching, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.getByChild('slug', slug, function (data) {
+        db.products.findByChild('slug', slug, function (data) {
             debug('Fetch new product from db');
             if(data instanceof Error) {
-                ApiProductActionCreator.setProducts(data);
                 debug('Error trying to get a product by its slug');
+                ApiProductActionCreator.setProducts(data);
+                ApiProductActionCreator.viewProduct(data);
             } else if (data) {
                 // product found
                 currentProduct = Product.create(data);
                 ApiProductActionCreator.setProducts(Product.collection);
                 ProductApi.getProductPriceHistory(currentProduct.get('id'));
+                ApiProductActionCreator.viewProduct({slug:currentProduct.get('slug')});
             } else {
                 // product not found, 404 send empty object
                 debug('Error 404, Product not found');
-                ApiProductActionCreator.setProducts({});
+                ApiProductActionCreator.viewProduct({});
             }
         });
     },
@@ -83,7 +85,8 @@ ProductApi = {
         minLength = 30;
 
         if (Product.collection.length >= minLength) {
-            ApiProductActionCreator.setProducts(new Error('We already have some random products'));
+            debug('We already have some random products');
+            ApiProductActionCreator.setProducts({});
             return;
         }
 

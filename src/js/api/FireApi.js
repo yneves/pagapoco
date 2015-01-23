@@ -74,37 +74,6 @@ lodash.objects.assign(Firebase.prototype, {
             }
         });
     },
-    // TODO why i created that? findByChild looks like it does the same thing
-    getByChild: function (field, term, callback) {
-
-        var modelRef,
-            data;
-
-        // this method need an obrigatory callback
-        if (!callback || typeof callback !== 'function') return;
-
-        try {
-            modelRef = this.orderByChild(field).equalTo(term);
-        } catch (err) {
-            debug('findbyChild error ocurred');
-            callback(new Error(err));
-        }
-        // just get the data and leave the server alone
-        modelRef.once('value', function (snapshot) {
-            var value;
-
-            if (snapshot !== null) {
-                // TODO look for ways to improve this ugly thing
-                value = snapshot.val();
-                data = lodash.objects.values(value)[0];
-                data.id = lodash.objects.keys(value)[0];
-                data.id = parseInt(data.id) || data.id;
-            } else {
-                data = null;
-            }
-            callback(data);
-        });
-    },
     /**
      * Save some data by creating an empty key and then setting it's data
      * return firebase error or an Error object
@@ -344,7 +313,20 @@ lodash.objects.assign(Firebase.prototype, {
             callback(new Error(err));
         }
         // just get the data and leave the server alone
-        modelRef.once('value', callback);
+        modelRef.once('value', function (snapshot) {
+            var value;
+
+            if (snapshot.val() !== null) {
+                // TODO look for ways to improve this ugly thing
+                value = snapshot.val();
+                data = lodash.objects.values(value)[0];
+                data.id = lodash.objects.keys(value)[0];
+                data.id = parseInt(data.id) || data.id;
+            } else {
+                data = null;
+            }
+            callback(data);
+        });
     },
     // Used to look for data in the database, this wrapper is better instead of
     // only going straight to .child because with this method we have a good
