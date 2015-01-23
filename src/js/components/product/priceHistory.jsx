@@ -45,7 +45,6 @@ module.exports =
         
         componentDidUpdate: function() {            
             var productHistory = this.state.history;
-            console.log(productHistory);
             if (productHistory) {
                 var data = productHistory.getChartData();
                 var options = this.props.chartist;
@@ -64,8 +63,10 @@ module.exports =
         },
         
         _onChange: function () {
+            var product = this.props.product;
+            var productIdBuscape = product.get('id_buscape');
             this.setState({
-                history: ProductPriceHistoryStore.getProduct()
+                history: ProductPriceHistoryStore.getProduct(productIdBuscape)
             });
         }
     });

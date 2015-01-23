@@ -53,7 +53,8 @@ ProductPriceHistoryModel = Model.extend({
                 first += step;
             }
         } 
-      
+        
+        var lastIndex = dates.length - 1;
         dates.forEach(function(date,index) {
             var price = prices[date];
             var prev = index - 1;
@@ -62,10 +63,11 @@ ProductPriceHistoryModel = Model.extend({
                 price = prices[ dates[prev] ];
                 prev--;
             }
-            while (!price && next < dates.length - 1) {
+            while (!price && next <= lastIndex) {
                 price = prices[ dates[next] ];
                 next++;
             }
+            console.log(date,index,price);
             data.labels[index] = date;
             data.series[0][index] = price || 0;
         });
