@@ -45,6 +45,7 @@ module.exports =
         
         componentDidUpdate: function() {            
             var productHistory = this.state.history;
+            console.log(productHistory);
             if (productHistory) {
                 var data = productHistory.getChartData();
                 var options = this.props.chartist;
@@ -63,9 +64,8 @@ module.exports =
         },
         
         _onChange: function () {
-            var productId = this.props.product.get('id');
             this.setState({
-                history: ProductPriceHistoryStore.getProduct(productId)
+                history: ProductPriceHistoryStore.getProduct()
             });
         }
     });
