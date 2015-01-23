@@ -54,7 +54,7 @@ ProductPriceHistoryStore = Store.extend({
     },
 
     getProduct: function (productId) {
-        if (_history) {            
+        if (_history) {
             return _history.findWhere({ id: productId });
         }
     },
