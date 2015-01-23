@@ -29,7 +29,7 @@ ProductApi = {
 
         // start fetching, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.getByChild('slug', slug, function (data) {
+        db.products.findByChild('slug', slug, function (data) {
             debug('Fetch new product from db');
             if(data instanceof Error) {
                 ApiProductActionCreator.setProducts(data);
@@ -83,7 +83,8 @@ ProductApi = {
         minLength = 30;
 
         if (Product.collection.length >= minLength) {
-            ApiProductActionCreator.setProducts(new Error('We already have some random products'));
+            debug('We already have some random products');
+            ApiProductActionCreator.setProducts({});
             return;
         }
 

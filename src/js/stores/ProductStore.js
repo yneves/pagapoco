@@ -26,12 +26,14 @@ _sorting = {
 function setProductsError(error) {
     debug(error);
     _isLoading = false;
-    setCurrentProduct();
 }
 
 function setProducts(data) {
     if (data) {
-        _currentCatalog = data.clone();
+        if (Object.getOwnPropertyNames(data).length) {
+            // new data arrived
+            _currentCatalog = data.clone();
+        }
         _isLoading = false;
         setCurrentProduct();
     } else {
@@ -69,7 +71,6 @@ function setSorting(sort) {
             _currentCatalog.setSortingOrder('ASC');
         }
     }
-
     if (sort) {
         if (sort.sortBy === 'discount') {
             _currentCatalog.comparator = 'discount';
@@ -93,6 +94,7 @@ function setSorting(sort) {
             }
         }
         _currentCatalog.sort();
+        debug(_currentCatalog);
     }
 }
 
