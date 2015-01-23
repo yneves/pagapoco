@@ -7,8 +7,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductAction,
     RouteAction,
     _currentCatalog,    // general products information
-    _currentPlayerId,
-    _currentQuery,
     _currentProduct,
     _isLoading,
     _sorting;
@@ -16,72 +14,42 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
-_currentCatalog = [];
-_currentPlayer = null;
-_currentProductSlug = '';
-_currentQuery = '';
-_currentProduct = null;
+_currentCatalog = {};
+_currentProduct = {};
 _isLoading  = true;
 _sorting = {
     price: false,
     discount: false
 };
 
-function receivePlayer(data) {
-    // TODO should be a model
-    _currentPlayer = data;
-}
-
-function setProductsError() {
+function setProductsError(error) {
+    debug(error);
     _isLoading = false;
 }
 
 function setProducts(data) {
     if (data) {
-        _currentCatalog = data.clone();
+        if (Object.getOwnPropertyNames(data).length) {
+            // new data arrived
+            _currentCatalog = data.clone();
+        }
         _isLoading = false;
-        setCurrentProduct();
     } else {
         _isLoading = true;
     }
 }
 
-function changedRouteSuccess(routeData) {
+function viewProductError(data) {
+    debug('404');
+    debug(data);
+}
 
-    var slug;
-    if (routeData.link) {
-        slug = routeData.link.slug || '';
-    }
-    if (slug) {
-        _currentProductSlug = slug;
+function viewProduct(data) {
+    if (Object.getOwnPropertyNames(_currentCatalog).length) {
+        _currentProduct = _currentCatalog.findWhere({'slug' : data.slug});
     } else {
-        _currentProductSlug = 0;
+        _currentProduct = {};
     }
-}
-
-function setCurrentError (error) {
-    _isLoading = false;
-}
-
-function setCurrentProduct() {
-    if (_currentProductSlug && _currentCatalog) {
-        _currentProduct = _currentCatalog.findWhere({'slug' : _currentProductSlug});
-    } else {
-        _currentProduct = null;
-    }
-}
-
-function toggleWishlist(productId) {
-    var currentModel;
-    // if there is a player we set the wishlist, otherwise just ignore the request
-    if(_currentPlayer.get('id')) {
-        currentModel = _currentCatalog.get(productId);
-        currentModel.toggleWished();
-    }
-}
-
-function searchProducts(data) {
-    _currentQuery = data.query;
 }
 
 function setSorting(sort) {
@@ -93,7 +61,6 @@ function setSorting(sort) {
             _currentCatalog.setSortingOrder('ASC');
         }
     }
-
     if (sort) {
         if (sort.sortBy === 'discount') {
             _currentCatalog.comparator = 'discount';
@@ -101,9 +68,9 @@ function setSorting(sort) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
+                _sorting.sortBy = 'discount';
                 _sorting.price = false;
                 _sorting.discount = true;
-
             }
         } else if (sort.sortBy === 'price') {
             _currentCatalog.comparator = 'best_offer';
@@ -111,9 +78,9 @@ function setSorting(sort) {
                 // ordem ASC ou DESC
                 toggleOrder(_currentCatalog._sortOrder);
             } else {
+                _sorting.sortBy = 'price';
                 _sorting.discount = false;
                 _sorting.price = true;
-
             }
         }
         _currentCatalog.sort();
@@ -145,12 +112,12 @@ ProductStore = Store.extend({
 });
 
 ProductInstance = new ProductStore(
-    ProductAction.TOGGLE_WISHLIST, toggleWishlist,
-    ProductAction.SEARCH_PRODUCTS, searchProducts,
-    RouteAction.CHANGE_ROUTE_SUCCESS, changedRouteSuccess,
     ProductAction.PRODUCT_SET_START, setProducts,
     ProductAction.PRODUCT_SET_ERROR, setProductsError,
     ProductAction.PRODUCT_SET_SUCCESS, setProducts,
+    ProductAction.PRODUCT_VIEW_START, viewProduct,
+    ProductAction.PRODUCT_VIEW_ERROR, viewProductError,
+    ProductAction.PRODUCT_VIEW_SUCCESS, viewProduct,
     ProductAction.SORT_PRODUCT, setSorting
     // ProductAction.PRODUCT_SAVE_START, saveStart,
     // ProductAction.PRODUT_SAVE_ERROR, saveError,

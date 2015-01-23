@@ -7,8 +7,69 @@ var db = require('./FireApi.js'),
     },
     PlayerApi,
     Player = require('../data/Player'),
+    PlayerList = require('../data/PlayerList'),
+    debug = require('debug')('PlayerApi.js'),
     _info;
 
+
+function _checkOrUpdatePlayerData(authData) {
+
+    var newPlayer;
+
+    console.log('checkOrUpdatePlayerData');
+    console.log(authData);
+    db.Users.findByKey(authData.uid, function (snapshot) {
+
+        if (snapshot instanceof Error) {
+            // error ocurred
+            console.log('checkOrUpdatePlayerData - findByKey error');
+            console.log(snapshot);
+        } else if (snapshot.val() !== null){ // user exists
+            // get the most recent user data from facebook
+            newPlayer = Player.create(authData);
+            if (authData.provider === 'facebook') {
+                db.Users.child(authData.uid).save(newPlayer, function (err) {
+                    if (err) {
+                        console.log('Erro ao atualizar usuário');
+                    } else {
+                        console.log('Usuário atualizado com sucesso');
+                    }
+                });
+            }
+
+            // send the player data throught the system, since the player
+            // already exists we can do that before the update above occurs
+            ApiPlayerActionCreator.login({
+                player: newPlayer
+            });
+            PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
+
+        } else {
+
+            // new user
+            if (authData.provider !== 'facebook') {
+                authData.password = lodash.objects.merge(authData.password, _info);
+            }
+
+            newPlayer = Player.create(authData);
+            db.Users.createwithKey(newPlayer.get('uid'), newPlayer, function (err) {
+                if (err) {
+                    console.log('Creating new user data - error');
+                } else {
+                    console.log('Creating new user data- success');
+                    // send the player data through the system, we do that only
+                    // after we are sure the player data was created and updated
+                    // in the system
+                    ApiPlayerActionCreator.login({
+                        player: newPlayer,
+                        isNew: true
+                    });
+                    PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
+                }
+            });
+        }
+    });
+}
 
 PlayerApi = {
 
@@ -23,114 +84,59 @@ PlayerApi = {
             "password": pass
         }, function(error, authData) {
             if (error) {
-                console.log("Login Failed! Cause: " + error);
-                ApiPlayerActionCreator.login({
-                    state: false
-                });
+                console.log('Login Failed! Cause: ' + error);
+                ApiPlayerActionCreator.login(new Error(error));
             } else {
-                console.log(authData);
-                PlayerApi.checkIfUserExists(authData);
+                console.log('Login success!');
+                _checkOrUpdatePlayerData(authData);
             }
         });
     },
 
-    faceLogIn: function (){
+    faceLogIn: function () {
 
         // init server sync, fire event
         ApiPlayerActionCreator.login(null);
 
         // start syncing with server
         db.base.authWithOAuthPopup("facebook", function(error, authData) {
-            if (error) {
-                console.log("Login Failed!", error);
-                ApiPlayerActionCreator.login({
-                    state: false
-                });
-            } else {
-                console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
-                console.log(authData);
-                PlayerApi.checkIfUserExists(authData);
-            }
-        },{scope: "email"});
+                if (error) {
+                    console.log("Login Failed!", error);
+                    ApiPlayerActionCreator.login(new Error(error));
+                } else {
+                    console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
+                    _checkOrUpdatePlayerData(authData);
+                }
+            },
+            { scope: "email" }
+        );
     },
 
     logout: function () {
         // TODO check if there is some way to validate this callback
-        ApiPlayerActionCreator.login({
-            state: false
-        });
         db.base.unauth();
+        Player.instance = null;
+        ApiPlayerActionCreator.login({});
     },
 
+    // check current user state
     check: function () {
-        var authData;
+        var authData,
+            player;
         authData = db.base.getAuth();
         if (authData && authData !== null) {
+            player = Player.create(authData);
             ApiPlayerActionCreator.login({
-                state: true
+                player: player
             });
+            // we have a player now get it's data
+            PlayerApi.loadPlayerProductList(player.get('uid'));
         } else {
-            ApiPlayerActionCreator.login({
-                state: false
-            });
+            ApiPlayerActionCreator.login(null);
         }
     },
 
-    checkIfUserExists: function(authData) {
-
-        var newUser;
-
-        db.Users.findByKey(authData.uid, function (snapshot) {
-
-            if (snapshot instanceof Error) { // error ocurred
-                console.log(snapshot);
-            } else if (snapshot.val() !== null){ // user exists
-                ApiPlayerActionCreator.login({
-                    state: true
-                });
-                // get the most recent user data from facebook
-                if (authData.provider === 'facebook') {
-                    newUser = Player.create('facebook', authData);
-                    db.Users.child(authData.uid).save(newUser, function (err) {
-                        if (err) {
-                            console.log('Erro ao atualizar usuário');
-                        } else {
-                            console.log('Usuário atualizado com sucesso');
-                        }
-                    });
-                }
-            } else {    // new user
-                ApiPlayerActionCreator.login({
-                    state: true,
-                    isNew: true
-                });
-                if(authData.provider === 'facebook'){
-                    newUser = Player.create('facebook', authData);
-                    db.Users.createWithKey(newUser.get('uid'), newUser, function (err) {
-                        if (err) {
-                            console.log('Creating new Facebook user - error');
-                        } else {
-                            console.log('Creating new facebook user - success');
-                        }
-                    });
-                } else{
-                    authData.password = lodash.objects.merge(authData.password, _info);
-                    console.log('Not-Facebook');
-                    console.log(authData);
-                    newUser = Player.create('simple', authData);
-                    db.Users.createwithKey(newUser.get('uid'), newUser, function (err) {
-                        if (err) {
-                            console.log('Creating new Simple user - error');
-                        } else {
-                            console.log('Creating new Simple user - success');
-                        }
-                    });
-                }
-            }
-        });
-    },
-
-    createUser: function(user,pass,info){
+    createUser: function (user, pass, info) {
 
         // global variable, called in another method with user extra info
         _info = info;
@@ -157,13 +163,85 @@ PlayerApi = {
             } else {
                 console.log("User account created successfully!");
                 ApiPlayerActionCreator.register({
-                    user: user
+                    player: user
                 });
+                // auto login player after it registered itself
                 PlayerApi.login(user, pass);
             }
         });
-    }
+    },
 
+    loadPlayerProductList: function (uid) {
+
+        // start fetching player list from server
+        ApiPlayerActionCreator.setPlayerProductList(null);
+
+        db.players_lists.findByKey(uid, function (data) {
+            if (data instanceof Error) {
+                // some nasty error
+                ApiPlayerActionCreator.setPlayerProductList(data);
+            } else if (data.val() !== null) {
+                PlayerList.create(data.val());
+                ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
+            } else {
+                debug('No player list data found');
+                ApiPlayerActionCreator.setPlayerProductList({});
+            }
+        });
+
+    },
+
+    syncPlayer: function () {
+        debug('sync player data');
+    },
+
+    // sync current player product list with
+    // if there is no list, create the first one, otherwise update it
+    syncPlayerProductList: function () {
+        debug('syncPlayerProductList');
+        var currentPlayerUid,
+            listToSave;
+
+        if (Player.instance) {
+            currentPlayerUid = Player.instance.get('uid');
+        }
+
+        if (currentPlayerUid) {
+            db.players_lists.findByKey(currentPlayerUid, function (data) {
+                if (data instanceof Error) {
+                    debug('Player list data ERROR, oh gawd');
+                } else if (data.val() !== null) {
+                    debug('Player list data found, we should update it');
+                    listToSave = PlayerList.collection.get(currentPlayerUid);
+                    if (listToSave) {
+                        var playerListRef = db.players_lists.child(currentPlayerUid);
+                        playerListRef.save(listToSave, function (err) {
+                            if (err) {
+                                debug(err);
+                                ApiPlayerActionCreator.update(new Error(err));
+                            } else {
+                                debug('Player list data updated with great success');
+                            }
+                        });
+                    } else {
+                        debug('No valid list found to update in the player list at the server');
+                    }
+                } else {
+                    debug('Player list data NOT found, we should create it');
+                    listToSave = PlayerList.collection.get(currentPlayerUid);
+                    db.players_lists.createWithKey(currentPlayerUid, listToSave, function (err) {
+                        if (err) {
+                            ApiPlayerActionCreator.update(new Error(err));
+                        } else {
+                            debug('Player list data created with great success');
+                        }
+                    });
+                }
+            });
+        } else {
+            debug('syncPlayerProductList - no player uid found');
+        }
+    }
 
 };
 

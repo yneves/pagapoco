@@ -1,7 +1,7 @@
 
 var React = require('react'),
     Texts = require('../texts.js'),
-    ProductAction = require('../../actions/ProductActionCreators'),
+    PlayerAction = require('../../actions/PlayerActionCreators'),
     mui = require('material-ui'),
     RaisedButton = mui.RaisedButton,
     debug = require('debug')('wish.jsx');
@@ -15,23 +15,24 @@ module.exports =
 
         getDefaultProps: function () {
             return {
-                product: {},
+                product: {}
             };
-        },
-
-        clickWish: function () {
-            ProductAction.toggleWishProduct(this.props.product.id);
         },
 
         render: function () {
             return (
                 <div className="wish">
-                    <RaisedButton className="productWishLink" type="FLAT" label={Texts.wish} onClick={this.clickWish}>
+                    <RaisedButton className="productWishLink" type="FLAT" label={Texts.wish} onClick={this._handleClick}>
                         <span className="productWish"></span>
                         <span className="productWishNumber">230</span>
                     </RaisedButton>
                 </div>
             );
+        },
+
+        _handleClick: function (event) {
+            event.preventDefault();
+            PlayerAction.addProductToList(this.props.product.get('id'));
         }
 
     });
