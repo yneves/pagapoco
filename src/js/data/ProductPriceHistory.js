@@ -67,7 +67,6 @@ ProductPriceHistoryModel = Model.extend({
                 price = prices[ dates[next] ];
                 next++;
             }
-            console.log(date,index,price);
             data.labels[index] = date;
             data.series[0][index] = price || 0;
         });
