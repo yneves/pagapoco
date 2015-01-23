@@ -66,6 +66,11 @@ ProductModel = Model.extend({
                     return Transmuter.toFloat(this.attributes.offers.best_offer.price.value);
                 }
                 return 0;
+            case 'best_offer_supplier':
+                if (this.attributes.offers && this.attributes.offers.best_offer)  {
+                    return this.attributes.offers.best_offer.seller.sellername;
+                }
+                return 0;
             case 'worst_offer':
                 if (this.attributes.offers && this.attributes.offers.worst_offer)  {
                     return Transmuter.toFloat(this.attributes.offers.worst_offer.price.value);
