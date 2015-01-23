@@ -18,7 +18,7 @@ module.exports =
         render: function () {
             return (
                 <div class="product-review">
-
+                    <span>{Texts.productReview.text}</span>
                 </div>
             );
         }

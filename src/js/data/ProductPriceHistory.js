@@ -44,22 +44,27 @@ ProductPriceHistoryModel = Model.extend({
         });
       
         var dates = [];
-        if (keys.length) {
-            var first = Math.max(Math.min.apply(null,keys),1414807200000);
+        if (keys.length) {   
+            var step = 24 * 60 * 60 * 1000;
             var last = new Date().getTime();
+            var first = last - (20 * step);
             while (first <= last) {
                 dates.push(dateKey(first));
-                first += 24 * 60 * 60 * 1000;
+                first += step;
             }
         } 
       
         dates.forEach(function(date,index) {
             var price = prices[date];
             var prev = index - 1;
+            var next = index + 1;
             while (!price && prev >= 0) {
-                console.log("prev");
                 price = prices[ dates[prev] ];
                 prev--;
+            }
+            while (!price && next < dates.length - 1) {
+                price = prices[ dates[next] ];
+                next++;
             }
             data.labels[index] = date;
             data.series[0][index] = price || 0;
