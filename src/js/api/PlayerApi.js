@@ -42,7 +42,7 @@ function _checkOrUpdatePlayerData(authData) {
             ApiPlayerActionCreator.login({
                 player: newPlayer
             });
-            PlayerApi.loadPlayerProductList();
+            PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
 
         } else {
 
@@ -64,7 +64,7 @@ function _checkOrUpdatePlayerData(authData) {
                         player: newPlayer,
                         isNew: true
                     });
-                    PlayerApi.loadPlayerProductList();
+                    PlayerApi.loadPlayerProductList(newPlayer.get('uid'));
                 }
             });
         }
@@ -85,11 +85,9 @@ PlayerApi = {
         }, function(error, authData) {
             if (error) {
                 console.log('Login Failed! Cause: ' + error);
-                // TODO return an error like new Error(error);
-                ApiPlayerActionCreator.login(null);
+                ApiPlayerActionCreator.login(new Error(error));
             } else {
                 console.log('Login success!');
-                console.log(authData);
                 _checkOrUpdatePlayerData(authData);
             }
         });
@@ -104,8 +102,7 @@ PlayerApi = {
         db.base.authWithOAuthPopup("facebook", function(error, authData) {
                 if (error) {
                     console.log("Login Failed!", error);
-                    // TODO return an error like new Error(error);
-                    ApiPlayerActionCreator.login(null);
+                    ApiPlayerActionCreator.login(new Error(error));
                 } else {
                     console.log("Authenticated successfully with payload:", authData.uid + ' ' + authData.provider);
                     _checkOrUpdatePlayerData(authData);
@@ -119,17 +116,21 @@ PlayerApi = {
         // TODO check if there is some way to validate this callback
         db.base.unauth();
         Player.instance = null;
+        ApiPlayerActionCreator.login({});
     },
 
     // check current user state
     check: function () {
-        var authData;
+        var authData,
+            player;
         authData = db.base.getAuth();
         if (authData && authData !== null) {
+            player = Player.create(authData);
             ApiPlayerActionCreator.login({
-                player: Player.create(authData)
+                player: player
             });
-            PlayerApi.loadPlayerProductList();
+            // we have a player now get it's data
+            PlayerApi.loadPlayerProductList(player.get('uid'));
         } else {
             ApiPlayerActionCreator.login(null);
         }
@@ -170,33 +171,23 @@ PlayerApi = {
         });
     },
 
-    loadPlayerProductList: function () {
+    loadPlayerProductList: function (uid) {
 
-        var currentPlayerUid;
+        // start fetching player list from server
+        ApiPlayerActionCreator.setPlayerProductList(null);
 
-        if (Player.instance) {
-            currentPlayerUid = Player.instance.get('uid');
-        }
-
-        if (currentPlayerUid) {
-
-            // start fetching player list from server
-            ApiPlayerActionCreator.setPlayerProductList(null);
-
-            db.players_lists.findByKey(currentPlayerUid, function (data) {
-                if (data instanceof Error) {
-                    // some nasty error
-                    ApiPlayerActionCreator.setPlayerProductList(data);
-                } else if (data.val() !== null) {
-                    PlayerList.create(data.val());
-                    ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
-                } else {
-                    ApiPlayerActionCreator.setPlayerProductList(new Error('No player list data found'));
-                }
-            });
-        } else {
-            debug('loadPlayerProductList - No player UID found');
-        }
+        db.players_lists.findByKey(uid, function (data) {
+            if (data instanceof Error) {
+                // some nasty error
+                ApiPlayerActionCreator.setPlayerProductList(data);
+            } else if (data.val() !== null) {
+                PlayerList.create(data.val());
+                ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
+            } else {
+                debug('No player list data found');
+                ApiPlayerActionCreator.setPlayerProductList({});
+            }
+        });
 
     },
 

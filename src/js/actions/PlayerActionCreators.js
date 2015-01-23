@@ -58,6 +58,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
      },
 
      logOut: function(){
+         debug('logout');
         Dispatcher.handleViewAction({
             type: playerAction.LOGOUT,
             data: null
