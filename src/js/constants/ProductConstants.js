@@ -1,5 +1,7 @@
 module.exports = {
     // view
+    GET_PRODUCTS: null,
+    GET_CURRENT_PRODUCT: null,
     SEARCH_PRODUCTS : null,
     FILTER_PRODUCTS : null,
     LOAD_MORE       : null,

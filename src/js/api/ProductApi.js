@@ -116,7 +116,7 @@ ProductApi = {
         // object
         var searchObj;
         searchObj = ElasticSearchDSL.getBySingleFilter(filter);
-        ProductApi.updateProducts(searchObj);
+        // ProductApi.updateProducts(searchObj);
     },
     // used for search, it should reset the initial state of the products
     // uses setProducts
@@ -128,17 +128,30 @@ ProductApi = {
         // TODO the search by name must count the supplier and title mainly
         var searchObj;
         searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
-        ProductApi.updateProducts(searchObj);
+        // ProductApi.updateProducts(searchObj);
     },
     // used for loadMore
-    updateProducts: function (searchObj) {
+    updateProducts: function (search, filters, loadMore) {
+
+        loadMore = loadMore || false;
 
         var options;
-        // TODO load more should update the from property bellow
-        options = {
-            from: 0,
-            size: 20
-        };
+
+        if (loadMore) {
+            // TODO define how the loadMore know the current from - to
+            options = {
+                from: 20,
+                size: 20
+            };
+        } else {
+            options = {
+                from: 0,
+                size: 20
+            };
+        }
+
+        debug('updateProducts return');
+        return;
 
         // start fetching for search, fire event
         ApiProductActionCreator.setProducts(null);

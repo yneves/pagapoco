@@ -1,4 +1,5 @@
 var React = require('react'),
+    ProductAction = require('../../actions/ProductActionCreators'),
     ProductStore = require('../../stores/ProductStore'),
     FilterStore = require('../../stores/FilterStore'),
     Header = require('../header/header.jsx'),
@@ -30,12 +31,30 @@ module.exports =
             };
         },
 
-        componentDidMount: function () {
-            ProductStore.addChangeListener(this._onChange);
+        componentWillMount: function () {
+            ProductStore.addChangeListener(this._onChangeProduct);
+            FilterStore.addChangeListener(this._onChangeFilter);
+            if (this.props.route.link.type) {
+                switch (this.props.route.link.type) {
+                    case 'products':
+                        ProductAction.getProducts();
+                        break;
+                    case 'product':
+                        ProductAction.getCurrentProduct(this.props.route.link.slug);
+                        break;
+                    case 'taxonomy':
+                        ProductAction.filterProducts(this.props.route.link.name);
+                        break;
+                    default:
+                        ProductAction.getProducts();
+                        break;
+                }
+            }
         },
 
         componentWillUnmount: function () {
-            ProductStore.removeChangeListener(this._onChange);
+            ProductStore.removeChangeListener(this._onChangeProduct);
+            FilterStore.removeChangeListener(this._onChangeFilter);
         },
 
         render: function (){
@@ -45,14 +64,14 @@ module.exports =
                 sideStyle,
                 contentStyle;
 
-            if (this.props.route === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
+            if (this.props.route.link.type === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
                 contentStyle = {
                     width: '100%'
                 };
                 content = (
                     <ProductSingleView product={this.state.currentProduct} />
                 );
-            } else if ((this.props.route === 'products' || this.props.route === 'taxonomy') && Object.getOwnPropertyNames(this.state.products).length) {
+            } else if ((this.props.route.link.type === 'products' || this.props.route.link.type === 'taxonomy') && Object.getOwnPropertyNames(this.state.products).length) {
                 contentStyle = {
                     width: '75%',
                     float: 'right'
@@ -95,11 +114,17 @@ module.exports =
          * Apenas atualizar os states
          * @private
          */
-        _onChange: function() {
+        _onChangeProduct: function () {
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent(),
                 sortingProducts : ProductStore.getSorting()
+            });
+        },
+
+        _onChangeFilter: function () {
+            this.setState({
+                filters : FilterStore.getFilters(),
             });
         }
     });
