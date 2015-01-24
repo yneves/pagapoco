@@ -49,6 +49,11 @@ function handleHyphenFilter(field, data) {
 function makeSingleFilter(field, data) {
     var filterObject,
         returned;
+
+    if (typeof field !== 'string' || typeof data !== 'string') {
+        throw new TypeError('You must send field/data of type string');
+    }
+
     returned = data.split('-');
     if (returned.length <= 1) {
         filterObject = {
@@ -174,6 +179,7 @@ ElasticSearchDSL = {
 
         return searchObj;
     },
+
     // return data based on multiple filters only
     // TODO esta funcionando mas não tenho certeza ainda se os filtros estão realmente top mega foda...
     getByMultipleFilter: function (filters) {
@@ -195,7 +201,29 @@ ElasticSearchDSL = {
         };
 
         return searchObj;
-    }
+    },
+
+    testRangeFilter: function () {
+
+        var searchObj;
+
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'range': {
+                            // TODO make sure the types are correct, if it was saved as string it won't worki
+                            'offers.best_offer.price.value': {
+                                'gte': 100
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        return searchObj;
+    },
 };
 
 module.exports = ElasticSearchDSL;

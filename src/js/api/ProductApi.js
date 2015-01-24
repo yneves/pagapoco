@@ -114,7 +114,6 @@ ProductApi = {
 
         // TODO the filter must check if there is any query set before creating the
         // object
-
         var searchObj;
         searchObj = ElasticSearchDSL.getBySingleFilter(filter);
         ProductApi.updateProducts(searchObj);
@@ -123,10 +122,10 @@ ProductApi = {
     // uses setProducts
     searchProducts: function (search) {
 
-        // TODO the search by name must count the supplier and title mainly
-
         // TODO the search must look up to see if there are any filter set
         // to know which method to call (query with or without filters)
+
+        // TODO the search by name must count the supplier and title mainly
         var searchObj;
         searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
         ProductApi.updateProducts(searchObj);

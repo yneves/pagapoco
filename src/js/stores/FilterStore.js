@@ -5,9 +5,12 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     productAction = ActionTypes.Product,
     FilterStore,
     FilterInstance,
+    _search,
     _filters;
 
-_filters = {};
+_filters = {}; // should hold the list of filters information (collections and models)
+_searchState = '';  // should hold the current query the user are trying to perform
+_filtersState = {}; // should hold the current state of filters, selected or not, etc
 
 function handleSearch(data) {
     debug('handling search');

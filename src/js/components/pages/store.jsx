@@ -23,6 +23,7 @@ module.exports =
 
         getInitialState: function () {
             return {
+                filters         : FilterStore.getFilters(),
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrent(),
                 sortingProducts : ProductStore.getSorting()
@@ -65,7 +66,9 @@ module.exports =
                 );
                 sidebar = (
                     <Sidebar style={sideStyle}>
-                        <Filters />
+                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters).length) {
+                            <Filters suppliers={this.state.filters.suppliers} />
+                        }
                     </Sidebar>
                 );
             } else {

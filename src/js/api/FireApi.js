@@ -245,6 +245,9 @@ lodash.objects.assign(Firebase.prototype, {
             type = lodash.utilities.inflection.singularize(this.key());
         }
 
+        // stringify the query, so values like foo.bar are valid for firebase
+        searchObj.query = JSON.stringify(searchObj.query);
+
         // create a new firebase instance
         // TODO using ref (declared bellow) would be better? Not sure...
         searchRef = new Firebase(baseUrl + '/search');
