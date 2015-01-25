@@ -46,6 +46,10 @@ ProductServerActionCreator = {
 
         products = products || null;
 
+        if (typeof playerData !== 'object') {
+            throw new TypeError('ApiProductActionCreator - setProducts - expecting an object as argument');
+        }
+
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
             LoadActionCreator.load('PRODUCT_SET_START', true);
@@ -74,6 +78,10 @@ ProductServerActionCreator = {
     setCurrentProduct: function (product) {
 
         product = product || null;
+
+        if (typeof playerData !== 'object') {
+            throw new TypeError('ApiProductActionCreator - setCurrentProduct - expecting an object as argument');
+        }
 
         // if there is no product set yet (nothing returned from the server)
         if (!product) {

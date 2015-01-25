@@ -79,7 +79,7 @@ function handleSetCurrentProduct(data) {
 
 function setCurrentProductError(data) {
     // some error while trying to fetch the product from server, show 404
-    debug('404');
+    debug('setCurrentProductError - 404');
     debug(data);
 }
 
@@ -162,13 +162,10 @@ ProductInstance = new ProductStore(
     ProductAction.PRODUCT_SET_ERROR, setProductsError,
     ProductAction.PRODUCT_SET_SUCCESS, setProducts,
     ProductAction.GET_CURRENT_PRODUCT, handleSetCurrentProduct,
-    ProductAction.PRODUCT_VIEW_START, setCurrentProduct,
-    ProductAction.PRODUCT_VIEW_ERROR, setCurrentProductError,
-    ProductAction.PRODUCT_VIEW_SUCCESS, setCurrentProduct,
+    ProductAction.PRODUCT_SET_CURRENT_START, setCurrentProduct,
+    ProductAction.PRODUCT_SET_CURRENT_ERROR, setCurrentProductError,
+    ProductAction.PRODUCT_SET_CURRENT_SUCCESS, setCurrentProduct,
     ProductAction.SORT_PRODUCT, setSorting
-    // ProductAction.PRODUCT_SAVE_START, saveStart,
-    // ProductAction.PRODUT_SAVE_ERROR, saveError,
-    // ProductAction.PRODUCT_SAVE_SUCCESS, saveSuccess
 );
 
 module.exports = ProductInstance;

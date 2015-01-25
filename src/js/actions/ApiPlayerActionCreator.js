@@ -11,6 +11,10 @@ PlayerServerActionCreator = {
 
         playerData = playerData || null;
 
+        if (typeof playerData !== 'object') {
+            throw new TypeError('ApiPlayerActionCreator - login - expecting an object as argument');
+        }
+
         // the server receive the product update event but hasn't returned anything yet
         if(!playerData) {
             LoadActionCreator.load('PLAYER_LOGIN_START', true);
@@ -39,6 +43,10 @@ PlayerServerActionCreator = {
     register: function (playerData) {
 
         playerData = playerData || null;
+
+        if (typeof playerData !== 'object') {
+            throw new TypeError('ApiPlayerActionCreator - register - expecting an object as argument');
+        }
 
         // the server receive the product update event but hasn't returned anything yet
         if(!playerData) {
@@ -74,6 +82,10 @@ PlayerServerActionCreator = {
 
         playerData = playerData || null;
 
+        if (typeof playerData !== 'object') {
+            throw new TypeError('ApiPlayerActionCreator - update - expecting an object as argument');
+        }
+
         // the server receive the player update event but hasn't returned anything yet
         if(!playerData) {
             LoadActionCreator.load('PLAYER_UPDATE_START', true);
@@ -102,6 +114,10 @@ PlayerServerActionCreator = {
     setPlayerProductList: function (playerListData) {
 
         playerListData = playerListData || null;
+
+        if (typeof playerListData !== 'object') {
+            throw new TypeError('ApiPlayerActionCreator - setPlayerProductList is expecting an object as argument');
+        }
 
         // the server receive the player update event but hasn't returned anything yet
         if(!playerListData) {

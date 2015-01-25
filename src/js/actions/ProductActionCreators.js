@@ -1,7 +1,6 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    Validator = require('../utils/Validator'),
     api = require('../api/AppApi'),
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
