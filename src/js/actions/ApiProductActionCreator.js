@@ -71,30 +71,30 @@ ProductServerActionCreator = {
         }
     },
     // event on which product are being viewed now
-    viewProduct: function (productData) {
+    setCurrentProduct: function (product) {
 
-        productData = productData || null;
+        product = product || null;
 
         // if there is no product set yet (nothing returned from the server)
-        if (!productData) {
-            LoadActionCreator.load('PRODUCT_VIEW_START', true);
+        if (!product) {
+            LoadActionCreator.load('PRODUCT_SET_CURRENT_START', true);
             Dispatcher.handleServerAction({
-                type: productAction.PRODUCT_SET_START,
+                type: productAction.PRODUCT_SET_CURRENT_START,
                 data: null
             });
         } else {
             // if there was an error while trying to retrive the products
-            LoadActionCreator.loaded('PRODUCT_VIEW_START', false);
-            if (productData instanceof Error) {
+            LoadActionCreator.loaded('PRODUCT_SET_CURRENT_START', false);
+            if (product instanceof Error) {
                 debug('Server responded - With error');
                 Dispatcher.handleServerAction({
-                    type: productAction.PRODUCT_VIEW_ERROR,
-                    data: productData
+                    type: productAction.PRODUCT_SET_CURRENT_ERROR,
+                    data: product
                 });
             } else { // everything went fine, dispatch the event with the product data
                 Dispatcher.handleServerAction({
-                    type: productAction.PRODUCT_VIEW_SUCCESS,
-                    data: productData
+                    type: productAction.PRODUCT_SET_CURRENT_SUCCESS,
+                    data: product
                 });
             }
         }

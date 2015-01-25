@@ -3,7 +3,6 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
     Validator = require('../utils/Validator'),
     getRoute = require('../utils/Router').getRoute,
-    api = require('../api/AppApi'),
     debug = require('debug')('RouteActionCreators.js'),
     routeAction = ActionTypes.Route,
     RouteActionCreator;

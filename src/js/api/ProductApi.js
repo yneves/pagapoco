@@ -14,64 +14,6 @@ var db = require('./FireApi.js'),
 
 ProductApi = {
 
-    // get a single product from database
-    // uses setProducts
-    getCurrentProduct: function (slug) {
-        var currentProduct;
-        currentProduct = Product.collection.findWhere({slug:slug});
-
-        if (currentProduct) {
-            debug('We already have this product');
-            ProductApi.getProductPriceHistory(currentProduct.get('id'));
-            ApiProductActionCreator.viewProduct({slug: slug});
-            return;
-        }
-
-        // start fetching, fire event
-        ApiProductActionCreator.setProducts(null);
-        db.products.findByChild('slug', slug, function (data) {
-            debug('Fetch new product from db');
-            if(data instanceof Error) {
-                debug('Error trying to get a product by its slug');
-                ApiProductActionCreator.setProducts(data);
-                ApiProductActionCreator.viewProduct(data);
-            } else if (data) {
-                // product found
-                currentProduct = Product.create(data);
-                ApiProductActionCreator.setProducts(Product.collection);
-                ProductApi.getProductPriceHistory(currentProduct.get('id'));
-                ApiProductActionCreator.viewProduct({slug:currentProduct.get('slug')});
-            } else {
-                // product not found, 404 send empty object
-                debug('Error 404, Product not found');
-                ApiProductActionCreator.viewProduct({});
-            }
-        });
-    },
-
-    getProductPriceHistory: function (productId) {
-        var currentProductPriceHistory;
-        currentProductPriceHistory = ProductPriceHistory.collection.findWhere({id:productId});
-
-        // if no price history data found for this product, we should fetch it from the server
-        if (!currentProductPriceHistory) {
-            // no data found
-            db.products_price_history.findByKey(productId, function (data) {
-                if (data !== null) {
-                    ProductPriceHistory.create(data);
-                    ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
-                } else {
-                    debug('No price history found for this product');
-                    ApiProductActionCreator.setAllProductsPriceHistory({});
-                }
-            });
-        }
-    },
-
-    syncProductPriceHistory: function (productPriceHistoryId) {
-        debug('syncProductPriceHistory');
-    },
-
     // get products from database
     // uses setProducts
     getProducts: function () {
@@ -109,6 +51,55 @@ ProductApi = {
             }
         });
     },
+
+    // get a single product from database
+    // TODO should update to only ApiProductActionCreator.setCurrentProduct
+    getCurrentProduct: function (slug) {
+        var currentProduct;
+        // start fetching, fire event
+        ApiProductActionCreator.setProducts(null);
+        db.products.findByChild('slug', slug, function (data) {
+            debug('Fetch new product from db');
+            if(data instanceof Error) {
+                debug('Error trying to get a product by its slug');
+                ApiProductActionCreator.setProducts(data);
+                ApiProductActionCreator.setCurrentProduct(data);
+            } else if (data) {
+                // product found
+                currentProduct = Product.create(data);
+                ApiProductActionCreator.setProducts(Product.collection);
+                ApiProductActionCreator.setCurrentProduct(currentProduct);
+            } else {
+                // product not found, 404 send empty object
+                debug('Error 404, Product not found');
+                ApiProductActionCreator.setCurrentProduct({});
+            }
+        });
+    },
+
+    getProductPriceHistory: function (productId) {
+        var currentProductPriceHistory;
+        currentProductPriceHistory = ProductPriceHistory.collection.findWhere({id:productId});
+
+        // if no price history data found for this product, we should fetch it from the server
+        if (!currentProductPriceHistory) {
+            // no data found
+            db.products_price_history.findByKey(productId, function (data) {
+                if (data !== null) {
+                    ProductPriceHistory.create(data);
+                    ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
+                } else {
+                    debug('No price history found for this product');
+                    ApiProductActionCreator.setAllProductsPriceHistory({});
+                }
+            });
+        }
+    },
+
+    syncProductPriceHistory: function (productPriceHistoryId) {
+        debug('syncProductPriceHistory');
+    },
+
     // used for search with exact matches
     filterProducts: function (filter) {
 

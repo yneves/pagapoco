@@ -65,6 +65,8 @@ ProductPriceHistoryStore = Store.extend({
 
 });
 
+// TODO we should add a method associated with the event GET_CURRENT_PRODUCT
+// and the store should set it's priceHistory or fetch it from the API
 ProductPriceHistoryInstance = new ProductPriceHistoryStore(
     ProductAction.RECEIVE_PRODUCT_PRICE_HISTORY_START, receiveStart,
     ProductAction.RECEIVE_PRODUCT_PRICE_HISTORY_ERROR, receiveError,

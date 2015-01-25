@@ -13,12 +13,12 @@ module.exports =
     React.createClass({
 
         propTypes: {
-            route: React.PropTypes.string
+            route: React.PropTypes.object
         },
 
         getDefaultProps: function () {
             return {
-                route: ''
+                route: {}
             };
         },
 
@@ -34,21 +34,12 @@ module.exports =
         componentWillMount: function () {
             ProductStore.addChangeListener(this._onChangeProduct);
             FilterStore.addChangeListener(this._onChangeFilter);
-            if (this.props.route.link.type) {
-                switch (this.props.route.link.type) {
-                    case 'products':
-                        ProductAction.getProducts();
-                        break;
-                    case 'product':
-                        ProductAction.getCurrentProduct(this.props.route.link.slug);
-                        break;
-                    case 'taxonomy':
-                        ProductAction.filterProducts(this.props.route.link.name);
-                        break;
-                    default:
-                        ProductAction.getProducts();
-                        break;
-                }
+            this._defineData();
+        },
+
+        componentWillReceiveProps: function (nextProps) {
+            if (this.props.route.link.type !== nextProps.route.link.type) {
+                this._defineData(nextProps);
             }
         },
 
@@ -108,6 +99,29 @@ module.exports =
                     </div>
                 </div>
             );
+        },
+
+        _defineData: function (nextProps) {
+            var props;
+
+            props = nextProps || this.props;
+
+            if (props.route.link.type) {
+                switch (props.route.link.type) {
+                    case 'products':
+                        ProductAction.getProducts();
+                        break;
+                    case 'product':
+                        ProductAction.getCurrentProduct(props.route.link.slug);
+                        break;
+                    case 'taxonomy':
+                        ProductAction.filterProducts(props.route.link.name);
+                        break;
+                    default:
+                        ProductAction.getProducts();
+                        break;
+                }
+            }
         },
 
         /**

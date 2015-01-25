@@ -1,5 +1,6 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     AppDispatcher = require('../dispatcher/AppDispatcher'),
+    api = require('../api/AppApi'),
     Store = require('../utils/Store'),
     debug = require('debug')('FilterStore.js'),
     productAction = ActionTypes.Product,
@@ -23,6 +24,8 @@ function handleSearch(data) {
     debug('handling search');
     if (data && data.query) {
         _searchState = data.query;
+        // update the products from the server based on the new data
+        api.product.updateProducts(_searchState, _filtersState);
     } else {
         _searchState = '';
     }
@@ -38,6 +41,8 @@ function handleFilter(data) {
         } else {
             delete _filterState[data.filter];
         }
+        // update the products from the server based on the new data
+        api.product.updateProducts(_searchState, _filtersState);
     }
 
     if (Object.getOwnPropertyNames(_filtersState).length) {
@@ -48,6 +53,7 @@ function handleFilter(data) {
 function handleLoadMore(data) {
     debug('handle load more products');
     _loadMoreSum += 1;
+    api.product.updateProducts(_searchState, _filtersState, _loadMoreSum);
 }
 
 FilterStore = Store.extend({
