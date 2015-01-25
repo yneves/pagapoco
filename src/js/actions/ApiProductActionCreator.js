@@ -46,7 +46,7 @@ ProductServerActionCreator = {
 
         products = products || null;
 
-        if (typeof playerData !== 'object') {
+        if (typeof products !== 'object') {
             throw new TypeError('ApiProductActionCreator - setProducts - expecting an object as argument');
         }
 
@@ -79,7 +79,7 @@ ProductServerActionCreator = {
 
         product = product || null;
 
-        if (typeof playerData !== 'object') {
+        if (typeof product !== 'object') {
             throw new TypeError('ApiProductActionCreator - setCurrentProduct - expecting an object as argument');
         }
 
