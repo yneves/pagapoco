@@ -7,6 +7,7 @@ var React = require('react'),
     Sobre = require('../components/pages/sobre.jsx'),
     Loading = require('../components/common/loading.jsx'),
     Register = require('../components/pages/register.jsx'),
+    Home = require('../components/pages/home.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
     playerActions = require('../actions/PlayerActionCreators'),
     routeAction = require('../actions/RouteActionCreators'),
@@ -71,10 +72,12 @@ Application =
 
             if (this.state.route.status == 'success') {
                 switch(this.state.route.link.type) {
-                    case 'home':
                     case 'product':
                     case 'products':
                         componentToLoad = <Store route={this.state.route.link.type} />;
+                        break;
+                    case 'home':
+                        componentToLoad = <Home />;
                         break;
                     case 'register':
                         componentToLoad = <Register route={this.state.route.link.type} />;

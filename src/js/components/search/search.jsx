@@ -38,7 +38,7 @@ module.exports =
             return (
                 <div className="search">
                     <input
-                        type="text"
+                        type="search"
                         placeholder={Texts.search.placeholder}
                         onKeyUp={this.handleKeyUp}
                         onChange={this.submitQuery}
