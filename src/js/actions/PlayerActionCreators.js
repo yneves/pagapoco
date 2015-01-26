@@ -50,7 +50,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 
     // called when a player want's to add a product to a list
     addProductToList: function (productId) {
-        debug('ActionCreator - addProductToList');
+        debug('addProductToList');
         Dispatcher.handleViewAction({
             type : playerAction.ADD_PRODUCT_TO_LIST,
             data : { productId : productId }
@@ -59,7 +59,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 
     // called when a player want's to remove a product from a list
     removeProductFromList: function (productId) {
-        debug('ActionCreator = removeProductFromList');
+        debug('removeProductFromList');
         Dispatcher.handleViewAction({
             type : playerAction.REMOVE_PRODUCT_FROM_LIST,
             data : { productId : productId }

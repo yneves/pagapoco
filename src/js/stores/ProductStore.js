@@ -56,25 +56,23 @@ function setProducts(data) {
 // TODO ver se tem um produto, se não tiver fazer uma requisição dele na API
 // a api deve retornar
 function handleSetCurrentProduct(data) {
-    debug('handleCurrentProduct');
-    debug(data.slug);
     if (Object.getOwnPropertyNames(_currentCatalog).length) {
         _currentProduct = _currentCatalog.findWhere({'slug' : data.slug});
-        // product not found :
+        // we have a catalog but the product data were not found, fetch it
         if (!_currentProduct) {
             debug('get product from api');
             api.product.getCurrentProduct(data.slug);
+            _isLoading = true;
         } else {
-            // we have product, get the price history now
+            // we have product, get it's price history now
             api.product.getProductPriceHistory(_currentProduct.get('id'));
         }
     } else {
+        // no catalog found, fetch at least the wanted product data
         _currentProduct = {};
         api.product.getCurrentProduct(data.slug);
+        _isLoading = true;
     }
-
-    // IF NOT PRODUCT - SEND API REQUEST and set isLoading
-    _isLoading = true;
 }
 
 function setCurrentProductError(data) {
@@ -91,6 +89,7 @@ function setCurrentProduct(data) {
         _currentProduct = data;
         api.product.getProductPriceHistory(_currentProduct.get('id'));
     } else {
+        debug('setCurrentProduct - 404');
         _currentProduct = {};
     }
     // nothing else to do, set _isLoading as false

@@ -125,18 +125,18 @@ ElasticSearchDSL = {
         };
     },
     // return data based on query with one filter only
-    getQueryWithSingleFilter: function (term) {
+    getQueryWithSingleFilter: function (term, filter) {
         var searchObj;
 
         searchObj = {
             'query': {
                 'filtered': {
                     'query': {
-
+                        'match': {
+                            'title': term
+                        }
                     },
-                    'filter': {
-
-                    }
+                    'filter': makeSingleFilter('supplier', filter)
                 }
             }
         };
@@ -144,7 +144,7 @@ ElasticSearchDSL = {
         return searchObj;
     },
     // return data bsed on query with possible multiple filters
-    getQueryWithMultipleFilters: function (term) {
+    getQueryWithMultipleFilters: function (term, filters) {
         var searchObj;
         // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
 
@@ -152,10 +152,14 @@ ElasticSearchDSL = {
             'query': {
                 'filtered': {
                     'query': {
-
+                        'match': {
+                            'title': term
+                        }
                     },
                     'filter': {
-
+                        'bool': {
+                            'should': makeMultipleFilters('supplier', filters)
+                        }
                     }
                 }
             }

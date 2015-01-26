@@ -53,7 +53,6 @@ ProductApi = {
     },
 
     // get a single product from database
-    // TODO should update to only ApiProductActionCreator.setCurrentProduct
     getCurrentProduct: function (slug) {
         var currentProduct;
         // start fetching, fire event
@@ -99,34 +98,14 @@ ProductApi = {
     syncProductPriceHistory: function (productPriceHistoryId) {
         debug('syncProductPriceHistory');
     },
-
-    // used for search with exact matches
-    filterProducts: function (filter) {
-
-        // TODO the filter must check if there is any query set before creating the
-        // object
-        var searchObj;
-        searchObj = ElasticSearchDSL.getBySingleFilter(filter);
-        // ProductApi.updateProducts(searchObj);
-    },
-    // used for search, it should reset the initial state of the products
-    // uses setProducts
-    searchProducts: function (search) {
-
-        // TODO the search must look up to see if there are any filter set
-        // to know which method to call (query with or without filters)
-
-        // TODO the search by name must count the supplier and title mainly
-        var searchObj;
-        searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
-        // ProductApi.updateProducts(searchObj);
-    },
     // used for loadMore
     updateProducts: function (search, filters, loadMore) {
 
-        loadMore = loadMore || false;
+        var options,
+            filtersLength,
+            searchobj;
 
-        var options;
+        loadMore = loadMore || false;
 
         if (loadMore) {
             // TODO define how the loadMore know the current from - to
@@ -141,6 +120,41 @@ ProductApi = {
             };
         }
 
+        filtersLength = Object.getOwnPropertyNames(filters);
+
+        if (!search) {
+            if (filtersLength.length) {
+                // only filter
+                if (filtersLength <= 1) {
+                    debug('getBySingleFilter');
+                    searchObj = ElasticSearchDSL.getBySingleFilter(filters);
+                } else {
+                    debug('getByMultipleFilter');
+                    searchObj = ElasticSearchDSL.getByMultipleFilter(filters);
+                }
+            } else {
+                // no search and no filter, just load more
+                debug('empty search obj - loadMore only');
+                searchObj = {};
+            }
+        } else if (search) {
+            if (filtersLength.length) {
+                // search and filter
+                if (filtersLength <= 1) {
+                    debug('getQueryWithSingleFilter');
+                    searchObj = ElasticSearchDSL.getQueryWithSingleFilter(search, filters);
+                } else {
+                    debug('getQueryWithMultipleFilter');
+                    searchObj = ElasticSearchDSL.getQueryWithMultipleFilters(search, filters);
+                }
+            } else {
+                // only search
+                debug('getDefaultShittyQuery');
+                searchObj = ElasticSearchDSL.getDefaultShittyQuery(search);
+            }
+        }
+
+        debug(searchObj);
         debug('updateProducts return');
         return;
 
