@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Store = require('../utils/Store'),
     debug = require('debug')('FilterStore.js'),
     productAction = ActionTypes.Product,
+    filterAction = ActionTypes.Filter,
     FilterStore,
     FilterInstance,
     _filters,
@@ -11,13 +12,44 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     _filtersState,
     _loadMoreSum;
 
-_filters = {}; // should hold the list of filters information (collections and models)
+_filters = {    // should hold the list of filters information (collections and models)
+    supplier: {},
+    priceRange: {}
+};
 _searchState = '';  // should hold the current query the user are trying to perform
 _filtersState = {}; // should hold the current state of filters, selected or not, etc
 _loadMoreSum = 0;   // a counter of how many times the loadMore was executed
 
+function handleFilters() {
+    debug('handle filters');
+
+    if (!Object.getOwnPropertyNames(_filters.supplier).length) {
+        api.product.getFilters();
+    }
+
+    if (!Object.getOwnPropertyNames(_filters.priceRange).length) {
+        // TODO in the fure, request price range filters
+
+        // pegar o preço da oferta máxima de produto
+        // pegar o preço da oferta mínima do produto
+        // fazer uma divisão em 6 partes iguais e colocar como range
+        // p1 - p2
+        // p2 - p3
+        // p3 - p4
+        // p4 - p5
+        // p5 - p6
+    }
+
+}
+
+function updateFiltersError(data) {
+    debug('updateFiltersError');
+    debug(data);
+}
+
 function updateFilters(data) {
     debug('should receive a collection of filters of some type');
+    debug(data);
 }
 
 function handleSearch(data) {
@@ -89,7 +121,11 @@ FilterStore = Store.extend({
 FilterInstance = new FilterStore(
     productAction.SEARCH_PRODUCTS, handleSearch,
     productAction.FILTER_PRODUCTS, handleFilter,
-    productAction.LOAD_MORE, handleLoadMore
+    productAction.LOAD_MORE, handleLoadMore,
+    filterAction.GET_FILTERS, handleFilters,
+    filterAction.FILTER_SET_START, updateFilters,
+    filterAction.FILTER_SET_ERROR, updateFiltersError,
+    filterAction.FILTER_SET_SUCCESS, updateFilters
 );
 
 

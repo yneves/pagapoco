@@ -7,6 +7,7 @@ var db = require('./FireApi.js'),
     ElasticSearchDSL = require('../utils/ElasticSearchDSL'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
     Product = require('../data/Product'),
+    Supplier = require('../data/Supplier'),
     ProductPriceHistory = require('../data/ProductPriceHistory'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
@@ -16,20 +17,11 @@ ProductApi = {
 
     // get products from database
     // uses setProducts
-    getProducts: function () {
-        var minLength;
-
-        minLength = 30;
-
-        if (Product.collection.length >= minLength) {
-            debug('We already have some random products');
-            ApiProductActionCreator.setProducts({});
-            return;
-        }
-
+    getProducts: function (total) {
+        total = total || 30;
         // start fetching, fire event
         ApiProductActionCreator.setProducts(null);
-        db.products.getAll(minLength, function (data) {
+        db.products.getAll(total, function (data) {
             // if there is an error let's dispatch an event and end here
             if (data instanceof Error) {
                 ApiProductActionCreator.setProducts(data);
@@ -200,6 +192,32 @@ ProductApi = {
                 }
             });
         }
+    },
+    getFilters: function () {
+
+        // start fetching, fire event
+        ApiProductActionCreator.setFilters(null);
+        db.suppliers.getAll(null, function (data) {
+            // if there is an error let's dispatch an event and end here
+            if (data instanceof Error) {
+                ApiProductActionCreator.setFilters(data);
+                debug('Error trying to get filters');
+            } else {
+                if (data instanceof Array) {
+                    if (data.length) {
+                        // we've got data, let's set it
+                        Supplier.create(data);
+                        ApiProductActionCreator.setFilters(Supplier.collection);
+                    } else {
+                        debug('No filters received');
+                        ApiProductActionCreator.setFilters({});
+                    }
+                } else {
+                    debug('Error: data is not an instance of Array');
+                    ApiProductActionCreator.setFilters(new Error('Invalid type: Filter data should be of type Array'));
+                }
+            }
+        });
     }
 };
 

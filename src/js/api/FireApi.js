@@ -23,7 +23,8 @@ tables = [
     'Users',
     'players_lists',
     'products',
-    'products_price_history'
+    'products_price_history',
+    'suppliers'         // TODO add the remaining filters later
 ];
 
 refs = {};
@@ -36,19 +37,26 @@ lodash.objects.assign(Firebase.prototype, {
      */
     getAll: function (limit, callback) {
 
-        var data;
+        var errorFunc,
+            beforeCb;
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
-        limit = parseInt(limit) || 30;
-        data = [];
+        limit = parseInt(limit) || null;
+        errorFunc = function (err) {
+            if (err) {
+                debug('No permission to read data');
+                callback(new Error(err)); // empty, no data got from the server
+            } else {
+                callback(new Error('An unknown error has ocurred'));
+            }
+        };
+        beforeCb = function (snapshot) {
+            var data,
+                childData;
 
-        // default implementation to get data from firebase
-        this.limitToLast(30).once('value', function (snapshot) {
+            data = [];
             // snapshot should contain a list of products
             if (snapshot.val() !== null) {
-
-                var childData;
-
                 // loop through the snapshot data object
                 snapshot.forEach( function (childSnapshot) {
 
@@ -65,14 +73,15 @@ lodash.objects.assign(Firebase.prototype, {
                 });
             }
             callback(data);
-        }, function (err) {
-            if (err) {
-                debug('No permission to read data');
-                callback(new Error(err)); // empty, no data got from the server
-            } else {
-                callback(new Error('An unknown error has ocurred'));
-            }
-        });
+        };
+
+        // default implementation to get data from firebase
+        if (limit) {
+            this.limitToLast(30).once('value', beforeCb, errorFunc);
+        } else {
+            this.once('value', beforeCb, errorFunc);
+        }
+
     },
     /**
      * Save some data by creating an empty key and then setting it's data

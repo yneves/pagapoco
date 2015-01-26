@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     api = require('../api/AppApi'),
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
+    filterAction = ActionTypes.Filter,
     ProductActionCreator;
 
 ProductActionCreator = {
@@ -19,6 +20,12 @@ ProductActionCreator = {
         Dispatcher.handleViewAction({
             type : productAction.GET_CURRENT_PRODUCT,
             data : { slug: slug }
+        });
+    },
+    getFilters: function () {
+        Dispatcher.handleViewAction({
+            type : filterAction.GET_FILTERS,
+            data : null
         });
     },
     // called when the user type on search input field

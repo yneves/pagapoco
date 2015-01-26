@@ -28,7 +28,7 @@ function handleProducts() {
     debug('handleProducts');
     if (Object.getOwnPropertyNames(_currentCatalog).length < 30) {
         // there are no products, request it through the api
-        api.product.getProducts();
+        api.product.getProducts(30);
         _isLoading = true;
     }
 }

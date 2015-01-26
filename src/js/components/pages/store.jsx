@@ -110,14 +110,17 @@ module.exports =
                 switch (props.route.link.type) {
                     case 'products':
                         ProductAction.getProducts();
+                        ProductAction.getFilters();
                         break;
                     case 'product':
                         ProductAction.getCurrentProduct(props.route.link.slug);
                         break;
                     case 'taxonomy':
+                        ProductAction.getFilters();
                         ProductAction.filterProducts(props.route.link.name);
                         break;
                     default:
+                        ProductAction.getFilters();
                         ProductAction.getProducts();
                         break;
                 }

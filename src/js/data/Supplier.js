@@ -1,4 +1,5 @@
-var Model = require('model'),
+var Collection = require('collection'),
+    Model = require('model'),
     debug = require('debug')('Supplier.js'),
     SupplierModel,
     SupplierCollectionConstructor,
@@ -13,10 +14,11 @@ SupplierModel = Model.extend({
             id: { type: 'string' },        // the productId this history references to
             id_buscape: { type: 'integer' },
             name: { type: 'string' },
+            slug: { type: 'string' },
             members: { type: 'object' }
         }
     }
-    
+
 });
 
 SupplierCollectionConstructor = Collection.extend({
