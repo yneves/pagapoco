@@ -22,13 +22,13 @@ module.exports =
                 <div className="breadcrumbs">
                     <div>
                         <a>{Texts.home}</a>
-                        <span>{'>'}</span>
+                        <span>{' > '}</span>
                     </div>
                     {categories.map(function(category) {
                         return (
                             <div key={category}>
                                 <a>{Texts.category[category]}</a>
-                                <span>{'>'}</span>
+                                <span>{' > '}</span>
                             </div>
                         );
                     })}

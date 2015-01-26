@@ -61,7 +61,7 @@ module.exports =
                         </div>
                     </div>
 
-                    <div className="product-body">
+                    <div className="product-body-one">
 
                         <div className="product-image">
                             <img src={product.get('thumb_large')} />
@@ -79,9 +79,13 @@ module.exports =
                             </dl>
                         </div>
 
-                        <div className="product-stores">
+                        <div className="product-offers">
                             <StoreList product={product} />
                         </div>
+                        
+                    </div>
+                        
+                    <div className="product-body-two">
 
                         <div className="product-tabset">
                             <div className="product-tab-heading">
@@ -100,8 +104,9 @@ module.exports =
                         <div className="product-alert">
                             <PriceAlert product={product} />
                         </div>
-
+                        
                     </div>
+                    
                 </div>
             );
         }

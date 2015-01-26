@@ -1,0 +1,87 @@
+
+@searchHeight: 100px;
+@pageWidth: 1024px;
+@priceWidth: 300px;
+@imageWidth: 200px;
+@imageHeight: 300px;
+@offersWidth: 400px;
+@alertWidth: 300px;
+
+.product-single-view {
+    max-width: @pageWidth;
+    margin: auto;
+    padding-top: @searchHeight;
+    border: 1px solid red;
+    
+    .product-header {
+        position: relative;
+
+        .product-title {
+            width: 100%;
+            padding-right: @priceWidth;
+            
+            h1 {
+                font-size: 34px;
+            }
+            
+            h2 {
+                font-size: 14px;
+                
+                .breadcrumbs {
+                    div {
+                        display: inline-block;        
+                    }
+                }                
+            }            
+        }
+        
+        .product-price {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: @priceWidth;
+        }
+    }
+    
+    .product-body-one {
+        position: relative;
+        min-height: @imageHeight;
+    
+        .product-image {
+            width: @imageWidth;
+            height: @imageHeight;
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        
+        .product-description {
+            padding-left: @imageWidth;
+            padding-right: @offersWidth;
+            width: 100%;
+        }
+        
+        .product-offers {
+            width: @offersWidth;
+            position: absolute;
+            top: 0px;
+            right: 0px;
+        }
+    }
+    
+    .product-body-two {
+        position: relative;
+    
+        .product-tabset {
+            width: 100%;
+            padding-right: @alertWidth;
+        }
+        
+        .product-alert {
+            position: absolute;
+            top: 0px;
+            right: 0px;
+            width: @alertWidth;
+        }        
+    }
+}
