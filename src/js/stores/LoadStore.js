@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Texts = require('../components/texts'),
     loadAction = ActionTypes.Loading,
     LoadStore,
+    LoadInstance,
     _actionType,
     _isLoading,
     _LoadingMessage;

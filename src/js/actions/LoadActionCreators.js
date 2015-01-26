@@ -1,6 +1,5 @@
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    Validator = require('../utils/validator'),
     debug = require('debug')('PlayerActionCreators.js'),
     loadAction = ActionTypes.Loading,
     LoadActionCreator;

@@ -11,7 +11,6 @@ var keyMirror = require('keymirror'),
     PlayerConstants = require('./PlayerConstants');
 
 
-
 module.exports = {
 
     ActionTypes: {
@@ -19,7 +18,6 @@ module.exports = {
         Product: keyMirror(ProductConstants),
         Loading: keyMirror(LoadingConstants),
         Player: keyMirror(PlayerConstants)
-
     },
 
     PayloadSources: keyMirror({

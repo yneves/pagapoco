@@ -1,9 +1,7 @@
 
 var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
-    Validator = require('../utils/Validator'),
     getRoute = require('../utils/Router').getRoute,
-    api = require('../api/AppApi'),
     debug = require('debug')('RouteActionCreators.js'),
     routeAction = ActionTypes.Route,
     RouteActionCreator;
@@ -35,22 +33,6 @@ RouteActionCreator = {
                 type : routeAction.CHANGE_ROUTE_SUCCESS,
                 data : routeData
             });
-
-            // Load data based on current Route type
-            if (routeData.link.type === 'products') {
-                // let's require the products from the server
-                if (Validator.isFunction(api.product.getProducts)) {
-                    api.product.getProducts();
-                } else {
-                    debug('No getProducts valid method found');
-                }
-            } else if (routeData.link.type === 'product') {
-                if (Validator.isFunction(api.product.getCurrentProduct)) {
-                    api.product.getCurrentProduct(routeData.link.slug);
-                } else {
-                    debug('No getCurrentProduct valid method found');
-                }
-            }
         } else {
             // no route found, alert a routing error
             Dispatcher.handleViewAction({

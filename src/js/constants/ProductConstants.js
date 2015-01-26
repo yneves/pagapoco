@@ -1,6 +1,9 @@
 module.exports = {
     // view
+    GET_PRODUCTS: null,
+    GET_CURRENT_PRODUCT: null,
     SEARCH_PRODUCTS : null,
+    FILTER_PRODUCTS : null,
     LOAD_MORE       : null,
     SORT_PRODUCT    : null,
     ADD_PRICE_ALERT: null,
@@ -13,9 +16,9 @@ module.exports = {
     PRODUCT_SET_START : null,
     PRODUCT_SET_ERROR : null,
     PRODUCT_SET_SUCCESS : null,
-    PRODUCT_VIEW_START: null,
-    PRODUCT_VIEW_ERROR: null,
-    PRODUCT_VIEW_SUCCESS: null,
+    PRODUCT_SET_CURRENT_START: null,
+    PRODUCT_SET_CURRENT_ERROR: null,
+    PRODUCT_SET_CURRENT_SUCCESS: null,
     PRODUCT_PRICE_HISTORY_UPDATE_START: null,
     PRODUCT_PRICE_HISTORY_UPDATE_ERROR: null,
     PRODUCT_PRICE_HISTORY_UPDATE_SUCCESS: null,
