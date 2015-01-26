@@ -11,6 +11,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     },
     debug = require('debug')('RouteStore.js'),
     RouteAction = ActionTypes.Route,
+    RouteInstance,
     _route,
     _requestTypes,
     _responseCodes;

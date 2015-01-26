@@ -65,25 +65,21 @@ Application =
         render: function () {
 
             var componentToLoad;
-
-            // do something like a loading or whatever
-
-            // check if the route as success or error when not loading
-
             if (this.state.route.status == 'success') {
                 switch(this.state.route.link.type) {
                     case 'product':
                     case 'products':
-                        componentToLoad = <Store route={this.state.route.link.type} />;
+                    case 'taxonomy':
+                        componentToLoad = <Store route={this.state.route} />;
                         break;
                     case 'home':
                         componentToLoad = <Home />;
                         break;
                     case 'register':
-                        componentToLoad = <Register route={this.state.route.link.type} />;
+                        componentToLoad = <Register route={this.state.route} />;
                         break;
                     default:
-                        componentToLoad = <Store route={this.state.route.link.type} />;
+                        componentToLoad = <Store route={this.state.route} />;
                         break;
                 }
             } else {

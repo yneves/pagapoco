@@ -16,15 +16,9 @@ function _checkOrUpdatePlayerData(authData) {
 
     var newPlayer;
 
-    console.log('checkOrUpdatePlayerData');
-    console.log(authData);
-    db.Users.findByKey(authData.uid, function (snapshot) {
+    db.Users.findByKey(authData.uid, function (data) {
 
-        if (snapshot instanceof Error) {
-            // error ocurred
-            console.log('checkOrUpdatePlayerData - findByKey error');
-            console.log(snapshot);
-        } else if (snapshot.val() !== null){ // user exists
+        if (data !== null){ // user exists
             // get the most recent user data from facebook
             newPlayer = Player.create(authData);
             if (authData.provider === 'facebook') {
@@ -52,7 +46,7 @@ function _checkOrUpdatePlayerData(authData) {
             }
 
             newPlayer = Player.create(authData);
-            db.Users.createwithKey(newPlayer.get('uid'), newPlayer, function (err) {
+            db.Users.createWithKey(newPlayer.get('uid'), newPlayer, function (err) {
                 if (err) {
                     console.log('Creating new user data - error');
                 } else {
@@ -68,7 +62,7 @@ function _checkOrUpdatePlayerData(authData) {
                 }
             });
         }
-    });
+    }, 'uid');
 }
 
 PlayerApi = {
@@ -177,17 +171,14 @@ PlayerApi = {
         ApiPlayerActionCreator.setPlayerProductList(null);
 
         db.players_lists.findByKey(uid, function (data) {
-            if (data instanceof Error) {
-                // some nasty error
-                ApiPlayerActionCreator.setPlayerProductList(data);
-            } else if (data.val() !== null) {
-                PlayerList.create(data.val());
+            if (data !== null) {
+                PlayerList.create(data);
                 ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
             } else {
                 debug('No player list data found');
                 ApiPlayerActionCreator.setPlayerProductList({});
             }
-        });
+        }, 'uid');
 
     },
 
@@ -208,9 +199,7 @@ PlayerApi = {
 
         if (currentPlayerUid) {
             db.players_lists.findByKey(currentPlayerUid, function (data) {
-                if (data instanceof Error) {
-                    debug('Player list data ERROR, oh gawd');
-                } else if (data.val() !== null) {
+                if (data.val() !== null) {
                     debug('Player list data found, we should update it');
                     listToSave = PlayerList.collection.get(currentPlayerUid);
                     if (listToSave) {
@@ -237,7 +226,7 @@ PlayerApi = {
                         }
                     });
                 }
-            });
+            }, 'uid');
         } else {
             debug('syncPlayerProductList - no player uid found');
         }

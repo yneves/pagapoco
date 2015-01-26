@@ -6,6 +6,11 @@
 */
 
 var debug = require('debug')('ElasticSearchDSL.js'),
+    lodash = {
+        collections: {
+            forEach: require('lodash-node/modern/collections/forEach')
+        }
+    },
     ElasticSearchDSL;
 
 // *** ATTENTION *** ATTENZIONE ** ATENÇÃO ** WARNING ** MUHABADU!
@@ -22,6 +27,55 @@ function makeTerm(term, matchWholeWords) {
     }
     debug(term);
     return term;
+}
+
+// this is in order to cover cases with hyphen, bellow are a link describing
+// the problem and one possible solution
+// http://stackoverflow.com/questions/11566838/elastic-search-hyphen-issue-with-term-filter
+function handleHyphenFilter(field, data) {
+    var filterObject,
+        arrayComplex = [];
+    lodash.collections.forEach(data, function (value) {
+        filterObject = {
+            'term' : {}
+        };
+        filterObject.term[field] = value;
+        arrayComplex.push(filterObject);
+    });
+    return arrayComplex;
+}
+
+// for simple cases (single filters)
+function makeSingleFilter(field, data) {
+    var filterObject,
+        returned;
+
+    if (typeof field !== 'string' || typeof data !== 'string') {
+        throw new TypeError('You must send field/data of type string');
+    }
+
+    returned = data.split('-');
+    if (returned.length <= 1) {
+        filterObject = {
+            'term': {}
+        };
+        filterObject.term[field] = {
+            'value': returned[0]
+        };
+    } else {
+        filterObject = handleHyphenFilter(field, returned);
+    }
+    return filterObject;
+}
+
+// for multiple filters cases
+function makeMultipleFilters(field, data) {
+    var filterObject;
+    filterObject = [];
+    lodash.collections.forEach(data, function (value) {
+        filterObject.push(makeSingleFilter(field, value));
+    });
+    return filterObject;
 }
 
 ElasticSearchDSL = {
@@ -70,31 +124,110 @@ ElasticSearchDSL = {
             }
         };
     },
-    getBySingleFilter: function (term) {
-        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-        return {
+    // return data based on query with one filter only
+    getQueryWithSingleFilter: function (term, filter) {
+        var searchObj;
+
+        searchObj = {
             'query': {
-                'term': {
-                    'supplier': {
-                        'value': term,
-                        'boost': 2.0
+                'filtered': {
+                    'query': {
+                        'match': {
+                            'title': term
+                        }
+                    },
+                    'filter': makeSingleFilter('supplier', filter)
+                }
+            }
+        };
+
+        return searchObj;
+    },
+    // return data bsed on query with possible multiple filters
+    getQueryWithMultipleFilters: function (term, filters) {
+        var searchObj;
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'query': {
+                        'match': {
+                            'title': term
+                        }
+                    },
+                    'filter': {
+                        'bool': {
+                            'should': makeMultipleFilters('supplier', filters)
+                        }
                     }
                 }
             }
         };
     },
-    getByMultipleFilter: function (terms) {
-        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-terms-query.html
-        // it works, but not for multiple different terms as it seems.. must dig further
-        return {
+
+    // return data based on filter only, the complex/simple cases scenarios were
+    // created due to the way data was indexed with elasticsearch + flashlight
+    getBySingleFilter: function (filter) {
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+        var searchObj;
+
+        searchObj = {
             'query': {
-                'terms': {
-                    'supplier': ['integralmedica', 'probiotica'],
-                    'minimum_should_match': 1
+                'filtered': {
+                    'filter': makeSingleFilter('supplier', filter)
                 }
             }
         };
-    }
+
+        return searchObj;
+    },
+
+    // return data based on multiple filters only
+    // TODO esta funcionando mas não tenho certeza ainda se os filtros estão realmente top mega foda...
+    getByMultipleFilter: function (filters) {
+
+        var searchObj;
+        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+        // it works, but not for multiple different terms as it seems.. must dig further
+
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'bool': {
+                            'should': makeMultipleFilters('supplier', filters)
+                        }
+                    }
+                }
+            }
+        };
+
+        return searchObj;
+    },
+
+    testRangeFilter: function () {
+
+        var searchObj;
+
+        searchObj = {
+            'query': {
+                'filtered': {
+                    'filter': {
+                        'range': {
+                            // TODO make sure the types are correct, if it was saved as string it won't worki
+                            'offers.best_offer.price.value': {
+                                'gte': 100
+                            }
+                        }
+                    }
+                }
+            }
+        };
+
+        return searchObj;
+    },
 };
 
 module.exports = ElasticSearchDSL;

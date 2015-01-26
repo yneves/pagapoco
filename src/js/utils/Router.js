@@ -16,19 +16,25 @@ _routes = [
         name: 'products',
         method: 'GET',
         type: 'products',
-        path: '/products'
+        path: '/produtos'
     },
     {
         name: 'product',
         method: 'GET',
         type: 'product',
-        path: '/products/:slug'
+        path: '/produtos/:slug'
     },
     {
         name: 'register',
         method: 'GET',
         type: 'register',
-        path: '/register'
+        path: '/registrar'
+    },
+    {
+        name: 'taxonomy',
+        method: 'GET',
+        type: 'taxonomy',
+        path: '/categoria/:name'
     }
 ];
 

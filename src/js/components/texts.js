@@ -13,7 +13,12 @@ module.exports = {
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',
-
+    
+    gridView: {
+        from: 'A partir de',
+        at: 'em'
+    },
+    
     search: {
       placeholder: 'O que está procurando?',
       submit: 'Pesquisar',
@@ -31,7 +36,9 @@ module.exports = {
 
     priceTag: {
       to: 'a',
+      in: 'em',
       title: 'Preços',
+      stores: 'lojas',
       history: 'VER HISTÓRICO'
     },
 
@@ -40,7 +47,8 @@ module.exports = {
     },
 
     productReview: {
-      title: 'AVALIAÇÃO DO PRODUTO'
+      title: 'AVALIAÇÃO DO PRODUTO',
+      text: 'Reviews aqui'
     },
 
     priceAlert: {

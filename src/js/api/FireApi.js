@@ -216,16 +216,25 @@ lodash.objects.assign(Firebase.prototype, {
      * Method that search by proximity/similratiy using ElasticSearch algorithms
      *
      */
-    searchFor: function (searchObj, callback) {
+    searchFor: function (searchObj, options, callback) {
 
         var searchRef,
             searchKey,
+            defaultOptions,
             type,
             data;
 
         // this method need's an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
         data = [];
+
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/client/javascript-api/current/api-reference.html
+        defaultOptions = {
+            from: 0,    // offset of results
+            size: 10    // total ammount of results to return, 10 is the elasticsearch default
+        };
+        // override default options of search
+        lodash.objects.defaults(options, defaultOptions);
 
         // make sure we are searching for in a low level base (products, products_price_history, etc)
         if (this.parent().toString() !== this.root().toString()) {
@@ -236,12 +245,15 @@ lodash.objects.assign(Firebase.prototype, {
             type = lodash.utilities.inflection.singularize(this.key());
         }
 
+        // stringify the query, so values like foo.bar are valid for firebase
+        searchObj.query = JSON.stringify(searchObj.query);
+
         // create a new firebase instance
         // TODO using ref (declared bellow) would be better? Not sure...
         searchRef = new Firebase(baseUrl + '/search');
 
         // TODO the size was increased in order to avoid problems with limiting by the filters
-        lodash.objects.defaults(searchObj, {index: 'firebase', type: type, options: {size: 50}});
+        lodash.objects.defaults(searchObj, {index: 'firebase', type: type, options: options});
 
         if (!searchObj.query) {
             throw new Error('We need a query to perform a search');
@@ -314,7 +326,8 @@ lodash.objects.assign(Firebase.prototype, {
         }
         // just get the data and leave the server alone
         modelRef.once('value', function (snapshot) {
-            var value;
+            var value,
+                data;
 
             if (snapshot.val() !== null) {
                 // TODO look for ways to improve this ugly thing
@@ -334,9 +347,11 @@ lodash.objects.assign(Firebase.prototype, {
     // with the current project, also there are some more helpfull messages.
     // this methods aalso assumes calls of type .once, so data changes on server
     // won't trigger any reload
-    findByKey: function (key, callback) {
+    findByKey: function (key, callback, idAttribute) {
 
         var modelRef;
+
+        idAttribute = idAttribute || 'id';
 
         // this method need an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
@@ -349,7 +364,24 @@ lodash.objects.assign(Firebase.prototype, {
             callback(new Error(err));
         }
         // just get the data and  leave the server alone
-        modelRef.once('value', callback);
+        modelRef.once('value', function (snapshot) {
+            var value,
+                data;
+
+            if (snapshot.val() !== null) {
+                // childData will be the actual contents of the child
+                data = snapshot.val() || {};
+                // set the key as the firebase key, needed because
+                // firebase has no support for arrays and our collection/model
+                // object need this for correct data manipulation
+                // also we run pareInt because integer type data arrive from DB
+                // as a string, so we need to perform this check
+                data[idAttribute] = parseInt(snapshot.key()) || snapshot.key();
+            } else {
+                data = null;
+            }
+            callback(data);
+        });
     }
 });
 
