@@ -46,13 +46,11 @@ module.exports =
 
         _handleClickSortPrice: function (event) {
             event.preventDefault();
-            debug('clicked sort price');
             ProductAction.sortProducts('price');
         },
 
         _handleClickSortDiscount: function (event) {
             event.preventDefault();
-            debug('clicked sort discount');
             ProductAction.sortProducts('discount');
         }
     });
