@@ -65,23 +65,25 @@ Application =
         render: function () {
 
             var componentToLoad;
-            if (this.state.route.status == 'success') {
-                switch(this.state.route.link.type) {
-                    case 'home':
-                    case 'product':
-                    case 'products':
-                    case 'taxonomy':
-                        componentToLoad = <Store route={this.state.route} />;
-                        break;
-                    case 'register':
-                        componentToLoad = <Register route={this.state.route} />;
-                        break;
-                    case 'main':
-                        componentToLoad = <Home />;
-                        break;
-                    default:
-                        componentToLoad = <Store route={this.state.route} />;
-                        break;
+            if (this.state.route.link) {
+                if (this.state.route.status == 'success') {
+                    switch (this.state.route.link.type) {
+                        case 'home':
+                        case 'product':
+                        case 'products':
+                        case 'taxonomy':
+                            componentToLoad = <Store route={this.state.route} />;
+                            break;
+                        case 'register':
+                            componentToLoad = <Register route={this.state.route} />;
+                            break;
+                        case 'main':
+                            componentToLoad = <Home />;
+                            break;
+                        default:
+                            componentToLoad = <Store route={this.state.route} />;
+                            break;
+                    }
                 }
             } else {
                 componentToLoad = <NotFound />;
