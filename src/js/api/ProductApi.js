@@ -73,15 +73,16 @@ ProductApi = {
         currentProductPriceHistory = ProductPriceHistory.collection.findWhere({id:productId});
 
         // if no price history data found for this product, we should fetch it from the server
+        ApiProductActionCreator.setProductsPriceHistory(null);
         if (!currentProductPriceHistory) {
             // no data found
             db.products_price_history.findByKey(productId, function (data) {
                 if (data !== null) {
                     ProductPriceHistory.create(data);
-                    ApiProductActionCreator.setAllProductsPriceHistory(ProductPriceHistory.collection);
+                    ApiProductActionCreator.setProductsPriceHistory(ProductPriceHistory.collection);
                 } else {
                     debug('No price history found for this product');
-                    ApiProductActionCreator.setAllProductsPriceHistory({});
+                    ApiProductActionCreator.setProductsPriceHistory({});
                 }
             });
         }

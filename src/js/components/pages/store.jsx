@@ -26,7 +26,7 @@ module.exports =
             return {
                 filters         : FilterStore.getFilters(),
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
+                currentProduct  : ProductStore.getCurrentProduct(),
                 sortingProducts : ProductStore.getSorting()
             };
         },
@@ -55,12 +55,12 @@ module.exports =
                 sideStyle,
                 contentStyle;
 
-            if (this.props.route.link.type === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
+            if (this.props.route.link.type === 'product' && Object.getOwnPropertyNames(this.state.currentProduct.product).length) {
                 contentStyle = {
                     width: '100%'
                 };
                 content = (
-                    <ProductSingleView product={this.state.currentProduct} />
+                    <ProductSingleView product={this.state.currentProduct.product} priceHistory={this.state.currentProduct.priceHistory} />
                 );
             } else if ((this.props.route.link.type === 'products' || this.props.route.link.type === 'taxonomy') && Object.getOwnPropertyNames(this.state.products).length) {
                 contentStyle = {
@@ -134,7 +134,7 @@ module.exports =
         _onChangeProduct: function () {
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
+                currentProduct  : ProductStore.getCurrentProduct(),
                 sortingProducts : ProductStore.getSorting()
             });
         },

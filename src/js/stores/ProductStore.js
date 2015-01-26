@@ -8,21 +8,32 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductAction,
     RouteAction,
     _currentCatalog,    // general products information
-    _currentProduct,
+    _currentProduct,    // current product data
+    _priceHistory,      // a list of all price histories
     _isLoading,
     _sorting;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
+_priceHistory = {};
 _currentCatalog = {};
-_currentProduct = {};
+_currentProduct = {
+    product: {},
+    priceHistory: {}
+};
 _isLoading  = true;
 _sorting = {
     price: false,
     discount: false
 };
 
+function resetCurrentProduct() {
+    _currentProduct = {
+        product: {},
+        priceHistory: {}
+    };
+}
 
 function handleProducts() {
     debug('handleProducts');
@@ -57,19 +68,30 @@ function setProducts(data) {
 // a api deve retornar
 function handleSetCurrentProduct(data) {
     if (Object.getOwnPropertyNames(_currentCatalog).length) {
-        _currentProduct = _currentCatalog.findWhere({'slug' : data.slug});
+        _currentProduct.product = _currentCatalog.findWhere({'slug' : data.slug});
         // we have a catalog but the product data were not found, fetch it
-        if (!_currentProduct) {
+        if (!_currentProduct.product) {
             debug('get product from api');
             api.product.getCurrentProduct(data.slug);
             _isLoading = true;
         } else {
-            // we have product, get it's price history now
-            api.product.getProductPriceHistory(_currentProduct.get('id'));
+            // we have product, check the price history now
+            if (Object.getOwnPropertyNames(_priceHistory).length) {
+                _currentProduct.priceHistory = _priceHistory.findWhere({ id: _currentProduct.product.get('id') });
+                if (!_currentProduct.priceHistory) {
+                    // no price history for this product, fetch it from the api
+                    api.product.getProductPriceHistory(_currentProduct.product.get('id'));
+                    _isLoading = true;
+                }
+            } else {
+                _priceHistory = {};
+                api.product.getProductPriceHistory(_currentProduct.product.get('id'));
+                _isLoading = true;
+            }
         }
     } else {
         // no catalog found, fetch at least the wanted product data
-        _currentProduct = {};
+        resetCurrentProduct();
         api.product.getCurrentProduct(data.slug);
         _isLoading = true;
     }
@@ -86,11 +108,12 @@ function setCurrentProduct(data) {
     // that ended up here, now we must set the product (if found) or
     // show a 404 because the product couldn't be found
     if (data && Object.getOwnPropertyNames(data).length) {
-        _currentProduct = data;
-        api.product.getProductPriceHistory(_currentProduct.get('id'));
+        _currentProduct.product = data; // a model
+        // we got a product, now we need it's price history
+        api.product.getProductPriceHistory(_currentProduct.product.get('id'));
     } else {
         debug('setCurrentProduct - 404');
-        _currentProduct = {};
+        resetCurrentProduct();
     }
     // nothing else to do, set _isLoading as false
     _isLoading = false;
@@ -131,9 +154,28 @@ function setSorting(sort) {
     }
 }
 
+function receiveProductPriceHistoryError(data) {
+    debug('receiveProductPriceHistoryError');
+    debug(data);
+    _isLoading = false;
+}
+
+function receiveProductPriceHistory(data) {
+    if (data) {
+        _priceHistory = data;
+        if (Object.getOwnPropertyNames(_currentProduct.product).length) {
+            _currentProduct.priceHistory = _priceHistory.findWhere({ id: _currentProduct.product.get('id') });
+        }
+    } else {
+        _priceHistory = {};
+    }
+    _isLoading = false;
+}
+
+
 ProductStore = Store.extend({
 
-    getCurrent: function () {
+    getCurrentProduct: function () {
         return _currentProduct;
     },
 
@@ -152,7 +194,6 @@ ProductStore = Store.extend({
     getSorting: function () {
         return _sorting;
     }
-
 });
 
 ProductInstance = new ProductStore(
@@ -164,6 +205,9 @@ ProductInstance = new ProductStore(
     ProductAction.PRODUCT_SET_CURRENT_START, setCurrentProduct,
     ProductAction.PRODUCT_SET_CURRENT_ERROR, setCurrentProductError,
     ProductAction.PRODUCT_SET_CURRENT_SUCCESS, setCurrentProduct,
+    ProductAction.PRODUCT_PRICE_HISTORY_START, receiveProductPriceHistory,
+    ProductAction.PRODUCT_PRICE_HISTORY_ERROR, receiveProductPriceHistoryError,
+    ProductAction.PRODUCT_PRICE_HISTORY_SUCCESS, receiveProductPriceHistory,
     ProductAction.SORT_PRODUCT, setSorting
 );
 
