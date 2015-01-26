@@ -25,7 +25,7 @@ module.exports =
                             placeholder='Em que Pagar po.co hoje?'
                             ref="input" />
                         <button type="button" className='searchButton'>
-                            <Icon className='loginIcon' icon="action-search" />
+                            <Icon className='searchIcon' icon="action-search" />
                         </button>
                     </div>
                     <div className='searchcolorbar'>
@@ -38,15 +38,133 @@ module.exports =
                     <div className='page'>
                         <div className="wrap container-fluid">
 
-                            <section className='pageSection row' id='homeCats'>
+                            <section className='pageSection' id='homeCats'>
                                 <h3>PRINCIPAIS CATEGORIAS</h3>
-                                <div className='col-xs-4 catSingleHome'></div>
-                                <div className='col-xs-4 catSingleHome'></div>
-                                <div className='col-xs-4 catSingleHome'></div>
+                                <div className='row'>
+                                    <div className='col-xs-4'>
+                                        <div className="catSingleHome center-xs">
+                                            <img className='' src="
+                                                 http://thumbs.buscape.com.br/suplemento/esportivo-universal-nutrition-ultra-whey-pro-pote-po-2270-gramas_300x300-PU62e21_1.jpg
+                                            " />
+                                            <h4>Whey</h4>
+                                        </div>
+                                    </div>
+                                    <div className='col-xs-4'>
+                                        <div className="catSingleHome center-xs">
+                                            <img className='middle-xs' src="
+                                                http://thumbs.buscape.com.br/suplemento/esportivo-integralmedica-creatina-pote-60-capsulas_300x300-PU696df_1.jpg
+                                             " />
+                                            <h4>Creatina</h4>
+                                        </div>
+                                    </div>
+                                    <div className='col-xs-4'>
+                                        <div className="catSingleHome center-xs">
+                                            <img className='middle-xs' src="
+                                                http://thumbs.buscape.com.br/suplemento/esportivo-optimum-nutrition-bcaa-1000-pote-400-capsulas_300x300-PU67748_1.jpg
+                                             " />
+                                            <h4>BCAA</h4>
+                                        </div>
+                                    </div>
+                                </div>
                             </section>
-
                             <section className='pageSection' id='homeLists'>
-                            </section>
+                                <h3>LISTAS MAIS POPULARES</h3>
+                                    <div className='row'>
+                                        <div className='col-xs-12'>
+                                            <ul id='ulHome'>
+                                                <li className='row'>
+                                                    <span className='col-xs-7 listTitle'>
+                                                    Começando a Malhar
+                                                    <p className='listTax'>em Suplementos</p>
+                                                    </span>
+
+                                                    <span className='col-xs-3 listBy top-xs'>
+                                                    Criada por
+                                                        <p className='listByName'>Pato von Duck</p>
+                                                    </span>
+
+                                                    <span className='col-xs-2'>
+                                                        <span className='starCount'> 213 <Icon className='starCountIcon' icon="action-stars" /></span>
+                                                    </span>
+
+                                                </li>
+
+                                                <li className='row'>
+                                                    <span className='col-xs-7 listTitle'>
+                                                    Começando a Malhar
+                                                        <p className='listTax'>em Suplementos</p>
+                                                    </span>
+
+                                                    <span className='col-xs-3 listBy top-xs'>
+                                                    Criada por
+                                                        <p className='listByName'>Pato von Duck</p>
+                                                    </span>
+
+                                                    <span className='col-xs-2'>
+                                                        <span className='starCount'> 213 <Icon className='starCountIcon' icon="action-stars" /></span>
+                                                    </span>
+
+                                                </li>
+
+                                                <li className='row'>
+                                                    <span className='col-xs-7 listTitle'>
+                                                    Começando a Malhar
+                                                        <p className='listTax'>em Suplementos</p>
+                                                    </span>
+
+                                                    <span className='col-xs-3 listBy top-xs'>
+                                                    Criada por
+                                                        <p className='listByName'>Pato von Duck</p>
+                                                    </span>
+
+                                                    <span className='col-xs-2'>
+                                                        <span className='starCount'> 213 <Icon className='starCountIcon' icon="action-stars" /></span>
+                                                    </span>
+
+                                                </li>
+
+                                                <li className='row'>
+                                                    <span className='col-xs-7 listTitle'>
+                                                    Começando a Malhar
+                                                        <p className='listTax'>em Suplementos</p>
+                                                    </span>
+
+                                                    <span className='col-xs-3 listBy top-xs'>
+                                                    Criada por
+                                                        <p className='listByName'>Pato von Duck</p>
+                                                    </span>
+
+                                                    <span className='col-xs-2'>
+                                                        <span className='starCount'> 213 <Icon className='starCountIcon' icon="action-stars" /></span>
+                                                    </span>
+
+                                                </li>
+
+                                                <li className='row'>
+                                                    <span className='col-xs-7 listTitle'>
+                                                    Começando a Malhar
+                                                        <p className='listTax'>em Suplementos</p>
+                                                    </span>
+
+                                                    <span className='col-xs-3 listBy top-xs'>
+                                                    Criada por
+                                                        <p className='listByName'>Pato von Duck</p>
+                                                    </span>
+
+                                                    <span className='col-xs-2'>
+                                                        <span className='starCount'> 213 <Icon className='starCountIcon' icon="action-stars" /></span>
+                                                    </span>
+
+                                                </li>
+
+                                                <li className='row'>
+                                                    <span className='col-xs-12 center-xs' id='createList'>+ CRIE SUA LISTA</span>
+                                                </li>
+
+                                            </ul>
+                                         </div>
+                                    </div>
+                                </section>
                         </div>
                     </div>
                 </div>

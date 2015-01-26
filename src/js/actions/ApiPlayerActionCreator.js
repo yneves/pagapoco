@@ -16,6 +16,7 @@ PlayerServerActionCreator = {
         }
 
         // the server receive the product update event but hasn't returned anything yet
+        console.log(playerData);
         if(!playerData) {
             LoadActionCreator.load('PLAYER_LOGIN_START', true);
             Dispatcher.handleServerAction({

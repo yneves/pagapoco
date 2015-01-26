@@ -9,8 +9,14 @@ _routes = [
     {
         name: 'home',
         method: 'GET',
-        type: 'home',
-        path: '/home'
+        type: 'products',
+        path: '/'
+    },
+    {
+        name: 'main',
+        method: 'GET',
+        type: 'main',
+        path: '/main'
     },
     {
         name: 'products',

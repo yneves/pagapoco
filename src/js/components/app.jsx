@@ -5,9 +5,9 @@
 var React = require('react'),
     Store = require('../components/pages/store.jsx'),
     Sobre = require('../components/pages/sobre.jsx'),
+    Home = require('../components/pages/home.jsx'),
     Loading = require('../components/common/loading.jsx'),
     Register = require('../components/pages/register.jsx'),
-    Home = require('../components/pages/home.jsx'),
     NotFound = require('../components/pages/notfound.jsx'),
     playerActions = require('../actions/PlayerActionCreators'),
     routeAction = require('../actions/RouteActionCreators'),
@@ -31,15 +31,15 @@ Application =
         },
 
         getDefaultProps: function () {
-           return {
-               route: {}
-           };
+            return {
+                route: {}
+            };
         },
 
         getInitialState: function () {
-           return {
-               route: this.props.route || routeStore.getRoute()
-           };
+            return {
+                route: this.props.route || routeStore.getRoute()
+            };
         },
 
         componentWillMount: function () {
@@ -52,9 +52,9 @@ Application =
             if (window && "onpopstate" in window) {
                 // window.onpopstate fires an event everytime the active history
                 // entry changes between two history entries for the same document
-               window.onpopstate = function(event) {
-                   routeAction.setRoute(window.location.pathname, event.state);
-               };
+                window.onpopstate = function(event) {
+                    routeAction.setRoute(window.location.pathname, event.state);
+                };
             }
         },
 
@@ -67,16 +67,17 @@ Application =
             var componentToLoad;
             if (this.state.route.status == 'success') {
                 switch(this.state.route.link.type) {
+                    case 'home':
                     case 'product':
                     case 'products':
                     case 'taxonomy':
                         componentToLoad = <Store route={this.state.route} />;
                         break;
-                    case 'home':
-                        componentToLoad = <Home />;
-                        break;
                     case 'register':
                         componentToLoad = <Register route={this.state.route} />;
+                        break;
+                    case 'main':
+                        componentToLoad = <Home />;
                         break;
                     default:
                         componentToLoad = <Store route={this.state.route} />;
@@ -96,9 +97,9 @@ Application =
 
         _onChange: function () {
             this.setState({
-               route: routeStore.getRoute()
+                route: routeStore.getRoute()
             });
         }
-});
+    });
 
 module.exports = Application;
