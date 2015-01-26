@@ -148,7 +148,6 @@ ProductServerActionCreator = {
 
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
-            debug('setAllProductsPriceHistory - Started syncing with server - no data yet');
             LoadActionCreator.load('PRODUCT_PRICE_HISTORY_START', true);
             Dispatcher.handleServerAction({
                 type: productAction.PRODUCT_PRICE_HISTORY_START,

@@ -22,10 +22,6 @@ module.exports =
             };
         },
 
-        componentWillUnmount: function () {
-            debug('unmounting products.jsx');
-        },
-
         render: function () {
             var productGrid,
                 sortBar,
@@ -34,7 +30,7 @@ module.exports =
             masonryOptions = {
                 transitionDuration: 0
             };
-            
+
             if (this.props.products.map) {
                 productGrid = this.props.products.map(function(product) {
                     return (
