@@ -126,7 +126,7 @@ PlayerApi = {
             // we have a player now get it's data
             PlayerApi.loadPlayerProductList(player.get('uid'));
         } else {
-            ApiPlayerActionCreator.login(null);
+            ApiPlayerActionCreator.login({});
         }
     },
 
