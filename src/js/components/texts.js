@@ -9,7 +9,7 @@ module.exports = {
     facebook: 'Facebook',
 
     home: 'Início',
-    wish: 'Adiciona à lista',
+    wish: 'Adicionar à lista',
     share: 'Recomendar',
     supplier: 'Fabricante',
     size: 'Tamanho',

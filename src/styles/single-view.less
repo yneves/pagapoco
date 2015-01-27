@@ -2,10 +2,33 @@
 @searchHeight: 100px;
 @pageWidth: 1024px;
 @priceWidth: 300px;
-@imageWidth: 200px;
-@imageHeight: 300px;
+@imageWidth: 300px;
+@imageHeight: 400px;
 @offersWidth: 400px;
 @alertWidth: 300px;
+
+@wishFontSize: 18px;
+@wishFontColor: white;
+@wishBackgroundColor: green;
+
+@shareFontSize: 12px;
+@shareFontColor: white;
+@shareBackgroundColor: blue;
+
+@titleFontSize: 30px;
+@titleFontColor: #444;
+
+@pathFontSize: 16px;
+@pathFontColor: #999;
+
+@priceTagTitleFontColor: #444;
+@priceTagTitleFontSize: 16px;
+@priceTagCheapestFontColor: red;
+@priceTagCheapestFontSize: 20px;
+@priceTagButtonBackgroundColor: red;
+@priceTagButtonFontColor: yellow;
+@priceTagButtonFontSize: 16px;
+
 
 .product-single-view {
     max-width: @pageWidth;
@@ -16,20 +39,35 @@
     .product-header {
         position: relative;
 
+        // Title area, name and path.
         .product-title {
             width: 100%;
-            padding-right: @priceWidth;
+            padding: 0px @priceWidth 20px 20px;
             
+            // Product name.
             h1 {
-                font-size: 34px;
+                margin: 0px;
+                padding: 0px;
+                color: @titleFontColor;
+                font-size: @titleFontSize;
+                
             }
             
+            // Navigation path.
             h2 {
-                font-size: 14px;
+                margin: 0px;
+                padding: 0px;
+                color: @pathFontColor;
+                font-size: @pathFontSize;
                 
                 .breadcrumbs {
                     div {
-                        display: inline-block;        
+                        display: inline-block;
+                        
+                        span {
+                            display: inline-block;
+                            margin: 0px 3px;
+                        }
                     }
                 }                
             }            
@@ -40,6 +78,38 @@
             top: 0px;
             right: 0px;
             width: @priceWidth;
+            padding: 0px 20px;
+            
+            .price-tag {
+            
+                // Title.
+                h3 {
+                    margin: 0px;
+                    padding: 0px;
+                    font-size: @priceTagTitleFontSize;
+                    color: @priceTagTitleFontColor;
+                }
+            
+                // Cheapest offer.
+                strong {
+                    color: @priceTagCheapestFontColor;
+                    font-size: @priceTagCheapestFontSize;
+                    display: inline-block;
+                    margin-right: 5px;
+                }
+            
+                // View history button.
+                a {
+                    display: block;
+                    font-size: @priceTagButtonFontSize;
+                    font-weight: bold;
+                    color: @priceTagButtonFontColor;
+                    background-color: @priceTagButtonBackgroundColor;
+                    text-decoration: none;
+                    text-align: center;
+                    padding: 10px;
+                }
+            }
         }
     }
     
@@ -47,12 +117,51 @@
         position: relative;
         min-height: @imageHeight;
     
+        // Product image and wish/share buttons.
         .product-image {
             width: @imageWidth;
             height: @imageHeight;
             position: absolute;
             top: 0px;
             left: 0px;
+            padding: 20px;
+                        
+            // Disables mui button styles.
+            .mui-raised-button {
+                display: block;
+                box-shadow: none;
+                
+                .mui-paper-container {
+                    box-shadow: none;
+                    
+                    button {
+                        background-color: transparent;
+                        
+                        .mui-raised-button-label {
+                            color: inherit;
+                            font-size: inherit;
+                        }
+                    }
+                }
+            }
+            
+            // Wish button.
+            .wish {
+                width: 100%;
+                color: @wishFontColor;
+                background-color: @wishBackgroundColor;
+                margin: 10px 0px;
+                padding: 10px;
+                font-size: @wishFontSize;
+            }
+            
+            // Share button.
+            .share {
+                width: 100%;
+                color: @shareFontColor;
+                background-color: @shareBackgroundColor;
+                font-size: @shareFontSize;
+            }
         }
         
         .product-description {
@@ -66,6 +175,10 @@
             position: absolute;
             top: 0px;
             right: 0px;
+            
+            ul {
+                list-style-type: none;
+            }
         }
     }
     
