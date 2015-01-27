@@ -37,12 +37,10 @@ function resetCurrentProduct() {
 
 function handleProducts() {
     if (!Object.getOwnPropertyNames(_currentCatalog).length || _currentCatalog.length < 30) {
-        debug('handleProducts - fetch products from server');
         // there are no products, request it through the api
         api.product.getProducts(30);
         _isLoading = true;
     } else {
-        debug('handleProducts - do nothing');
         _isLoading = false;
     }
 }

@@ -175,7 +175,6 @@ PlayerApi = {
                 PlayerList.create(data);
                 ApiPlayerActionCreator.setPlayerProductList(PlayerList.collection);
             } else {
-                debug('No player list data found');
                 ApiPlayerActionCreator.setPlayerProductList({});
             }
         }, 'uid');

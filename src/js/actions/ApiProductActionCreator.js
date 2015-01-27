@@ -176,7 +176,6 @@ ProductServerActionCreator = {
 
         // if there is no product set yet (nothing returned from the server)
         if (!filters) {
-            debug('setFilters - Started syncing with server - no data yet');
             LoadActionCreator.load('FILTER_SET_START', true);
             Dispatcher.handleServerAction({
                 type: filterAction.FILTER_SET_START,

@@ -3,11 +3,10 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     Dispatcher = require('../dispatcher/AppDispatcher'),
     api = require('../api/AppApi'),
     debug = require('debug')('FilterActionCreator.js'),
-    productAction = ActionTypes.Product,
     filterAction = ActionTypes.Filter,
-    ProductActionCreator;
+    FilterActionCreator;
 
-ProductActionCreator = {
+FilterActionCreator = {
     // get filters list
     getFilters: function () {
         Dispatcher.handleViewAction({
@@ -16,29 +15,29 @@ ProductActionCreator = {
         });
     },
     // called when the user type on search input field
-    searchProducts: function (searchTerm) {
-        debug('searchProducts - dispatch SEARCH_PRODUCTS');
+    setSearch: function (searchTerm) {
+        debug('setSearch - dispatch SEARCH_PRODUCTS');
         Dispatcher.handleViewAction({
-            type : productAction.SEARCH_PRODUCTS,
+            type : filterAction.SET_SEARCH,
             data : { query : searchTerm }
         });
     },
     // filter products
-    filterProducts: function (filter) {
-        debug('filterProducts - dispatch FILTER_PRODUCTS');
+    setFilters: function (filter) {
+        debug('setFilters - dispatch FILTER_PRODUCTS');
         Dispatcher.handleViewAction({
-            type : productAction.FILTER_PRODUCTS,
+            type : filterAction.SET_FILTER,
             data : { filter: filter }
         });
     },
     // called when more products are needed from the database
-    loadMoreProducts: function () {
-        debug('loadMoreProducts - dispatch LOAD_MORE');
+    setLoadMore: function () {
+        debug('setLoadMore - dispatch LOAD_MORE');
         Dispatcher.handleViewAction({
-            type: productAction.LOAD_MORE,
+            type: filterAction.LOAD_MORE,
             data: null
         });
     }
 };
 
-module.exports = ProductActionCreator;
+module.exports = FilterActionCreator;

@@ -1,5 +1,6 @@
 var React = require('react'),
     ProductAction = require('../../actions/ProductActionCreators'),
+    FilterAction = require('../../actions/FilterActionCreator'),
     ProductStore = require('../../stores/ProductStore'),
     FilterStore = require('../../stores/FilterStore'),
     Header = require('../header/header.jsx'),
@@ -110,17 +111,17 @@ module.exports =
                 switch (props.route.link.type) {
                     case 'products':
                         ProductAction.getProducts();
-                        ProductAction.getFilters();
+                        FilterAction.getFilters();
                         break;
                     case 'product':
                         ProductAction.getCurrentProduct(props.route.link.slug);
                         break;
                     case 'taxonomy':
-                        ProductAction.getFilters();
-                        ProductAction.filterProducts(props.route.link.name);
+                        FilterAction.getFilters();
+                        FilterAction.setFilters(props.route.link.name);
                         break;
                     default:
-                        ProductAction.getFilters();
+                        FilterAction.getFilters();
                         ProductAction.getProducts();
                         break;
                 }

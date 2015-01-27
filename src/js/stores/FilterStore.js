@@ -119,9 +119,9 @@ FilterStore = Store.extend({
 });
 
 FilterInstance = new FilterStore(
-    productAction.SEARCH_PRODUCTS, handleSearch,
-    productAction.FILTER_PRODUCTS, handleFilter,
-    productAction.LOAD_MORE, handleLoadMore,
+    filterAction.SET_SEARCH, handleSearch,
+    filterAction.SET_FILTER, handleFilter,
+    filterAction.LOAD_MORE, handleLoadMore,
     filterAction.GET_FILTERS, handleFilters,
     filterAction.FILTER_SET_START, updateFilters,
     filterAction.FILTER_SET_ERROR, updateFiltersError,

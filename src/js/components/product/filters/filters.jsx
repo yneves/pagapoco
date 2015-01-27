@@ -1,6 +1,6 @@
 var React = require('react'),
     Checkbox = require('material-ui').Checkbox,
-    ProductAction = require('../../actions/ProductActionCreators'),
+    FilterAction = require('../../actions/FilterActionCreator'),
     debug = require('debug')('filters.jsx');
 
 module.exports =
@@ -65,6 +65,6 @@ module.exports =
         _handleOnChange: function(id) {
             debug('_handleOnChange');
             debug(id);
-            ProductAction.filterProducts(id);
+            FilterAction.setFilters(id);
         }
     });
