@@ -4,19 +4,15 @@
  */
 
 var db = require('./FireApi.js'),
-    ElasticSearchDSL = require('../utils/ElasticSearchDSL'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
     Product = require('../data/Product'),
-    Supplier = require('../data/Supplier'),
     ProductPriceHistory = require('../data/ProductPriceHistory'),
     Transmuter = require('transmuter'),
     debug = require('debug')('ProductApi.js'),
     ProductApi;
 
 ProductApi = {
-
     // get products from database
-    // uses setProducts
     getProducts: function (total) {
         total = total || 30;
         // start fetching, fire event
@@ -43,7 +39,6 @@ ProductApi = {
             }
         });
     },
-
     // get a single product from database
     getCurrentProduct: function (slug) {
         var currentProduct;
@@ -67,7 +62,7 @@ ProductApi = {
             }
         });
     },
-
+    // just fetch some product price history from the database
     getProductPriceHistory: function (productId) {
         var currentProductPriceHistory;
         currentProductPriceHistory = ProductPriceHistory.collection.findWhere({id:productId});
@@ -87,12 +82,32 @@ ProductApi = {
             });
         }
     },
-
+    // sync product price history with server
     syncProductPriceHistory: function (productPriceHistoryId) {
         debug('syncProductPriceHistory');
     },
+    // sync product with serer
+    syncProduct: function (productId) {
+        var model;
+        model = Product.collection.get(productId);
+
+        if (model) {
+            ApiProductActionCreator.saveProducts();
+            async.series([
+                function syncProduct(callback) {
+                    // TODO some firebase endpoint should go here
+                }
+            ], function (err, results) {
+                if (err instanceof Error) {
+                    ApiProductActionCreator.saveProducts(err);
+                } else {
+                    ApiProductActionCreator.saveProducts(this.id);
+                }
+            });
+        }
+    },
     // used for loadMore
-    updateProducts: function (search, filters, loadMore) {
+    filterProducts: function (search, filters, loadMore) {
 
         var options,
             filtersLength,
@@ -171,51 +186,6 @@ ProductApi = {
                 } else {
                     debug('Error: data is not an instance of Array');
                     ApiProductActionCreator.setProducts(new Error('Invalid type: Product data should be of type Array'));
-                }
-            }
-        });
-    },
-    syncProduct: function (productId) {
-        var model;
-        model = Product.collection.get(productId);
-
-        if (model) {
-            ApiProductActionCreator.saveProducts();
-            async.series([
-                function syncProduct(callback) {
-                    // TODO some firebase endpoint should go here
-                }
-            ], function (err, results) {
-                if (err instanceof Error) {
-                    ApiProductActionCreator.saveProducts(err);
-                } else {
-                    ApiProductActionCreator.saveProducts(this.id);
-                }
-            });
-        }
-    },
-    getFilters: function () {
-
-        // start fetching, fire event
-        ApiProductActionCreator.setFilters(null);
-        db.suppliers.getAll(null, function (data) {
-            // if there is an error let's dispatch an event and end here
-            if (data instanceof Error) {
-                ApiProductActionCreator.setFilters(data);
-                debug('Error trying to get filters');
-            } else {
-                if (data instanceof Array) {
-                    if (data.length) {
-                        // we've got data, let's set it
-                        Supplier.create(data);
-                        ApiProductActionCreator.setFilters(Supplier.collection);
-                    } else {
-                        debug('No filters received');
-                        ApiProductActionCreator.setFilters({});
-                    }
-                } else {
-                    debug('Error: data is not an instance of Array');
-                    ApiProductActionCreator.setFilters(new Error('Invalid type: Filter data should be of type Array'));
                 }
             }
         });

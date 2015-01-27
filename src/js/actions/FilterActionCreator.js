@@ -16,7 +16,7 @@ FilterActionCreator = {
     },
     // called when the user type on search input field
     setSearch: function (searchTerm) {
-        debug('setSearch - dispatch SEARCH_PRODUCTS');
+        debug('setSearch - dispatch SET_SEARCH');
         Dispatcher.handleViewAction({
             type : filterAction.SET_SEARCH,
             data : { query : searchTerm }
@@ -24,7 +24,7 @@ FilterActionCreator = {
     },
     // filter products
     setFilters: function (filter) {
-        debug('setFilters - dispatch FILTER_PRODUCTS');
+        debug('setFilters - dispatch SET_FILTER');
         Dispatcher.handleViewAction({
             type : filterAction.SET_FILTER,
             data : { filter: filter }

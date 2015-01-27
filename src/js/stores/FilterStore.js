@@ -24,7 +24,7 @@ function handleFilters() {
     debug('handle filters');
 
     if (!Object.getOwnPropertyNames(_filters.supplier).length) {
-        api.product.getFilters();
+        api.filter.getFilters();
     }
 
     if (!Object.getOwnPropertyNames(_filters.priceRange).length) {
@@ -57,7 +57,7 @@ function handleSearch(data) {
     if (data && data.query) {
         _searchState = data.query;
         // update the products from the server based on the new data
-        api.product.updateProducts(_searchState, _filtersState);
+        api.product.filterProducts(_searchState, _filtersState);
     } else {
         _searchState = '';
     }
@@ -74,7 +74,7 @@ function handleFilter(data) {
             delete _filterState[data.filter];
         }
         // update the products from the server based on the new data
-        api.product.updateProducts(_searchState, _filtersState);
+        api.product.filterProducts(_searchState, _filtersState);
     }
 
     if (Object.getOwnPropertyNames(_filtersState).length) {
@@ -85,7 +85,7 @@ function handleFilter(data) {
 function handleLoadMore(data) {
     debug('handle load more products');
     _loadMoreSum += 1;
-    api.product.updateProducts(_searchState, _filtersState, _loadMoreSum);
+    api.product.filterProducts(_searchState, _filtersState, _loadMoreSum);
 }
 
 FilterStore = Store.extend({
