@@ -70,7 +70,7 @@ module.exports =
                         </div>
 
                         <div className="product-description">
-                            <p>{product.get('description')}</p>
+                            <p>{Texts.lorem}</p>
                             <dl>
                                 <dt>{Texts.supplier}</dt>
                                 <dd>{product.get('supplier')}</dd>

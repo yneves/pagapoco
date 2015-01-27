@@ -11,8 +11,8 @@ module.exports = {
     home: 'Início',
     wish: 'Adicionar à lista',
     share: 'Recomendar',
-    supplier: 'Fabricante',
-    size: 'Tamanho',
+    supplier: 'Fabricante:',
+    size: 'Tamanho:',
     
     gridView: {
         from: 'A partir de',
@@ -31,7 +31,11 @@ module.exports = {
 
     storeList: {
       title: 'Lojas',
-      view: 'Ver'
+      view: 'Ver',
+      parcels: {
+          one: 'à vista',
+          many: 'x de'
+      }
     },
 
     priceTag: {
@@ -63,6 +67,8 @@ module.exports = {
 
     category: {
       suplemento: 'Suplementos'
-    }
+    },
+  
+    lorem: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.'
 
 };

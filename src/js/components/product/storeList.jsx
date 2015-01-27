@@ -20,14 +20,15 @@ module.exports =
             var list;
             var offersBySeller = this.props.product.get('offers_sellers');
             list = offersBySeller.map( function (sellerData) {
+                var price = sellerData.price.value.toFixed(2).replace(/\./,',');
                 var link = sellerData.links.length === 0 ? null : (
                     <a href={sellerData.links[0].url} target="_blank">{Texts.storeList.view}</a>
                 );
                 return (
                     <li key={sellerData.id}>
                         <span className="store-list-seller">{sellerData.seller.sellername}</span>
-                        <strong className="store-list-price">{Texts.cs} {sellerData.price.value}</strong>
-                        <span className="store-list-parcel"></span>
+                        <strong className="store-list-price">{Texts.cs} {price}</strong>
+                        <span className="store-list-parcel">{Texts.storeList.parcels.one}</span>
                         {link}
                     </li>
                 );

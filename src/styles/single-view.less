@@ -1,6 +1,6 @@
 
 @searchHeight: 100px;
-@pageWidth: 1024px;
+@pageWidth: 1130px;
 @priceWidth: 300px;
 @imageWidth: 300px;
 @imageHeight: 400px;
@@ -23,11 +23,32 @@
 
 @priceTagTitleFontColor: #444;
 @priceTagTitleFontSize: 16px;
+
 @priceTagCheapestFontColor: red;
 @priceTagCheapestFontSize: 20px;
+
 @priceTagButtonBackgroundColor: red;
 @priceTagButtonFontColor: yellow;
 @priceTagButtonFontSize: 16px;
+
+@descriptionFontSize: 14px;
+@descriptionFontColor: #444;
+
+@infoFontSize: 14px;
+@infoFontColor: #444;
+
+@offersViewBackgroundColor: cyan;
+@offersViewFontSize: 14px;
+@offersViewFontColor: white;
+
+@offersPriceFontColor: red;
+@offersPriceFontSize: 20px;
+
+@offersSellerFontColor: #444;
+@offersSellerFontSize: 16px;
+
+@offersParcelsFontColor: #444;
+@offersParcelsFontSize: 14px;
 
 
 .product-single-view {
@@ -35,7 +56,7 @@
     margin: auto;
     padding-top: @searchHeight;
     border: 1px solid red;
-    
+
     .product-header {
         position: relative;
 
@@ -43,45 +64,46 @@
         .product-title {
             width: 100%;
             padding: 0px @priceWidth 20px 20px;
-            
+
             // Product name.
             h1 {
                 margin: 0px;
                 padding: 0px;
                 color: @titleFontColor;
                 font-size: @titleFontSize;
-                
+
             }
-            
+
             // Navigation path.
             h2 {
                 margin: 0px;
                 padding: 0px;
                 color: @pathFontColor;
                 font-size: @pathFontSize;
-                
+
                 .breadcrumbs {
                     div {
                         display: inline-block;
-                        
+
                         span {
                             display: inline-block;
                             margin: 0px 3px;
                         }
                     }
-                }                
-            }            
+                }
+            }
         }
-        
+
+        // Price area.
         .product-price {
             position: absolute;
             top: 0px;
             right: 0px;
             width: @priceWidth;
             padding: 0px 20px;
-            
+
             .price-tag {
-            
+
                 // Title.
                 h3 {
                     margin: 0px;
@@ -89,7 +111,7 @@
                     font-size: @priceTagTitleFontSize;
                     color: @priceTagTitleFontColor;
                 }
-            
+
                 // Cheapest offer.
                 strong {
                     color: @priceTagCheapestFontColor;
@@ -97,7 +119,7 @@
                     display: inline-block;
                     margin-right: 5px;
                 }
-            
+
                 // View history button.
                 a {
                     display: block;
@@ -112,11 +134,12 @@
             }
         }
     }
-    
+
+    // First row of content.
     .product-body-one {
         position: relative;
         min-height: @imageHeight;
-    
+
         // Product image and wish/share buttons.
         .product-image {
             width: @imageWidth;
@@ -125,18 +148,18 @@
             top: 0px;
             left: 0px;
             padding: 20px;
-                        
+
             // Disables mui button styles.
             .mui-raised-button {
                 display: block;
                 box-shadow: none;
-                
+
                 .mui-paper-container {
                     box-shadow: none;
-                    
+
                     button {
                         background-color: transparent;
-                        
+
                         .mui-raised-button-label {
                             color: inherit;
                             font-size: inherit;
@@ -144,7 +167,7 @@
                     }
                 }
             }
-            
+
             // Wish button.
             .wish {
                 width: 100%;
@@ -154,7 +177,7 @@
                 padding: 10px;
                 font-size: @wishFontSize;
             }
-            
+
             // Share button.
             .share {
                 width: 100%;
@@ -163,38 +186,120 @@
                 font-size: @shareFontSize;
             }
         }
-        
+
+        // Description area
         .product-description {
             padding-left: @imageWidth;
             padding-right: @offersWidth;
             width: 100%;
+
+            // Description text.
+            p {
+                font-size: @descriptionFontSize;
+                color: @descriptionFontColor;
+            }
+
+            // Info.
+            dl {
+                font-size: @infoFontSize;
+                color: @infoFontColor;
+
+                // Info title.
+                dt {
+                    float: left;
+                    clear: both;
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
+
+                // Info content.
+                dd {
+                    float: left;
+                }
+            }
         }
-        
+
+        // Offers list.
         .product-offers {
             width: @offersWidth;
             position: absolute;
             top: 0px;
             right: 0px;
-            
+            padding: 0px 20px;
+
             ul {
+                margin: 0px;
+                padding: 0px;
                 list-style-type: none;
+                
+                li {
+                    margin: 0px;
+                    padding: 10px 0px;
+                    border-top: 1px solid #999;
+                    
+                    &:first-child {
+                        border-top: none;
+                    }
+
+                    // Seller name.
+                    .store-list-seller {
+                        color: @offersSellerFontColor;
+                        font-size: @offersSellerFontSize;
+                        display: inline-block;
+                        margin-right: 5px;
+                        width: 100px;
+                        white-space: nowrap;
+                        overflow: hidden;
+                        text-overflow: ellipsis;
+                    }
+
+                    // Price.
+                    strong {
+                        color: @offersPriceFontColor;
+                        font-size: @offersPriceFontSize;
+                        display: inline-block;
+                        margin-right: 5px;
+                        width: 100px;
+                    }
+                    
+                    // Parcels.
+                    .store-list-parcel {
+                        color: @offersParcelsFontColor;
+                        font-size: @offersParcelsFontSize;
+                        display: inline-block;
+                        margin-right: 5px;
+                        width: 63px;
+                        text-align: center;
+                    }
+
+                    // View link.
+                    a {
+                        display: inline-block;
+                        padding: 5px 30px;
+                        background-color: @offersViewBackgroundColor;
+                        font-size: @offersViewFontSize;
+                        color: @offersViewFontColor;
+                        text-decoration: none;
+                        font-weight: bold;
+                    }
+                }
             }
         }
     }
-    
+
     .product-body-two {
         position: relative;
-    
+
         .product-tabset {
             width: 100%;
             padding-right: @alertWidth;
         }
-        
+
         .product-alert {
             position: absolute;
             top: 0px;
             right: 0px;
             width: @alertWidth;
-        }        
+        }
     }
 }
