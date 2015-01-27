@@ -31,6 +31,7 @@ refs = {};
 
 // extend the Firebase prototype adding some useful methods for pagapo.co project
 lodash.objects.assign(Firebase.prototype, {
+
     /**
      * Get all data from a certain root child of firebase
      * return Array (empty or not) or Error Object
@@ -67,7 +68,7 @@ lodash.objects.assign(Firebase.prototype, {
                     // object need this for correct data manipulation
                     // also we run pareInt because integer type data arrive from DB
                     // as a string, so we need to perform this check
-                    childData.id = parseInt(childSnapshot.key()) || childSnapshot.key();
+                    childData.id = isNaN(childSnapshot.key()) ? childSnapshot.key() : parseInt(childSnapshot.key());
                     // add the product to the list to be added to the collection
                     data.push(childData);
                 });
@@ -296,7 +297,7 @@ lodash.objects.assign(Firebase.prototype, {
                         // object need this for correct data manipulation
                         // also we run pareInt because integer type data arrive from DB
                         // as a string, so we need to perform this check
-                        childData.id = parseInt(childSnapshot._id) || childSnapshot._id;
+                        childData.id = isNaN(childSnapshot._id) ? childSnapshot._id : parseInt(childSnapshot._id);
                         // add the product to the list to be added to the collection
 
                         data.push(childData);
@@ -343,7 +344,7 @@ lodash.objects.assign(Firebase.prototype, {
                 value = snapshot.val();
                 data = lodash.objects.values(value)[0];
                 data.id = lodash.objects.keys(value)[0];
-                data.id = parseInt(data.id) || data.id;
+                data.id = isNaN(data.id) ? data.id : parseInt(data.id);
             } else {
                 data = null;
             }
@@ -385,7 +386,7 @@ lodash.objects.assign(Firebase.prototype, {
                 // object need this for correct data manipulation
                 // also we run pareInt because integer type data arrive from DB
                 // as a string, so we need to perform this check
-                data[idAttribute] = parseInt(snapshot.key()) || snapshot.key();
+                data[idAttribute] = isNaN(snapshot.key()) ? snapshot.key() : parseInt(snapshot.key());
             } else {
                 data = null;
             }

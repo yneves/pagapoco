@@ -20,7 +20,8 @@ _searchState = '';  // should hold the current query the user are trying to perf
 _filtersState = {}; // should hold the current state of filters, selected or not, etc
 _loadMoreSum = 0;   // a counter of how many times the loadMore was executed
 
-function handleFilters() {
+// handle the site getting the list of views
+function viewHandleFilters() {
     debug('handle filters');
 
     if (!Object.getOwnPropertyNames(_filters.supplier).length) {
@@ -42,17 +43,8 @@ function handleFilters() {
 
 }
 
-function updateFiltersError(data) {
-    debug('updateFiltersError');
-    debug(data);
-}
 
-function updateFilters(data) {
-    debug('should receive a collection of filters of some type');
-    debug(data);
-}
-
-function handleSearch(data) {
+function viewHandleSearch(data) {
     debug('handling search');
     if (data && data.query) {
         _searchState = data.query;
@@ -63,7 +55,8 @@ function handleSearch(data) {
     }
 }
 
-function handleFilter(data) {
+// handle the filter that was selected
+function viewHandleFilter(data) {
     debug('handleFilter');
     if (data && data.filter) {
         // data.filter should be the filter slug/id
@@ -82,10 +75,28 @@ function handleFilter(data) {
     }
 }
 
-function handleLoadMore(data) {
+function viewHandleLoadMore(data) {
     debug('handle load more products');
     _loadMoreSum += 1;
     api.product.filterProducts(_searchState, _filtersState, _loadMoreSum);
+}
+
+// handle server action
+function apiHandleFiltersError(data) {
+    debug('apiHandleFiltersError');
+    debug(data);
+}
+
+function apiHandleFilters(data) {
+    debug('should receive a collection of filters of some type');
+    // TODO we have to get which filters are being sent
+    // for now we just clone the received data on _filters property
+    if (data && data.length) {
+        _filters.supplier = data.clone();    
+    } else {
+        _filters.supplier = {};
+    }
+
 }
 
 FilterStore = Store.extend({
@@ -119,13 +130,15 @@ FilterStore = Store.extend({
 });
 
 FilterInstance = new FilterStore(
-    filterAction.SET_SEARCH, handleSearch,
-    filterAction.SET_FILTER, handleFilter,
-    filterAction.LOAD_MORE, handleLoadMore,
-    filterAction.GET_FILTERS, handleFilters,
-    filterAction.FILTER_SET_START, updateFilters,
-    filterAction.FILTER_SET_ERROR, updateFiltersError,
-    filterAction.FILTER_SET_SUCCESS, updateFilters
+    // view actions
+    filterAction.SET_SEARCH, viewHandleSearch,
+    filterAction.SET_FILTER, viewHandleFilter,
+    filterAction.LOAD_MORE, viewHandleLoadMore,
+    filterAction.GET_FILTERS, viewHandleFilters,
+    // server actions
+    filterAction.FILTER_SET_START, apiHandleFilters,
+    filterAction.FILTER_SET_ERROR, apiHandleFiltersError,
+    filterAction.FILTER_SET_SUCCESS, apiHandleFilters
 );
 
 

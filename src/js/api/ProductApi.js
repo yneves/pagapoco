@@ -4,6 +4,7 @@
  */
 
 var db = require('./FireApi.js'),
+    ElasticSearchDSL = require('../utils/ElasticSearchDSL'),
     ApiProductActionCreator = require('../actions/ApiProductActionCreator'),
     Product = require('../data/Product'),
     ProductPriceHistory = require('../data/ProductPriceHistory'),

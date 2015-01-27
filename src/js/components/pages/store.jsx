@@ -77,8 +77,8 @@ module.exports =
                 );
                 sidebar = (
                     <Sidebar style={sideStyle}>
-                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters).length) {
-                            <Filters suppliers={this.state.filters.suppliers} />
+                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
+                            <Filters supplier={this.state.filters.supplier} />
                         }
                     </Sidebar>
                 );
