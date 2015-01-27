@@ -6,7 +6,7 @@ var React = require('react'),
     Header = require('../header/header.jsx'),
     Products = require('../product/products.jsx'),
     ProductSingleView = require('../product/singleView.jsx'),
-    Filters = require('../product/filters.jsx'),
+    Filters = require('../product/filters/filters.jsx'),
     Sidebar = require('../sidebar/sidebar.jsx'),
     debug = require('debug')('store.jsx');
 

@@ -1,8 +1,8 @@
 
 var React = require('react'),
-    Texts = require('../texts'),
-    RouteAction = require('../../actions/RouteActionCreators'),
-    FilterAction = require('../../actions/FilterActionCreator');
+    Texts = require('../../texts'),
+    RouteAction = require('../../../actions/RouteActionCreators'),
+    FilterAction = require('../../../actions/FilterActionCreator');
 
 module.exports =
     React.createClass({

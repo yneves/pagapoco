@@ -1,6 +1,6 @@
 var React = require('react'),
     Checkbox = require('material-ui').Checkbox,
-    FilterAction = require('../../actions/FilterActionCreator'),
+    FilterAction = require('../../../actions/FilterActionCreator'),
     debug = require('debug')('filters.jsx');
 
 module.exports =
