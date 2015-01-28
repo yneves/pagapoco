@@ -79,9 +79,9 @@ module.exports =
                 );
                 sidebar = (
                     <Sidebar style={sideStyle}>
-                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
+                        //if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
                             <Filters current={this.state.currentFilters} supplier={this.state.filters.supplier} />
-                        }
+                        //}
                     </Sidebar>
                 );
             } else {
@@ -90,7 +90,7 @@ module.exports =
             }
 
             return (
-                <div className="page">
+                <div className="page-store">
                     <Header />
                     <div className="page-body">
                         <div className="page-sidebar">
