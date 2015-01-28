@@ -8,6 +8,7 @@ var keyMirror = require('keymirror'),
     RouteConstants = require('./RouteConstants'),
     ProductConstants = require('./ProductConstants'),
     LoadingConstants = require('./LoadingConstants'),
+    FilterConstants = require('./FilterConstants'),
     PlayerConstants = require('./PlayerConstants');
 
 
@@ -17,6 +18,7 @@ module.exports = {
         Route: keyMirror(RouteConstants),
         Product: keyMirror(ProductConstants),
         Loading: keyMirror(LoadingConstants),
+        Filter: keyMirror(FilterConstants),
         Player: keyMirror(PlayerConstants)
     },
 

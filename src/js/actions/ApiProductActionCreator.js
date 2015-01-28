@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     LoadActionCreator = require('./LoadActionCreators'),
     debug = require('debug')('ApiProductActionCreator.js'),
     productAction = ActionTypes.Product,
+    filterAction = ActionTypes.Filter,
     ProductServerActionCreator;
 
 ProductServerActionCreator = {
@@ -141,29 +142,28 @@ ProductServerActionCreator = {
     },
     // action that should be called by the API (server) after the retrieval of
     // product price history data
-    setAllProductsPriceHistory: function (products) {
+    setProductsPriceHistory: function (products) {
 
         products = products || null;
 
         // if there is no product set yet (nothing returned from the server)
         if (!products) {
-            debug('setAllProductsPriceHistory - Started syncing with server - no data yet');
-            LoadActionCreator.load('RECEIVE_PRODUCT_PRICE_HISTORY_START', true);
+            LoadActionCreator.load('PRODUCT_PRICE_HISTORY_START', true);
             Dispatcher.handleServerAction({
-                type: productAction.RECEIVE_PRODUCT_PRICE_HISTORY_START,
+                type: productAction.PRODUCT_PRICE_HISTORY_START,
                 data: null
             });
         } else {
             // if there was an error while trying to retrive the products
-            LoadActionCreator.loaded('RECEIVE_PRODUCT_PRICE_HISTORY_START', false);
+            LoadActionCreator.loaded('PRODUCT_PRICE_HISTORY_START', false);
             if (products instanceof Error) {
                 Dispatcher.handleServerAction({
-                    type: productAction.RECEIVE_PRODUCT_PRICE_HISTORY_ERROR,
+                    type: productAction.PRODUCT_PRICE_HISTORY_ERROR,
                     data: products
                 });
             } else { // everything went fine, dispatch the event with the product data
                 Dispatcher.handleServerAction({
-                    type: productAction.RECEIVE_PRODUCT_PRICE_HISTORY_SUCCESS,
+                    type: productAction.PRODUCT_PRICE_HISTORY_SUCCESS,
                     data: products
                 });
             }
