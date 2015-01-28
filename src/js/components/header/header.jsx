@@ -9,14 +9,16 @@ module.exports =
         render : function() {
             return(
                 <div id='header'>
-                    <div className='row' id='header-container'>
-                        <div className='col-lg-1' id='logoBlock'>
+                    <div className='row center-xs' id='header-container'>
+                        <div className='col-xs-1' id='logoBlock'>
                             <Link name="home">
                                 <img id='logoImg' src='../../assets/icons/logo-web.png'/>
                             </Link>
                         </div>
-                        <div className='col-lg-8'><Search /></div>
-                        <div className='col-lg-3'><LoginBox /></div>
+                        <div className='col-xs-9'><Search /></div>
+                        <div className='col-xs-2 logoLogin'>
+                            <span className='loginBox'><Icon className='loginIcon' icon="action-account-circle" /> Entrar / Registrar</span>
+                        </div>
                      </div>
 
                 <div className='colorbar'>
