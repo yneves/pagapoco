@@ -91,10 +91,10 @@ module.exports =
 
                         <div className="product-tabset">
                             <div className="product-tab-heading">
-                                <a href="#" onClick={this.showHistory}>
+                                <a href="#" className={this.state.tab === 'review' ? '' : 'selected'} onClick={this.showHistory}>
                                     {Texts.priceHistory.title}
                                 </a>
-                                <a href="#" onClick={this.showReview}>
+                                <a href="#" className={this.state.tab === 'review' ? 'selected' : ''} onClick={this.showReview}>
                                     {Texts.productReview.title}
                                 </a>
                             </div>

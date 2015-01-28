@@ -27,7 +27,7 @@ module.exports =
 
         changePrice: function (event) {
             this.setState({
-                price: this.refs.input.getDOMNode().value,
+                price: Number(this.refs.input.getDOMNode().value),
             });
         },
 
@@ -38,13 +38,16 @@ module.exports =
         },
 
         render: function () {
+            var price = this.state.price.toFixed(2).replace(/\./,',');
             return (
                 <form className="product-alert-form" onSubmit={this.submitAlert}>
                     <h3>{Texts.priceAlert.title}</h3>
-                    <strong>{Texts.cs} {this.state.price}</strong>
+                    <p>{Texts.priceAlert.text}</p>
+                    <strong>{Texts.cs} {price}</strong>
                     <input type="range"
                         min={this.state.min}
                         max={this.state.max}
+                        step="0.10"
                         value={this.state.price}
                         onChange={this.changePrice}
                         ref="input" />

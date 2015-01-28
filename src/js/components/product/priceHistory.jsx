@@ -13,10 +13,9 @@ module.exports =
 
         getDefaultProps: function () {
             return {
-                history: {},
                 chartist: {
-                    width: '500px',
-                    height: '340px',
+                    width: '700px',
+                    height: '400px',
                     low: 0,
                     chartPadding: 5,
                     showArea: true,

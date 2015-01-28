@@ -4,13 +4,8 @@
 @pageWidth: 1130px;
 @pageBackgroundColor: white;
 
-
 @imageWidth: 300px;
 @imageHeight: 400px;
-
-@alertWidth: 300px;
-
-
 
 @wishFontSize: 18px;
 @wishFontColor: white;
@@ -52,6 +47,22 @@
 @offersSellerFontSize: 16px;
 @offersParcelsFontColor: #444;
 @offersParcelsFontSize: 14px;
+
+@tabHeadingFontSize: 18px;
+@tabHeadingFontColor: #999;
+@tabHeadingActiveFontColor: #444;
+
+@alertWidth: 300px;
+@alertTitleFontSize: 20px;
+@alertTitleFontColor: red;
+@alertPriceFontSize: 40px;
+@alertPriceFontColor: red;
+@alertTextFontSize: 16px;
+@alertTextFontColor: #444;
+@alertSubmitFontSize: 16px;
+@alertSubmitFontColor: yellow;
+@alertSubmitBackgroundColor: red;
+
 
 
 .product-single-view {
@@ -138,10 +149,11 @@
         }
     }
 
-    // First row of content.
+    // First row of content containing image, description and offers.
     .product-body-one {
         position: relative;
         min-height: @imageHeight;
+        margin-top: 20px;
 
         // Product image and wish/share buttons.
         .product-image {
@@ -234,12 +246,12 @@
                 margin: 0px;
                 padding: 0px;
                 list-style-type: none;
-                
+
                 li {
                     margin: 0px;
                     padding: 10px 0px;
                     border-top: 1px solid @offersBorderColor;
-                    
+
                     &:first-child {
                         border-top: none;
                     }
@@ -264,7 +276,7 @@
                         margin-right: 5px;
                         width: 100px;
                     }
-                    
+
                     // Parcels.
                     .store-list-parcel {
                         color: @offersParcelsFontColor;
@@ -290,19 +302,85 @@
         }
     }
 
+    // Second row of content containing chart and alert form.
     .product-body-two {
         position: relative;
+        margin-top: 40px;
 
+        // Product tabs.
         .product-tabset {
             width: 100%;
-            padding-right: @alertWidth;
+            padding: 0px @alertWidth 0px 20px;
+
+            // Tab headings.
+            .product-tab-heading {
+
+                a {
+                    display: inline-block;
+                    font-size: @tabHeadingFontSize;
+                    color: @tabHeadingFontColor;
+                    font-weight: bold;
+                    text-decoration: none;
+                    margin-right: 10px;
+
+                    &.selected {
+                        color: @tabHeadingActiveFontColor;
+                        text-decoration: underline;
+                    }
+                }
+            }
+            
+            .product-tab-content {
+                padding: 20px 0px;
+            }
         }
 
+        // Price alert.
         .product-alert {
             position: absolute;
             top: 0px;
             right: 0px;
             width: @alertWidth;
+
+            // Title.
+            h3 {
+                font-size: @alertTitleFontSize;
+                color: @alertTitleFontColor;
+            }
+
+            // Text.
+            p {
+                font-size: @alertTextFontSize;
+                color: @alertTextFontColor;
+            }
+
+            // Price.
+            strong {
+                display: block;
+                font-size: @alertPriceFontSize;
+                color: @alertPriceFontColor;
+                text-align: center;
+                padding: 10px 0px;
+            }
+
+            // Range selector.
+            input[type=range] {
+                display: block;
+                width: 100%;
+                padding: 10px 0px;
+            }
+
+            // Submit button.
+            button {
+                width: 100%;
+                display: block;
+                padding: 10px 30px;
+                background-color: @alertSubmitBackgroundColor;
+                color: @alertSubmitFontColor;
+                font-size: @alertSubmitFontSize;
+                font-weight: bold;
+                border: none;
+            }
         }
     }
 }

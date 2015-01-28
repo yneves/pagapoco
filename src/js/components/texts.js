@@ -56,8 +56,9 @@ module.exports = {
     },
 
     priceAlert: {
-      title: 'Alerta de Preços',
-      submit: 'ME AVISE'
+      title: 'ALERTA DE PREÇOS',
+      submit: 'ME AVISE',
+      text: 'Me avise quando o preço for menor que:'
     },
 
     sort: {
