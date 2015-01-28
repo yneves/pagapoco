@@ -26,7 +26,6 @@ function _theLoading(data){
     if (data.message === null){
         _LoadingMessage = Texts.loading.normal;
     }
-    console.log(_actionType + ' loading status: ' + _isLoading);
 }
 
 LoadStore = Store.extend({

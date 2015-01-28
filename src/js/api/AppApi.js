@@ -8,9 +8,11 @@
 
 var playerApi = require ('./PlayerApi'),
     productApi = require('./ProductApi'),
+    filterApi = require('./FilterApi'),
     debug = require('debug')('AppApi.js');
 
 module.exports = {
     player: playerApi,
-    product: productApi
+    product: productApi,
+    filter: filterApi
 };
