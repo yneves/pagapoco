@@ -6,6 +6,7 @@
 var db = require('./FireApi.js'),
     ApiFilterActionCreator = require('../actions/ApiFilterActionCreator'),
     Supplier = require('../data/Supplier'),
+    Package = require('../data/Package'),
     Transmuter = require('transmuter'),
     debug = require('debug')('FilterApi.js'),
     FilterApi;
@@ -14,19 +15,17 @@ FilterApi = {
 
     getFilters: function () {
 
-        // start fetching, fire event
-        ApiFilterActionCreator.setFilters(null);
-        db.suppliers.getAll(null, function (data) {
-            // if there is an error let's dispatch an event and end here
-            if (data instanceof Error) {
-                ApiFilterActionCreator.setFilters(data);
+        function dispatchDataIfValid(firebaseData, modelData) {
+            if (firebaseData instanceof Error) {
+                // if there is an error let's dispatch an event and end here
+                ApiFilterActionCreator.setFilters(firebaseData);
                 debug('Error trying to get filters');
             } else {
-                if (data instanceof Array) {
-                    if (data.length) {
+                if (firebaseData instanceof Array) {
+                    if (firebaseData.length) {
                         // we've got data, let's set it
-                        Supplier.create(data);
-                        ApiFilterActionCreator.setFilters(Supplier.collection);
+                        modelData.create(firebaseData);
+                        ApiFilterActionCreator.setFilters(modelData.collection);
                     } else {
                         debug('No filters received');
                         ApiFilterActionCreator.setFilters({});
@@ -36,13 +35,28 @@ FilterApi = {
                     ApiFilterActionCreator.setFilters(new Error('Invalid type: Filter data should be of type Array'));
                 }
             }
+        }
+
+        // start fetching, fire event
+        ApiFilterActionCreator.setFilters(null);
+        db.suppliers.getAll(null, function (supplierData) {
+            db.packages.getAll(null, function (packageData) {
+                dispatchDataIfValid(supplierData, Supplier);
+                dispatchDataIfValid(packageData, Package);
+            });
         });
     },
 
     // get all needed data to calculate the price range filter
     getPriceRangeFilter: function () {
 
-        // get the max and min price
+        // TODO
+
+        // create a new database table called products_best_price
+        // and save all current day best prices there
+        // sugestion: http://stackoverflow.com/questions/26910242/querying-nested-data-in-firebase
+
+        // get all the prices and extract the max and min
 
         // divide by the ammount of filter we want to set (like 6)
 

@@ -1,11 +1,16 @@
 
 @searchHeight: 100px;
+
 @pageWidth: 1130px;
-@priceWidth: 300px;
+@pageBackgroundColor: white;
+
+
 @imageWidth: 300px;
 @imageHeight: 400px;
-@offersWidth: 400px;
+
 @alertWidth: 300px;
+
+
 
 @wishFontSize: 18px;
 @wishFontColor: white;
@@ -21,12 +26,11 @@
 @pathFontSize: 16px;
 @pathFontColor: #999;
 
+@priceTagWidth: 300px;
 @priceTagTitleFontColor: #444;
 @priceTagTitleFontSize: 16px;
-
 @priceTagCheapestFontColor: red;
 @priceTagCheapestFontSize: 20px;
-
 @priceTagButtonBackgroundColor: red;
 @priceTagButtonFontColor: yellow;
 @priceTagButtonFontSize: 16px;
@@ -37,16 +41,15 @@
 @infoFontSize: 14px;
 @infoFontColor: #444;
 
+@offersWidth: 400px;
+@offersBorderColor: #BBB;
 @offersViewBackgroundColor: cyan;
 @offersViewFontSize: 14px;
 @offersViewFontColor: white;
-
 @offersPriceFontColor: red;
 @offersPriceFontSize: 20px;
-
 @offersSellerFontColor: #444;
 @offersSellerFontSize: 16px;
-
 @offersParcelsFontColor: #444;
 @offersParcelsFontSize: 14px;
 
@@ -55,7 +58,7 @@
     max-width: @pageWidth;
     margin: auto;
     padding-top: @searchHeight;
-    border: 1px solid red;
+    background-color: @pageBackgroundColor;
 
     .product-header {
         position: relative;
@@ -63,7 +66,7 @@
         // Title area, name and path.
         .product-title {
             width: 100%;
-            padding: 0px @priceWidth 20px 20px;
+            padding: 0px @priceTagWidth 20px 20px;
 
             // Product name.
             h1 {
@@ -99,7 +102,7 @@
             position: absolute;
             top: 0px;
             right: 0px;
-            width: @priceWidth;
+            width: @priceTagWidth;
             padding: 0px 20px;
 
             .price-tag {
@@ -235,7 +238,7 @@
                 li {
                     margin: 0px;
                     padding: 10px 0px;
-                    border-top: 1px solid #999;
+                    border-top: 1px solid @offersBorderColor;
                     
                     &:first-child {
                         border-top: none;

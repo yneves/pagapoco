@@ -5,18 +5,18 @@ var Collection = require('collection'),
             size: require('lodash-node/modern/collections/size')
         }
     },
-    debug = require('debug')('Supplier.js'),
-    SupplierModel,
-    SupplierCollectionConstructor,
-    SupplierCollection,
-    Supplier;
+    debug = require('debug')('Package.js'),
+    PackageModel,
+    PackageCollectionConstructor,
+    PackageCollection,
+    Package;
 
-SupplierModel = Model.extend({
+PackageModel = Model.extend({
 
-    className: 'Supplier',
+    className: 'Package',
 
     _schema: {
-        id: '/Supplier',
+        id: '/Package',
         properties: {
             id: { type: 'string' },        // the productId this history references to
             id_buscape: { type: 'integer' },
@@ -25,7 +25,7 @@ SupplierModel = Model.extend({
             members: { type: 'object' }
         }
     },
-
+    
     // For specific get queries or virtual fields like, declare they bellow
     get: function (attr) {
         switch(attr) {
@@ -41,23 +41,23 @@ SupplierModel = Model.extend({
 
 });
 
-SupplierCollectionConstructor = Collection.extend({
+PackageCollectionConstructor = Collection.extend({
 
     _sortOrder: 'DESC',
 
-    model: SupplierModel,
+    model: PackageModel,
 
     comparator: 'total_members'
 
 });
 
-SupplierCollection = new SupplierCollectionConstructor();
+PackageCollection = new PackageCollectionConstructor();
 
-Supplier = {
+Package = {
     create : function (data) {
-        return SupplierCollection.add(data);
+        return PackageCollection.add(data);
     },
-    collection : SupplierCollection
+    collection : PackageCollection
 };
 
-module.exports = Supplier;
+module.exports = Package;

@@ -8,7 +8,9 @@ var Collection = require('collection'),
     ProductPriceHistory;
 
 ProductPriceHistoryModel = Model.extend({
-  
+
+    className: 'ProductPriceHistory',
+
     _schema: {
         id: '/ProductPriceHistory',
         properties: {
@@ -17,16 +19,16 @@ ProductPriceHistoryModel = Model.extend({
             days: { type : 'object' }    // array of objects containing { timestamp : { min, max } }
         }
     },
-    
+
     getChartData: function() {
-      
+
         var data = {
             labels: [],
             series: [[]]
         };
-      
+
         function dateKey(time) {
-            var date = new Date(parseInt(time));        
+            var date = new Date(parseInt(time));
             var day = date.getDate();
             var month = date.getMonth() + 1;
             var year = date.getFullYear();
@@ -34,7 +36,7 @@ ProductPriceHistoryModel = Model.extend({
             if (month < 10) month = "0" + month;
             return year + "-" + month + "-" + day;
         }
-      
+
         var days = this.get('days');
         var keys = Object.keys(days);
 
@@ -42,9 +44,9 @@ ProductPriceHistoryModel = Model.extend({
             keys.forEach(function(day) {
             prices[dateKey(day)] = parseFloat(days[day].min);
         });
-      
+
         var dates = [];
-        if (keys.length) {   
+        if (keys.length) {
             var step = 24 * 60 * 60 * 1000;
             var last = new Date().getTime();
             var first = last - (20 * step);
@@ -71,9 +73,9 @@ ProductPriceHistoryModel = Model.extend({
             data.series[0][index] = price || 0;
         });
 
-        return data;      
+        return data;
     },
-    
+
 });
 
 ProductPriceHistoryCollectionConstructor = Collection.extend({

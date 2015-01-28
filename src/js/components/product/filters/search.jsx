@@ -2,7 +2,9 @@
 var React = require('react'),
     Texts = require('../../texts'),
     RouteAction = require('../../../actions/RouteActionCreators'),
-    FilterAction = require('../../../actions/FilterActionCreator');
+    FilterAction = require('../../../actions/FilterActionCreator'),
+    MUI = require('material-ui'),
+    Icon = MUI.Icon;
 
 module.exports =
     React.createClass({
@@ -38,13 +40,14 @@ module.exports =
             return (
                 <div className="search">
                     <input
+                        className='searchInput head'
                         type="search"
                         placeholder={Texts.search.placeholder}
                         onKeyUp={this.handleKeyUp}
                         onChange={this.submitQuery}
                         ref="input" />
-                    <button type="button" onClick={this.submitQuery}>
-                        {Texts.search.submit}
+                    <button type="button" className='searchButton head' onClick={this.submitQuery}>
+                        <Icon className='searchIcon head' icon="action-search" />
                     </button>
                 </div>
             );
