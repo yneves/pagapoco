@@ -80,7 +80,7 @@ module.exports =
                 sidebar = (
                     <Sidebar style={sideStyle}>
                         if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
-                            <Filters current={this.state.currentFilters} supplier={this.state.filters.supplier} />
+                            <Filters current={this.state.currentFilters} filters={this.state.filters} />
                         }
                     </Sidebar>
                 );

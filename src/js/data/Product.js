@@ -15,6 +15,8 @@ var Collection = require('collection'),
 
 ProductModel = Model.extend({
 
+    className: 'Product',
+
     _schema: {
         id: '/Product',
         properties: {

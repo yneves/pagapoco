@@ -25,7 +25,8 @@ tables = [
     'players_lists',
     'products',
     'products_price_history',
-    'suppliers'         // TODO add the remaining filters later
+    'suppliers',
+    'packages'  // TODO add the remaining filters - products_best_offer (range)
 ];
 
 refs = {};

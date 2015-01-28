@@ -142,6 +142,7 @@ ProductApi = {
             }
         } else if (search) {
             if (filtersLength.length) {
+                // search and filter
                 debug('getQueryWithFilter');
                 searchObj = ElasticSearchDSL.getQueryWithFilter(search, filters);
             } else {
@@ -163,7 +164,6 @@ ProductApi = {
                         debug('searchProducts - received, now set products');
                         // clear products data with the search results
                         Product.collection.reset(data);
-                        debug(Product.collection);
                         ApiProductActionCreator.setProducts(Product.collection);
                     } else {
                         debug('searchProducts - received but no products found');
