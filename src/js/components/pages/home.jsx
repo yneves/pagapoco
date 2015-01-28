@@ -10,7 +10,7 @@ module.exports =
                 <div>
                     <header className='headerHome'>
                         <div className='headerContent wrap container-fluid'>
-                            <div className="col-xs-offset-9 col-xs-3" id="logoLogin">
+                            <div className="col-xs-offset-9 col-xs-3" class="logoLogin">
                                 <span><Icon className='loginIcon' icon="action-account-circle" /> Entrar / Registrar</span>
                             </div>
                             <div className='row center-xs' id="logoHome">

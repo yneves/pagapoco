@@ -90,7 +90,7 @@ module.exports =
             }
 
             return (
-                <div className="page">
+                <div className="page-store">
                     <Header />
                     <div className="page-body">
                         <div className="page-sidebar">
