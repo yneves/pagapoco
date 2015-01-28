@@ -112,7 +112,7 @@ ProductApi = {
 
         var options,
             filtersLength,
-            searchobj;
+            searchObj;
 
         loadMore = loadMore || false;
 
@@ -130,17 +130,13 @@ ProductApi = {
         }
 
         filtersLength = Object.getOwnPropertyNames(filters);
-
+        debug('e para ser undefined');
+        debug(searchObj);
         if (!search) {
             if (filtersLength.length) {
                 // only filter
-                if (filtersLength <= 1) {
-                    debug('getBySingleFilter');
-                    searchObj = ElasticSearchDSL.getBySingleFilter(filters);
-                } else {
-                    debug('getByMultipleFilter');
-                    searchObj = ElasticSearchDSL.getByMultipleFilter(filters);
-                }
+                debug('getByFilter');
+                searchObj = ElasticSearchDSL.getByFilter(filters);
             } else {
                 // no search and no filter, just load more
                 debug('empty search obj - loadMore only');
@@ -163,11 +159,9 @@ ProductApi = {
             }
         }
 
-        debug(searchObj);
-        debug('updateProducts return');
-        return;
-
         // start fetching for search, fire event
+        debug('nao e para ser undefined mais');
+        debug(searchObj);
         ApiProductActionCreator.setProducts(null);
         db.products.searchFor(searchObj, options, function (data) {
             if (data instanceof Error) {
@@ -179,6 +173,7 @@ ProductApi = {
                         debug('searchProducts - received, now set products');
                         // clear products data with the search results
                         Product.collection.reset(data);
+                        debug(Product.collection);
                         ApiProductActionCreator.setProducts(Product.collection);
                     } else {
                         debug('searchProducts - received but no products found');

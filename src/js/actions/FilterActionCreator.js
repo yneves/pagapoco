@@ -23,11 +23,14 @@ FilterActionCreator = {
         });
     },
     // filter products
-    setFilters: function (filter) {
+    setFilters: function (type, filter) {
         debug('setFilters - dispatch SET_FILTER');
         Dispatcher.handleViewAction({
             type : filterAction.SET_FILTER,
-            data : { filter: filter }
+            data : {
+                type: type,
+                filter: filter
+            }
         });
     },
     // called when more products are needed from the database

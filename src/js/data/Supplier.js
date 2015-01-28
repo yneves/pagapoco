@@ -1,5 +1,10 @@
 var Collection = require('collection'),
     Model = require('model'),
+    lodash = {
+        collections: {
+            size: require('lodash-node/modern/collections/size')
+        }
+    },
     debug = require('debug')('Supplier.js'),
     SupplierModel,
     SupplierCollectionConstructor,
@@ -17,12 +22,31 @@ SupplierModel = Model.extend({
             slug: { type: 'string' },
             members: { type: 'object' }
         }
-    }
+    },
+
+    // For specific get queries or virtual fields like, declare they bellow
+    get: function (attr) {
+        switch(attr) {
+            case 'total_members':
+                if (this.attributes.members)  {
+                    return lodash.collections.size(this.attributes.members);
+                }
+                return 0;
+            default:
+                return Model.prototype.get.apply(this, arguments);
+        }
+    },
 
 });
 
 SupplierCollectionConstructor = Collection.extend({
-    model: SupplierModel
+
+    _sortOrder: 'DESC',
+
+    model: SupplierModel,
+
+    comparator: 'total_members'
+
 });
 
 SupplierCollection = new SupplierCollectionConstructor();

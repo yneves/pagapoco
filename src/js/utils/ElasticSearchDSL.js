@@ -5,12 +5,15 @@
 *   a busca no firebase através do FireApi
 */
 
-var debug = require('debug')('ElasticSearchDSL.js'),
-    lodash = {
+var lodash = {
+        arrays: {
+            flatten: require('lodash-node/modern/arrays/flatten')
+        },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
         }
     },
+    debug = require('debug')('ElasticSearchDSL.js'),
     ElasticSearchDSL;
 
 // *** ATTENTION *** ATTENZIONE ** ATENÇÃO ** WARNING ** MUHABADU!
@@ -37,7 +40,7 @@ function handleHyphenFilter(field, data) {
         arrayComplex = [];
     lodash.collections.forEach(data, function (value) {
         filterObject = {
-            'term' : {}
+            'term': {}
         };
         filterObject.term[field] = value;
         arrayComplex.push(filterObject);
@@ -50,10 +53,6 @@ function makeSingleFilter(field, data) {
     var filterObject,
         returned;
 
-    if (typeof field !== 'string' || typeof data !== 'string') {
-        throw new TypeError('You must send field/data of type string');
-    }
-
     returned = data.split('-');
     if (returned.length <= 1) {
         filterObject = {
@@ -65,6 +64,7 @@ function makeSingleFilter(field, data) {
     } else {
         filterObject = handleHyphenFilter(field, returned);
     }
+
     return filterObject;
 }
 
@@ -136,7 +136,7 @@ ElasticSearchDSL = {
                             'title': term
                         }
                     },
-                    'filter': makeSingleFilter('supplier', filter)
+                    'filter': makeSingleFilter(filter.field, filter.data)
                 }
             }
         };
@@ -158,51 +158,71 @@ ElasticSearchDSL = {
                     },
                     'filter': {
                         'bool': {
-                            'should': makeMultipleFilters('supplier', filters)
+                            'should': makeMultipleFilters(filters)
                         }
                     }
                 }
             }
         };
-    },
-
-    // return data based on filter only, the complex/simple cases scenarios were
-    // created due to the way data was indexed with elasticsearch + flashlight
-    getBySingleFilter: function (filter) {
-        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-term-query.html
-        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
-        var searchObj;
-
-        searchObj = {
-            'query': {
-                'filtered': {
-                    'filter': makeSingleFilter('supplier', filter)
-                }
-            }
-        };
-
-        return searchObj;
     },
 
     // return data based on multiple filters only
     // TODO esta funcionando mas não tenho certeza ainda se os filtros estão realmente top mega foda...
-    getByMultipleFilter: function (filters) {
+    getByFilter: function (filters) {
 
-        var searchObj;
+        var searchObj,
+            rangeFields,
+            termFields;
         // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
-        // it works, but not for multiple different terms as it seems.. must dig further
 
+        rangeFields = filters.range || null;
+        termFields = filters.term || null;
         searchObj = {
             'query': {
                 'filtered': {
-                    'filter': {
-                        'bool': {
-                            'should': makeMultipleFilters('supplier', filters)
-                        }
-                    }
+                    'filter': {}
                 }
             }
         };
+        debug('começando');
+        debug(searchObj);
+
+        if (rangeFields) {
+            lodash.collections.forEach(rangeFields, function (data, field) {
+                // TODO some logic regarding the fields gte, lte...
+            });
+        }
+
+        if (termFields) {
+            debug('termFields');
+            var should = [];
+            lodash.collections.forEach(termFields, function (data, field) {
+                // field should be 'suppliers' or something
+                // data should be an array of values that we want to filter by the current field
+                if (data.length === 1) {
+                    should.push(makeMultipleFilters(field, data));
+                } else if (data.length > 1) {
+                    should.push(makeSingleFilter(field, data[0]));
+                } else {
+                    debug('no filter found');
+                }
+
+            });
+            // flatten to get all the terms ready
+            should = lodash.arrays.flatten(should);
+
+            if (should.length > 1) {
+                searchObj.query.filtered.filter = {
+                    'bool': {
+                        'should': should // an array
+                    }
+                };
+            } else {
+                searchObj.query.filtered.filter = should[0]; // an object
+            }
+        }
+        debug('finalizando');
+        debug(searchObj);
 
         return searchObj;
     },

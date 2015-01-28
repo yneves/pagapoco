@@ -4,7 +4,8 @@ var Firebase = require('firebase'),
             assign: require('lodash-node/modern/objects/assign'),
             defaults: require('lodash-node/modern/objects/defaults'),
             values: require('lodash-node/modern/objects/values'),
-            keys: require('lodash-node/modern/objects/keys')
+            keys: require('lodash-node/modern/objects/keys'),
+            clone: require('lodash-node/modern/objects/clone')
         },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
@@ -78,7 +79,7 @@ lodash.objects.assign(Firebase.prototype, {
 
         // default implementation to get data from firebase
         if (limit) {
-            this.limitToLast(30).once('value', beforeCb, errorFunc);
+            this.limitToLast(limit).once('value', beforeCb, errorFunc);
         } else {
             this.once('value', beforeCb, errorFunc);
         }
@@ -92,6 +93,10 @@ lodash.objects.assign(Firebase.prototype, {
 
         var modelData,
             modelRef;
+
+        if (typeof key !== 'string' ) {
+            throw new TypeError('createWIthKey - key must be a string');
+        }
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
         modelData = {};
@@ -129,6 +134,7 @@ lodash.objects.assign(Firebase.prototype, {
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
         // let's make sure we are working with a valid Model instance
+        // also since we are cloning the model data, there is no need for defensive copying it
         if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
@@ -167,6 +173,7 @@ lodash.objects.assign(Firebase.prototype, {
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
+        // since we are cloning the model data, there is no need for defensive copying it
         if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
@@ -234,6 +241,18 @@ lodash.objects.assign(Firebase.prototype, {
             type,
             data;
 
+        // makeing sure searchObj is valid
+        if (!searchObj) {
+            throw new Error('searchFor - we need a searchObj in order to perform a search');
+        }
+
+        if (typeof searchObj !== 'object') {
+            throw new TypeError('searchFor - searchObj must be of type object');
+        }
+
+        // defensive copy to avoid ovewrite the searchObj original data
+        searchObj = lodash.objects.clone(searchObj);
+
         // this method need's an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
         data = [];
@@ -256,6 +275,9 @@ lodash.objects.assign(Firebase.prototype, {
         }
 
         // stringify the query, so values like foo.bar are valid for firebase
+        if (!searchObj.query) {
+            throw new Error('searchFor - searchObj need the property query');
+        }
         searchObj.query = JSON.stringify(searchObj.query);
 
         // create a new firebase instance

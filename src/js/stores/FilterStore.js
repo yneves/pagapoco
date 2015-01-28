@@ -16,8 +16,18 @@ _filters = {    // should hold the list of filters information (collections and 
     supplier: {},
     priceRange: {}
 };
+_filtersState = { // should hold the current state of filters, selected or not, etc
+    term: {
+        supplier: [],       // 'val1', 'val2'
+    },
+    range: {
+        price: {
+        // 'gte' : 'foo',
+        // 'lte' : 'bar'
+        }
+    }
+};
 _searchState = '';  // should hold the current query the user are trying to perform
-_filtersState = {}; // should hold the current state of filters, selected or not, etc
 _loadMoreSum = 0;   // a counter of how many times the loadMore was executed
 
 // handle the site getting the list of views
@@ -58,20 +68,32 @@ function viewHandleSearch(data) {
 // handle the filter that was selected
 function viewHandleFilter(data) {
     debug('handleFilter');
-    if (data && data.filter) {
+    if (data && data.type && data.filter) {
         // data.filter should be the filter slug/id
         // bellow we are mimetizing a toggle effect on the filterState
-        if (!_filtersState[data.filter]) {
-            _filtersState[data.filter] = true;
+        if (!_filtersState.term[data.type] && !_filtersState.range[data.type]) {
+            debug('Invalid _filtersState type - not found term or range');
         } else {
-            delete _filterState[data.filter];
-        }
-        // update the products from the server based on the new data
-        api.product.filterProducts(_searchState, _filtersState);
-    }
+            var index;
+            if(_filtersState.term[data.type]) {
+                index = _filtersState.term[data.type].indexOf(data.filter);
+                if (index === -1) {
+                    _filtersState.term[data.type].push(data.filter);
+                } else {
+                    _filtersState.term[data.type].splice(index, 1);
+                }
+            } else {
 
-    if (Object.getOwnPropertyNames(_filtersState).length) {
-        _filterState = {};
+                // TODO if range, do some other logic
+
+            }
+
+            debug(_filtersState);
+            // update the products from the server based on the new data
+            api.product.filterProducts(_searchState, _filtersState);
+        }
+    } else {
+        debug('No data/data.type/data.filter');
     }
 }
 
@@ -88,11 +110,9 @@ function apiHandleFiltersError(data) {
 }
 
 function apiHandleFilters(data) {
-    debug('should receive a collection of filters of some type');
-    // TODO we have to get which filters are being sent
     // for now we just clone the received data on _filters property
     if (data && data.length) {
-        _filters.supplier = data.clone();    
+        _filters.supplier = data.clone();
     } else {
         _filters.supplier = {};
     }

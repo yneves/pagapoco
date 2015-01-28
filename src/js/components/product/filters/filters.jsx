@@ -18,19 +18,45 @@ module.exports =
 
         render: function (){
 
-            var checks;
+            var checks,
+                checkboxWrapperStyle,
+                floatLeft,
+                boxStyle;
+
+            checkboxWrapperStyle = {
+                width: '100%',
+                height: '30px',
+                fontSize: '14px'
+            };
+
+            floatLeft = {
+                float: 'left'
+            };
+
+            boxStyle = {
+                width: '250px',
+                background: 'white',
+                border: '1px solid black',
+                height: '300px',
+                overflow: 'scroll'
+            };
+
             if (Object.getOwnPropertyNames(this.props.supplier).length) {
                 checks = this.props.supplier.map( function (supplier) {
-                    debug(supplier);
-                    return (
-                        <div>
-                            <Checkbox
-                                    name={supplier.get('name')}
-                                    value={supplier.get('slug')}
-                                    onClick={this._handleOnChange.bind(this, supplier.get('id'))}
-                            />{supplier.get('name')}
-                        </div>
-                    );
+                    if (supplier.get('total_members') > 0 ) {
+                        return (
+                            <div style={checkboxWrapperStyle}>
+                                <div style={floatLeft}>
+                                    <Checkbox
+                                            name={supplier.get('slug')}
+                                            value={supplier.get('id')}
+                                            onClick={this._handleOnChange.bind(this, 'supplier', supplier.get('id'))}
+                                    />
+                                </div>
+                                <span style={floatLeft}>{supplier.get('name')} - ({supplier.get('total_members')})</span>
+                            </div>
+                        );
+                    }
                 }.bind(this));
             } else {
                 checks = null;
@@ -39,7 +65,7 @@ module.exports =
             return (
                 <div>
                     <h1>Filters</h1>
-                    <form>
+                    <form style={boxStyle}>
                         <h3>Fabricantes</h3>
                         {checks}
                     </form>
@@ -51,9 +77,10 @@ module.exports =
          * Apenas atualizar os states
          * @private
          */
-        _handleOnChange: function(id) {
+        _handleOnChange: function(type, id) {
             debug('_handleOnChange');
+            debug(type);
             debug(id);
-            FilterAction.setFilters(id);
+            FilterAction.setFilters(type, id);
         }
     });
