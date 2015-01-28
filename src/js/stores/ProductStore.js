@@ -8,32 +8,45 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     ProductAction,
     RouteAction,
     _currentCatalog,    // general products information
-    _currentProduct,
+    _currentProduct,    // current product data
+    _priceHistory,      // a list of all price histories
     _isLoading,
     _sorting;
 
 ProductAction = ActionTypes.Product;
 RouteAction = ActionTypes.Route;
 
+_priceHistory = {};
 _currentCatalog = {};
-_currentProduct = {};
+_currentProduct = {
+    product: {},
+    priceHistory: {}
+};
 _isLoading  = true;
 _sorting = {
     price: false,
     discount: false
 };
 
+function resetCurrentProduct() {
+    _currentProduct = {
+        product: {},
+        priceHistory: {}
+    };
+}
 
 function handleProducts() {
-    debug('handleProducts');
-    if (Object.getOwnPropertyNames(_currentCatalog).length < 30) {
+    if (!Object.getOwnPropertyNames(_currentCatalog).length || _currentCatalog.length < 30) {
         // there are no products, request it through the api
-        api.product.getProducts();
+        api.product.getProducts(30);
         _isLoading = true;
+    } else {
+        _isLoading = false;
     }
 }
 
 function setProductsError(error) {
+    debug('setProductsError');
     debug(error);
     _isLoading = false;
 }
@@ -53,23 +66,37 @@ function setProducts(data) {
     _isLoading = false;
 }
 
-// TODO ver se tem um produto, se não tiver fazer uma requisição dele na API
-// a api deve retornar
+// verificar se o produto existe, senão requisitar na api
 function handleSetCurrentProduct(data) {
     if (Object.getOwnPropertyNames(_currentCatalog).length) {
-        _currentProduct = _currentCatalog.findWhere({'slug' : data.slug});
-        // we have a catalog but the product data were not found, fetch it
-        if (!_currentProduct) {
-            debug('get product from api');
+        _currentProduct.product = _currentCatalog.findWhere({'slug' : data.slug});
+        // we have a catalog but the product data were not found, try to fetch it
+        if (!_currentProduct.product) {
             api.product.getCurrentProduct(data.slug);
             _isLoading = true;
         } else {
-            // we have product, get it's price history now
-            api.product.getProductPriceHistory(_currentProduct.get('id'));
+            // we have product, check the price history now
+            if (Object.getOwnPropertyNames(_priceHistory).length) {
+                _currentProduct.priceHistory = _priceHistory.findWhere({ id: _currentProduct.product.get('id') });
+                // we have a catalog, but the price history we need wasn't found, fetch it
+                if (!_currentProduct.priceHistory) {
+                    // no price history for this product, fetch it from the api
+                    api.product.getProductPriceHistory(_currentProduct.product.get('id'));
+                    _isLoading = true;
+                } else {
+                    // we have everything we need
+                    _isLoading = false;
+                }
+            } else {
+                // not a single one product price history found, fetch it from the api
+                _priceHistory = {};
+                api.product.getProductPriceHistory(_currentProduct.product.get('id'));
+                _isLoading = true;
+            }
         }
     } else {
         // no catalog found, fetch at least the wanted product data
-        _currentProduct = {};
+        resetCurrentProduct();
         api.product.getCurrentProduct(data.slug);
         _isLoading = true;
     }
@@ -79,6 +106,7 @@ function setCurrentProductError(data) {
     // some error while trying to fetch the product from server, show 404
     debug('setCurrentProductError - 404');
     debug(data);
+    _isLoading = false;
 }
 
 function setCurrentProduct(data) {
@@ -86,11 +114,12 @@ function setCurrentProduct(data) {
     // that ended up here, now we must set the product (if found) or
     // show a 404 because the product couldn't be found
     if (data && Object.getOwnPropertyNames(data).length) {
-        _currentProduct = data;
-        api.product.getProductPriceHistory(_currentProduct.get('id'));
+        _currentProduct.product = data; // a model
+        // we got a product, now we need it's price history
+        api.product.getProductPriceHistory(_currentProduct.product.get('id'));
     } else {
         debug('setCurrentProduct - 404');
-        _currentProduct = {};
+        resetCurrentProduct();
     }
     // nothing else to do, set _isLoading as false
     _isLoading = false;
@@ -105,6 +134,7 @@ function setSorting(sort) {
             _currentCatalog.setSortingOrder('ASC');
         }
     }
+
     if (sort) {
         if (sort.sortBy === 'discount') {
             _currentCatalog.comparator = 'discount';
@@ -131,9 +161,28 @@ function setSorting(sort) {
     }
 }
 
+function receiveProductPriceHistoryError(data) {
+    debug('receiveProductPriceHistoryError');
+    debug(data);
+    _isLoading = false;
+}
+
+function receiveProductPriceHistory(data) {
+    if (data) {
+        _priceHistory = data;
+        if (Object.getOwnPropertyNames(_currentProduct.product).length) {
+            _currentProduct.priceHistory = _priceHistory.findWhere({ id: _currentProduct.product.get('id') });
+        }
+    } else {
+        _priceHistory = {};
+    }
+    _isLoading = false;
+}
+
+
 ProductStore = Store.extend({
 
-    getCurrent: function () {
+    getCurrentProduct: function () {
         return _currentProduct;
     },
 
@@ -152,19 +201,23 @@ ProductStore = Store.extend({
     getSorting: function () {
         return _sorting;
     }
-
 });
 
 ProductInstance = new ProductStore(
+    // view events
     ProductAction.GET_PRODUCTS, handleProducts,
+    ProductAction.GET_CURRENT_PRODUCT, handleSetCurrentProduct,
+    ProductAction.SORT_PRODUCT, setSorting,
+    // server events
     ProductAction.PRODUCT_SET_START, setProducts,
     ProductAction.PRODUCT_SET_ERROR, setProductsError,
     ProductAction.PRODUCT_SET_SUCCESS, setProducts,
-    ProductAction.GET_CURRENT_PRODUCT, handleSetCurrentProduct,
     ProductAction.PRODUCT_SET_CURRENT_START, setCurrentProduct,
     ProductAction.PRODUCT_SET_CURRENT_ERROR, setCurrentProductError,
     ProductAction.PRODUCT_SET_CURRENT_SUCCESS, setCurrentProduct,
-    ProductAction.SORT_PRODUCT, setSorting
+    ProductAction.PRODUCT_PRICE_HISTORY_START, receiveProductPriceHistory,
+    ProductAction.PRODUCT_PRICE_HISTORY_ERROR, receiveProductPriceHistoryError,
+    ProductAction.PRODUCT_PRICE_HISTORY_SUCCESS, receiveProductPriceHistory
 );
 
 module.exports = ProductInstance;

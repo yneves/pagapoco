@@ -2,9 +2,6 @@
 var Collection = require('collection'),
     Model = require('model'),
     lodash = {
-        objects: {
-            keys: require('lodash-node/modern/objects/keys')
-        },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
         }

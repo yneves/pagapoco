@@ -1,8 +1,4 @@
 
-/**
- * Wrapper para o superagent, no momento ninguem esta utilizando este método já
- * que tudo passa pelo Firebase, mas pode voltar a ser útil no futuro
- */
 var request = require('superagent'),
     debug = require('debug')('Request.js'),
     API_URL = '',

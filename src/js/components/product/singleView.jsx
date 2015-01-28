@@ -15,12 +15,14 @@ module.exports =
     React.createClass({
 
         propTypes: {
-            product: React.PropTypes.object.isRequired
+            product: React.PropTypes.object.isRequired,
+            priceHistory: React.PropTypes.object.isRequired,
         },
 
         getDefaultProps: function () {
             return {
-                product: {}
+                product: {},
+                priceHistory: {}
             };
         },
 
@@ -97,7 +99,7 @@ module.exports =
                                 </a>
                             </div>
                             <div className="product-tab-content">
-                                { this.state.tab === 'review' ? <ProductReview product={product} /> : <PriceHistory product={product} /> }
+                                { this.state.tab === 'review' ? <ProductReview product={product} /> : <PriceHistory priceHistory={this.props.priceHistory} /> }
                             </div>
                         </div>
 

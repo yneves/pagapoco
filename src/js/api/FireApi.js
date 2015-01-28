@@ -4,7 +4,8 @@ var Firebase = require('firebase'),
             assign: require('lodash-node/modern/objects/assign'),
             defaults: require('lodash-node/modern/objects/defaults'),
             values: require('lodash-node/modern/objects/values'),
-            keys: require('lodash-node/modern/objects/keys')
+            keys: require('lodash-node/modern/objects/keys'),
+            clone: require('lodash-node/modern/objects/clone')
         },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
@@ -23,32 +24,41 @@ tables = [
     'Users',
     'players_lists',
     'products',
-    'products_price_history'
+    'products_price_history',
+    'suppliers'         // TODO add the remaining filters later
 ];
 
 refs = {};
 
 // extend the Firebase prototype adding some useful methods for pagapo.co project
 lodash.objects.assign(Firebase.prototype, {
+
     /**
      * Get all data from a certain root child of firebase
      * return Array (empty or not) or Error Object
      */
     getAll: function (limit, callback) {
 
-        var data;
+        var errorFunc,
+            beforeCb;
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
-        limit = parseInt(limit) || 30;
-        data = [];
+        limit = parseInt(limit) || null;
+        errorFunc = function (err) {
+            if (err) {
+                debug('No permission to read data');
+                callback(new Error(err)); // empty, no data got from the server
+            } else {
+                callback(new Error('An unknown error has ocurred'));
+            }
+        };
+        beforeCb = function (snapshot) {
+            var data,
+                childData;
 
-        // default implementation to get data from firebase
-        this.limitToLast(30).once('value', function (snapshot) {
+            data = [];
             // snapshot should contain a list of products
             if (snapshot.val() !== null) {
-
-                var childData;
-
                 // loop through the snapshot data object
                 snapshot.forEach( function (childSnapshot) {
 
@@ -59,20 +69,21 @@ lodash.objects.assign(Firebase.prototype, {
                     // object need this for correct data manipulation
                     // also we run pareInt because integer type data arrive from DB
                     // as a string, so we need to perform this check
-                    childData.id = parseInt(childSnapshot.key()) || childSnapshot.key();
+                    childData.id = isNaN(childSnapshot.key()) ? childSnapshot.key() : parseInt(childSnapshot.key());
                     // add the product to the list to be added to the collection
                     data.push(childData);
                 });
             }
             callback(data);
-        }, function (err) {
-            if (err) {
-                debug('No permission to read data');
-                callback(new Error(err)); // empty, no data got from the server
-            } else {
-                callback(new Error('An unknown error has ocurred'));
-            }
-        });
+        };
+
+        // default implementation to get data from firebase
+        if (limit) {
+            this.limitToLast(limit).once('value', beforeCb, errorFunc);
+        } else {
+            this.once('value', beforeCb, errorFunc);
+        }
+
     },
     /**
      * Save some data by creating an empty key and then setting it's data
@@ -82,6 +93,10 @@ lodash.objects.assign(Firebase.prototype, {
 
         var modelData,
             modelRef;
+
+        if (typeof key !== 'string' ) {
+            throw new TypeError('createWIthKey - key must be a string');
+        }
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
         modelData = {};
@@ -119,6 +134,7 @@ lodash.objects.assign(Firebase.prototype, {
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
         // let's make sure we are working with a valid Model instance
+        // also since we are cloning the model data, there is no need for defensive copying it
         if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
@@ -157,6 +173,7 @@ lodash.objects.assign(Firebase.prototype, {
 
         callback = typeof callback === 'function' ? callback : function (err) { debug(err); };
 
+        // since we are cloning the model data, there is no need for defensive copying it
         if (model && typeof model.toJSON === 'function') {
             data = model.toJSON();
         } else {
@@ -224,6 +241,18 @@ lodash.objects.assign(Firebase.prototype, {
             type,
             data;
 
+        // makeing sure searchObj is valid
+        if (!searchObj) {
+            throw new Error('searchFor - we need a searchObj in order to perform a search');
+        }
+
+        if (typeof searchObj !== 'object') {
+            throw new TypeError('searchFor - searchObj must be of type object');
+        }
+
+        // defensive copy to avoid ovewrite the searchObj original data
+        searchObj = lodash.objects.clone(searchObj);
+
         // this method need's an obrigatory callback
         if (!callback || typeof callback !== 'function') return;
         data = [];
@@ -246,6 +275,9 @@ lodash.objects.assign(Firebase.prototype, {
         }
 
         // stringify the query, so values like foo.bar are valid for firebase
+        if (!searchObj.query) {
+            throw new Error('searchFor - searchObj need the property query');
+        }
         searchObj.query = JSON.stringify(searchObj.query);
 
         // create a new firebase instance
@@ -287,7 +319,7 @@ lodash.objects.assign(Firebase.prototype, {
                         // object need this for correct data manipulation
                         // also we run pareInt because integer type data arrive from DB
                         // as a string, so we need to perform this check
-                        childData.id = parseInt(childSnapshot._id) || childSnapshot._id;
+                        childData.id = isNaN(childSnapshot._id) ? childSnapshot._id : parseInt(childSnapshot._id);
                         // add the product to the list to be added to the collection
 
                         data.push(childData);
@@ -334,7 +366,7 @@ lodash.objects.assign(Firebase.prototype, {
                 value = snapshot.val();
                 data = lodash.objects.values(value)[0];
                 data.id = lodash.objects.keys(value)[0];
-                data.id = parseInt(data.id) || data.id;
+                data.id = isNaN(data.id) ? data.id : parseInt(data.id);
             } else {
                 data = null;
             }
@@ -376,7 +408,7 @@ lodash.objects.assign(Firebase.prototype, {
                 // object need this for correct data manipulation
                 // also we run pareInt because integer type data arrive from DB
                 // as a string, so we need to perform this check
-                data[idAttribute] = parseInt(snapshot.key()) || snapshot.key();
+                data[idAttribute] = isNaN(snapshot.key()) ? snapshot.key() : parseInt(snapshot.key());
             } else {
                 data = null;
             }

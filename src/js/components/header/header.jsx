@@ -1,6 +1,6 @@
 var React = require('react'),
     Link = require('../common/link.jsx'),
-    Search = require("../search/search.jsx"),
+    Search = require("../product/filters/search.jsx"),
     debug = require('debug')('header.jsx');
     LoginBox = require('../profile/profile.jsx');
 

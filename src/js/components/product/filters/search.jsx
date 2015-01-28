@@ -1,8 +1,8 @@
 
 var React = require('react'),
-    Texts = require('../texts'),
-    RouteActionCreator = require('../../actions/RouteActionCreators'),
-    ProductAction = require('../../actions/ProductActionCreators');
+    Texts = require('../../texts'),
+    RouteAction = require('../../../actions/RouteActionCreators'),
+    FilterAction = require('../../../actions/FilterActionCreator');
 
 module.exports =
     React.createClass({
@@ -28,9 +28,9 @@ module.exports =
             this._delayTimeout = setTimeout(function() {
                 this._delayTimeout = undefined;
                 // fire the action to search
-                ProductAction.searchProducts(newQuery);
+                FilterAction.setSearch(newQuery);
                 // redirect to the home page
-                RouteActionCreator.setRoute('/');
+                RouteAction.setRoute('/');
             }.bind(this),300);
         },
 
@@ -38,7 +38,7 @@ module.exports =
             return (
                 <div className="search">
                     <input
-                        type="text"
+                        type="search"
                         placeholder={Texts.search.placeholder}
                         onKeyUp={this.handleKeyUp}
                         onChange={this.submitQuery}
