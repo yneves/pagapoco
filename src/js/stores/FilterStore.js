@@ -17,11 +17,13 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
 _isActive = false;
 _filters = {    // should hold the list of filters information (collections and models)
     supplier: {},
+    package: {},
     priceRange: {}
 };
 _filtersState = { // should hold the current state of filters, selected or not, etc
     term: {
         supplier: [],       // 'val1', 'val2'
+        package: []
     },
     range: {
         price: {
@@ -38,13 +40,15 @@ _isLoading = false;
 function viewHandleFilters() {
     debug('handle filters');
 
-    if (!Object.getOwnPropertyNames(_filters.supplier).length) {
+    if (!Object.getOwnPropertyNames(_filters.supplier).length || !Object.getOwnPropertyNames(_filters.package).length) {
         api.filter.getFilters();
         _isLoading = true;
     }
 
     if (!Object.getOwnPropertyNames(_filters.priceRange).length) {
-        // TODO in the fure, request price range filters
+
+        api.filter.getPriceRangeFilter();
+        _isLoading = true;
 
         // pegar o preço da oferta máxima de produto
         // pegar o preço da oferta mínima do produto
@@ -122,9 +126,17 @@ function apiHandleFilters(data) {
     // for now we just clone the received data on _filters property
     // TODO make field agnostic
     if (data && data.length) {
-        _filters.supplier = data.clone();
+        debug(data);
+        switch(data.model.prototype.className) {
+            case 'Supplier':
+                _filters.supplier = data.clone();
+                break;
+            case 'Package':
+                _filters.package = data.clone();
+                break;
+        }
     } else {
-        _filters.supplier = {};
+        // nothing receiveid, what to do?
     }
     _isLoading = false;
 
@@ -141,6 +153,8 @@ FilterStore = Store.extend({
 
     // return the current list of filters available
     getFilters: function () {
+        debug('get filters');
+        debug(_filters);
         return _filters;
     },
 

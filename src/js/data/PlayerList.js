@@ -9,6 +9,8 @@ var Collection = require('collection'),
 
 PlayerListModel = Model.extend({
 
+    className: 'PlayerList',
+
     _schema: {
         id: '/PlayerList',
         properties: {

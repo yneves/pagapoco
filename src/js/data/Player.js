@@ -13,6 +13,9 @@ PlayerBaseModel = Model.extend({
 });
 
 PlayerSimpleModel = PlayerBaseModel.extend({
+
+    className: 'Player',
+
     _schema: {
         id: '/PlayerSimpleModel',
         properties: {
