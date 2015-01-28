@@ -22,7 +22,7 @@ module.exports =
                 route: {}
             };
         },
-        
+
         getInitialState: function () {
             return {
                 filtersActive   : FilterStore.isActive(),
