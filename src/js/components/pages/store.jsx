@@ -25,7 +25,9 @@ module.exports =
 
         getInitialState: function () {
             return {
+                filtersActive   : FilterStore.isActive(),
                 filters         : FilterStore.getFilters(),
+                currentFilters  : FilterStore.getFiltersState(),
                 products        : ProductStore.getCurrentCatalog(),
                 currentProduct  : ProductStore.getCurrentProduct(),
                 sortingProducts : ProductStore.getSorting()
@@ -78,7 +80,7 @@ module.exports =
                 sidebar = (
                     <Sidebar style={sideStyle}>
                         if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
-                            <Filters supplier={this.state.filters.supplier} />
+                            <Filters current={this.state.currentFilters} supplier={this.state.filters.supplier} />
                         }
                     </Sidebar>
                 );
@@ -110,7 +112,9 @@ module.exports =
             if (props.route.link.type) {
                 switch (props.route.link.type) {
                     case 'products':
-                        ProductAction.getProducts();
+                        if (!this.state.filtersActive) {
+                            ProductAction.getProducts();
+                        }
                         FilterAction.getFilters();
                         break;
                     case 'product':
@@ -142,7 +146,9 @@ module.exports =
 
         _onChangeFilter: function () {
             this.setState({
+                filtersActive : FilterStore.isActive(),
                 filters : FilterStore.getFilters(),
+                currentFilters  : FilterStore.getFiltersState()
             });
         }
     });

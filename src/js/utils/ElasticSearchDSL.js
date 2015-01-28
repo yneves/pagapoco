@@ -9,6 +9,9 @@ var lodash = {
         arrays: {
             flatten: require('lodash-node/modern/arrays/flatten')
         },
+        objects: {
+            clone: require('lodash-node/modern/objects/clone')
+        },
         collections: {
             forEach: require('lodash-node/modern/collections/forEach')
         }
@@ -124,59 +127,33 @@ ElasticSearchDSL = {
             }
         };
     },
-    // return data based on query with one filter only
-    getQueryWithSingleFilter: function (term, filter) {
+    // return data based on a query and single/multiple filters
+    getQueryWithFilter: function (term, filters) {
+
         var searchObj;
 
-        searchObj = {
-            'query': {
-                'filtered': {
-                    'query': {
-                        'match': {
-                            'title': term
-                        }
-                    },
-                    'filter': makeSingleFilter(filter.field, filter.data)
-                }
+        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+        searchObj = ElasticSearchDSL.getByFilter(filters);
+
+        searchObj.query.filtered.query = {
+            'match': {
+                'title': term
             }
         };
 
         return searchObj;
     },
-    // return data bsed on query with possible multiple filters
-    getQueryWithMultipleFilters: function (term, filters) {
-        var searchObj;
-        // #ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
 
-        searchObj = {
-            'query': {
-                'filtered': {
-                    'query': {
-                        'match': {
-                            'title': term
-                        }
-                    },
-                    'filter': {
-                        'bool': {
-                            'should': makeMultipleFilters(filters)
-                        }
-                    }
-                }
-            }
-        };
-    },
-
-    // return data based on multiple filters only
-    // TODO esta funcionando mas não tenho certeza ainda se os filtros estão realmente top mega foda...
+    // return data based on filters only
     getByFilter: function (filters) {
 
         var searchObj,
             rangeFields,
             termFields;
-        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
 
-        rangeFields = filters.range || null;
-        termFields = filters.term || null;
+        // # ref http://www.elasticsearch.org/guide/en/elasticsearch/reference/current/query-dsl-filtered-query.html
+        rangeFields = filters.range ? lodash.objects.clone(filters.range) : null;
+        termFields = filters.term ? lodash.objects.clone(filters.term) : null;
         searchObj = {
             'query': {
                 'filtered': {
@@ -184,8 +161,6 @@ ElasticSearchDSL = {
                 }
             }
         };
-        debug('começando');
-        debug(searchObj);
 
         if (rangeFields) {
             lodash.collections.forEach(rangeFields, function (data, field) {
@@ -194,15 +169,14 @@ ElasticSearchDSL = {
         }
 
         if (termFields) {
-            debug('termFields');
             var should = [];
             lodash.collections.forEach(termFields, function (data, field) {
                 // field should be 'suppliers' or something
                 // data should be an array of values that we want to filter by the current field
                 if (data.length === 1) {
-                    should.push(makeMultipleFilters(field, data));
-                } else if (data.length > 1) {
                     should.push(makeSingleFilter(field, data[0]));
+                } else if (data.length > 1) {
+                    should.push(makeMultipleFilters(field, data));
                 } else {
                     debug('no filter found');
                 }
@@ -221,8 +195,6 @@ ElasticSearchDSL = {
                 searchObj.query.filtered.filter = should[0]; // an object
             }
         }
-        debug('finalizando');
-        debug(searchObj);
 
         return searchObj;
     },

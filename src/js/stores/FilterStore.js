@@ -7,11 +7,14 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     filterAction = ActionTypes.Filter,
     FilterStore,
     FilterInstance,
+    _isActive,
     _filters,
     _searchState,
     _filtersState,
-    _loadMoreSum;
+    _loadMoreSum,
+    _isLoading;
 
+_isActive = false;
 _filters = {    // should hold the list of filters information (collections and models)
     supplier: {},
     priceRange: {}
@@ -29,6 +32,7 @@ _filtersState = { // should hold the current state of filters, selected or not, 
 };
 _searchState = '';  // should hold the current query the user are trying to perform
 _loadMoreSum = 0;   // a counter of how many times the loadMore was executed
+_isLoading = false;
 
 // handle the site getting the list of views
 function viewHandleFilters() {
@@ -36,6 +40,7 @@ function viewHandleFilters() {
 
     if (!Object.getOwnPropertyNames(_filters.supplier).length) {
         api.filter.getFilters();
+        _isLoading = true;
     }
 
     if (!Object.getOwnPropertyNames(_filters.priceRange).length) {
@@ -60,8 +65,10 @@ function viewHandleSearch(data) {
         _searchState = data.query;
         // update the products from the server based on the new data
         api.product.filterProducts(_searchState, _filtersState);
+        _isActive = true;
     } else {
         _searchState = '';
+        _isActive = false;
     }
 }
 
@@ -88,12 +95,13 @@ function viewHandleFilter(data) {
 
             }
 
-            debug(_filtersState);
             // update the products from the server based on the new data
             api.product.filterProducts(_searchState, _filtersState);
+            _isActive = true;
         }
     } else {
         debug('No data/data.type/data.filter');
+        _isActive = false;
     }
 }
 
@@ -101,6 +109,7 @@ function viewHandleLoadMore(data) {
     debug('handle load more products');
     _loadMoreSum += 1;
     api.product.filterProducts(_searchState, _filtersState, _loadMoreSum);
+    _isActive = true;
 }
 
 // handle server action
@@ -111,17 +120,24 @@ function apiHandleFiltersError(data) {
 
 function apiHandleFilters(data) {
     // for now we just clone the received data on _filters property
+    // TODO make field agnostic
     if (data && data.length) {
         _filters.supplier = data.clone();
     } else {
         _filters.supplier = {};
     }
+    _isLoading = false;
 
 }
 
 FilterStore = Store.extend({
 
     CHANGE_EVENT: 'change_filter',
+
+    // should be true when any filter is active
+    isActive: function () {
+        return _isActive;
+    },
 
     // return the current list of filters available
     getFilters: function () {

@@ -7,11 +7,13 @@ module.exports =
     React.createClass({
 
         propTypes: {
+            current: React.PropTypes.object,
             supplier: React.PropTypes.object
         },
 
         getDefaultProps: function () {
             return {
+                current: {},
                 supplier: {}
             };
         },
@@ -21,6 +23,9 @@ module.exports =
             var checks,
                 checkboxWrapperStyle,
                 floatLeft,
+                currentTerms,
+                currentRanges,
+                isChecked,
                 boxStyle;
 
             checkboxWrapperStyle = {
@@ -41,15 +46,26 @@ module.exports =
                 overflow: 'scroll'
             };
 
+            currentTerms = this.props.current.term;
+            currentRanges = this.props.current.range;
+
             if (Object.getOwnPropertyNames(this.props.supplier).length) {
                 checks = this.props.supplier.map( function (supplier) {
                     if (supplier.get('total_members') > 0 ) {
+                        if (currentTerms.supplier.indexOf(supplier.get('id')) !== -1) {
+                            debug('is checked');
+                            isChecked = true;
+                        } else {
+                            isChecked = false;
+                        }
+
                         return (
                             <div style={checkboxWrapperStyle}>
                                 <div style={floatLeft}>
-                                    <Checkbox
+                                    <input  type="checkbox"
                                             name={supplier.get('slug')}
                                             value={supplier.get('id')}
+                                            checked={isChecked}
                                             onClick={this._handleOnChange.bind(this, 'supplier', supplier.get('id'))}
                                     />
                                 </div>
@@ -78,8 +94,6 @@ module.exports =
          * @private
          */
         _handleOnChange: function(type, id) {
-            debug('_handleOnChange');
-            debug(type);
             debug(id);
             FilterAction.setFilters(type, id);
         }

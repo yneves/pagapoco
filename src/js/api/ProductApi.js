@@ -130,8 +130,6 @@ ProductApi = {
         }
 
         filtersLength = Object.getOwnPropertyNames(filters);
-        debug('e para ser undefined');
-        debug(searchObj);
         if (!search) {
             if (filtersLength.length) {
                 // only filter
@@ -144,14 +142,8 @@ ProductApi = {
             }
         } else if (search) {
             if (filtersLength.length) {
-                // search and filter
-                if (filtersLength <= 1) {
-                    debug('getQueryWithSingleFilter');
-                    searchObj = ElasticSearchDSL.getQueryWithSingleFilter(search, filters);
-                } else {
-                    debug('getQueryWithMultipleFilter');
-                    searchObj = ElasticSearchDSL.getQueryWithMultipleFilters(search, filters);
-                }
+                debug('getQueryWithFilter');
+                searchObj = ElasticSearchDSL.getQueryWithFilter(search, filters);
             } else {
                 // only search
                 debug('getDefaultShittyQuery');
@@ -160,8 +152,6 @@ ProductApi = {
         }
 
         // start fetching for search, fire event
-        debug('nao e para ser undefined mais');
-        debug(searchObj);
         ApiProductActionCreator.setProducts(null);
         db.products.searchFor(searchObj, options, function (data) {
             if (data instanceof Error) {
