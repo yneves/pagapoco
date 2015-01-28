@@ -1,11 +1,12 @@
 var React = require('react'),
     ProductAction = require('../../actions/ProductActionCreators'),
+    FilterAction = require('../../actions/FilterActionCreator'),
     ProductStore = require('../../stores/ProductStore'),
     FilterStore = require('../../stores/FilterStore'),
     Header = require('../header/header.jsx'),
     Products = require('../product/products.jsx'),
     ProductSingleView = require('../product/singleView.jsx'),
-    Filters = require('../product/filters.jsx'),
+    Filters = require('../product/filters/filters.jsx'),
     Sidebar = require('../sidebar/sidebar.jsx'),
     debug = require('debug')('store.jsx');
 
@@ -24,9 +25,11 @@ module.exports =
 
         getInitialState: function () {
             return {
+                filtersActive   : FilterStore.isActive(),
                 filters         : FilterStore.getFilters(),
+                currentFilters  : FilterStore.getFiltersState(),
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
+                currentProduct  : ProductStore.getCurrentProduct(),
                 sortingProducts : ProductStore.getSorting()
             };
         },
@@ -55,12 +58,12 @@ module.exports =
                 sideStyle,
                 contentStyle;
 
-            if (this.props.route.link.type === 'product' && Object.getOwnPropertyNames(this.state.currentProduct).length) {
+            if (this.props.route.link.type === 'product' && Object.getOwnPropertyNames(this.state.currentProduct.product).length) {
                 contentStyle = {
                     width: '100%'
                 };
                 content = (
-                    <ProductSingleView product={this.state.currentProduct} />
+                    <ProductSingleView product={this.state.currentProduct.product} priceHistory={this.state.currentProduct.priceHistory} />
                 );
             } else if ((this.props.route.link.type === 'products' || this.props.route.link.type === 'taxonomy') && Object.getOwnPropertyNames(this.state.products).length) {
                 contentStyle = {
@@ -76,8 +79,8 @@ module.exports =
                 );
                 sidebar = (
                     <Sidebar style={sideStyle}>
-                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters).length) {
-                            <Filters suppliers={this.state.filters.suppliers} />
+                        if (this.state.filters && Object.getOwnPropertyNames(this.state.filters.supplier).length) {
+                            <Filters current={this.state.currentFilters} supplier={this.state.filters.supplier} />
                         }
                     </Sidebar>
                 );
@@ -109,15 +112,20 @@ module.exports =
             if (props.route.link.type) {
                 switch (props.route.link.type) {
                     case 'products':
-                        ProductAction.getProducts();
+                        if (!this.state.filtersActive) {
+                            ProductAction.getProducts();
+                        }
+                        FilterAction.getFilters();
                         break;
                     case 'product':
                         ProductAction.getCurrentProduct(props.route.link.slug);
                         break;
                     case 'taxonomy':
-                        ProductAction.filterProducts(props.route.link.name);
+                        FilterAction.getFilters();
+                        FilterAction.setFilters(props.route.link.name);
                         break;
                     default:
+                        FilterAction.getFilters();
                         ProductAction.getProducts();
                         break;
                 }
@@ -131,14 +139,16 @@ module.exports =
         _onChangeProduct: function () {
             this.setState({
                 products        : ProductStore.getCurrentCatalog(),
-                currentProduct  : ProductStore.getCurrent(),
+                currentProduct  : ProductStore.getCurrentProduct(),
                 sortingProducts : ProductStore.getSorting()
             });
         },
 
         _onChangeFilter: function () {
             this.setState({
+                filtersActive : FilterStore.isActive(),
                 filters : FilterStore.getFilters(),
+                currentFilters  : FilterStore.getFiltersState()
             });
         }
     });

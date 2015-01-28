@@ -4,6 +4,7 @@ var ActionTypes = require('../constants/AppConstants').ActionTypes,
     api = require('../api/AppApi'),
     debug = require('debug')('ProductActionCreators.js'),
     productAction = ActionTypes.Product,
+    filterAction = ActionTypes.Filter,
     ProductActionCreator;
 
 ProductActionCreator = {
@@ -19,30 +20,6 @@ ProductActionCreator = {
         Dispatcher.handleViewAction({
             type : productAction.GET_CURRENT_PRODUCT,
             data : { slug: slug }
-        });
-    },
-    // called when the user type on search input field
-    searchProducts: function (searchTerm) {
-        debug('searchProducts - dispatch SEARCH_PRODUCTS');
-        Dispatcher.handleViewAction({
-            type : productAction.SEARCH_PRODUCTS,
-            data : { query : searchTerm }
-        });
-    },
-    // filter products
-    filterProducts: function (filter) {
-        debug('filterProducts - dispatch FILTER_PRODUCTS');
-        Dispatcher.handleViewAction({
-            type : productAction.FILTER_PRODUCTS,
-            data : { filter: filter }
-        });
-    },
-    // called when more products are needed from the database
-    loadMoreProducts: function () {
-        debug('loadMoreProducts - dispatch LOAD_MORE');
-        Dispatcher.handleViewAction({
-            type: productAction.LOAD_MORE,
-            data: null
         });
     },
     // simple sort the products
