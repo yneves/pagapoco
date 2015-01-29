@@ -99,7 +99,12 @@ module.exports =
                                 </a>
                             </div>
                             <div className="product-tab-content">
-                                { this.state.tab === 'review' ? <ProductReview product={product} /> : <PriceHistory priceHistory={this.props.priceHistory} /> }
+                                <div className={ this.state.tab === 'review' ? '' : 'product-tab-active' }>
+                                    <PriceHistory priceHistory={this.props.priceHistory} />
+                                </div>
+                                <div className={ this.state.tab === 'review' ? 'product-tab-active' : '' }>
+                                    <ProductReview product={product} />
+                                </div>
                             </div>
                         </div>
 

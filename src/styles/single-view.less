@@ -338,6 +338,14 @@
             
             .product-tab-content {
                 padding: 20px 0px;
+                
+                > div {
+                    display: none;
+                    
+                    &.product-tab-active {
+                        display: block;
+                    }
+                }
             }
         }
 
