@@ -1,6 +1,7 @@
 
-var React = require('react'),
-    Texts = require('../texts.js');
+var React = require('react'),    
+    Texts = require('../texts.js'),
+    Link = require('../common/link.jsx');
 
 module.exports =
     React.createClass({
@@ -21,19 +22,25 @@ module.exports =
             return (
                 <div className="breadcrumbs">
                     <div>
-                        <a>{Texts.home}</a>
+                        <Link name="home">
+                            {Texts.home}
+                        </Link>
                         <span>{' > '}</span>
                     </div>
                     {categories.map(function(category) {
                         return (
                             <div key={category}>
-                                <a>{Texts.category[category]}</a>
+                                <Link name="category" data={{ category: category }}>
+                                    {Texts.category[category]}
+                                </Link>
                                 <span>{' > '}</span>
                             </div>
                         );
                     })}
                     <div>
-                        <a>{product.get('title')}</a>
+                        <Link name="product" data={{ slug : product.get('slug') }}>
+                            {product.get('title')}
+                        </Link>
                     </div>
                 </div>
             );
