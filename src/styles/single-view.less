@@ -160,6 +160,7 @@
         position: relative;
         min-height: @imageHeight;
         margin-top: 20px;
+        clear: both;
 
         // Product image and wish/share buttons.
         .product-image {
@@ -210,9 +211,9 @@
 
         // Description area
         .product-description {
-            padding-left: @imageWidth;
-            padding-right: @offersWidth;
-            width: 100%;
+            position: absolute;
+            left: @imageWidth;
+            right: @offersWidth;
 
             // Description text.
             p {
@@ -243,9 +244,7 @@
         // Offers list.
         .product-offers {
             width: @offersWidth;
-            position: absolute;
-            top: 0px;
-            right: 0px;
+            float: right;
             padding: 0px 20px;
 
             ul {
@@ -312,6 +311,7 @@
     .product-body-two {
         position: relative;
         margin-top: 40px;
+        clear: both;
 
         // Product tabs.
         .product-tabset {
