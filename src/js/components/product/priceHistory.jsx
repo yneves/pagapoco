@@ -21,7 +21,7 @@ module.exports =
                     showArea: true,
                     axisX: {
                         labelInterpolationFnc: function(date) {
-                            return date.split("-").reverse().join("/");
+                            return date.split("-").reverse().slice(0,2).join("/");
                         },
                     }
                 },
